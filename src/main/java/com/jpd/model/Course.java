@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
@@ -26,9 +27,15 @@ public class Course {
     private String target_audience;
     private String url_img;
 
+
+    //link to Creator
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
+
+    //Link to Module
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Module> modules;
 
 }

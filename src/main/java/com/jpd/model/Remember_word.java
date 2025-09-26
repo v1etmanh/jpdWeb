@@ -1,5 +1,6 @@
 package com.jpd.model;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,30 +9,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "progress_course",
-        uniqueConstraints = @UniqueConstraint(name = "uq_tracker_customer_course", columnNames = {"customer_id", "course_id"}))
+@Table(name = "remember_word")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProgressCourse {
+public class Remember_word {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    // progress percentage from 0.0 to 100.0
-    @Column(nullable = false)
-    private Double progress;
+    private String word;
+    private String meaning;
+    private String description;
 
 
-    // link to Course
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
-
-
-    // link to Customer
+    //link to Customer
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
     @JsonBackReference
     private Customer customer;
+
+
 }

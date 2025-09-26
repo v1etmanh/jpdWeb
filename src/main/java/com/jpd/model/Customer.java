@@ -1,43 +1,77 @@
 package com.jpd.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
 @Table(name = "customer")
-@Data //Bao gồm @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
     private Long id;
-    private LocalDate create_date = LocalDate.now();
+    @Column(name = "create_date")
+    @CreationTimestamp
+    private LocalDate createDate;
     private String email;
-    private String family_name;
-    private String given_name;
-    @Column(nullable = false)
-    private int limit_word;
-    @Column(nullable = false)
-    private int number_request;
+    @Column(name = "family_name")
+    private String familyName;
+    @Column(name = "given_name")
+    private String givenName;
     private String role;
     private String username;
-    private String password;
 
+    //link to Creator
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Creator creator;
 
+    //link to Remember_word
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Remember_word> rememberWords;
+
+    //link to Progress_course
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<ProgressCourse> progressCourses;
+
+    //link to Wish_list
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Wishlist> wishlists;
+
     //link to Enrollment
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private java.util.List<Enrollment> enrollments;
-    //link to progressCourse
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private java.util.List<ProgressCourse> progressCourses;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Enrollment> enrollments;
+
+    //link to Customer_chapter
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<CustomerChapter> customerChapters;
+
+
+    //link to Customer_module
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<CustomerModule> customerModules;
+
+
+    //link to Customer_question
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+@JsonManagedReference
+    private List<CustomerQuestion> customerQuestions;
 
 }

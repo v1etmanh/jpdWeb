@@ -22,6 +22,8 @@ public class ListeningChoiceQuestion extends ModuleContent {
     @Column(name="url", length=2048)
     private String audioUrl;
 
+
+    //link to ListeningChoiceOption
     @OneToMany(mappedBy="question", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<ListeningChoiceOption> options;
 }

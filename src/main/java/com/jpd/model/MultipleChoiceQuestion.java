@@ -15,16 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class Multiple_choice_Question extends ModuleContent
+@Table(name = "Multiple_choice_Question")
+public class MultipleChoiceQuestion extends ModuleContent
 {
     @Lob
    private   String questionText;
     @Lob
     private String feedback;
-    //link to Multiple_choice_option
+    //link to MultipleChoiceOption
     @OneToMany(mappedBy = "multiple_choice_question", cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonBackReference
-    private List<Multiple_choice_option> options;
+    private List<MultipleChoiceOption> options;
 
 
 }

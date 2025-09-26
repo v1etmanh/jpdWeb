@@ -6,20 +6,28 @@ import lombok.*;
 
 import java.util.List;
 
-@Entity @Table(name="module",
-        indexes = @Index(columnList="chapter_id"))
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Entity
+@Table(name = "module",
+        indexes = @Index(columnList = "chapter_id"))
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Module {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="title_of_module")
+    @Column(name = "title_of_module")
     private String titleOfModule;
 
-    @ManyToOne(fetch =  FetchType.LAZY, optional = false)
-    @JoinColumn(name="chapter_id", nullable = false)
+    //link to Chapter
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "chapter_id", nullable = false)
     private Chapter chapter;
 
+
+    //link to ModuleContent
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ModuleContent> moduleContent;
 }

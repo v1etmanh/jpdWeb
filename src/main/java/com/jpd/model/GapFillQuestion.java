@@ -19,7 +19,9 @@ import java.util.List;
 public class GapFillQuestion extends ModuleContent {
     private String questionText;
     private String feedback;
-    @OneToMany(mappedBy = "gapfillQuestion",cascade = CascadeType.ALL)
+
+    //link to GapFillAnswer
+    @OneToMany(mappedBy = "gapfillQuestion", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<GapFillAnswer> answers;
 

@@ -11,13 +11,15 @@ import org.aspectj.weaver.patterns.TypePatternQuestions;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data
-public class GapFillAnswer  {
+public class GapFillAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "answer_id")
     private long answerId;
+
+    //link to GapFillQuestion
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name = "id")
     @JsonBackReference
     private GapFillQuestion gapfillQuestion;
     private String answer;

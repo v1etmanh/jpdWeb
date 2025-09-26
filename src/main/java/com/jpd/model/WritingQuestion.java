@@ -1,5 +1,6 @@
 package com.jpd.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -13,9 +14,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @DiscriminatorValue("WRITING")
 @AllArgsConstructor
-public class WritingQuestion extends  ModuleContent
-{
+public class WritingQuestion extends ModuleContent {
     private String question;
     private List<String> requirements;
+    @Column(table = "url_image")
+    private String imageUrl;
 
 }

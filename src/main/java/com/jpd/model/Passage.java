@@ -7,8 +7,7 @@ import lombok.Data;
 @Entity
 @DiscriminatorValue("PASSAGE")
 @Data
-public class Passage extends ModuleContent
-{
+public class Passage extends ModuleContent {
     private String title;
     private String content;
 }

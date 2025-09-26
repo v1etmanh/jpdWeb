@@ -1,5 +1,6 @@
 package com.jpd.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @DiscriminatorValue("VIDEO")
-public class TeachingVideo extends ModuleContent{
+public class TeachingVideo extends ModuleContent {
+
+    @Column(name = "title_video")
     private String titleVideo;
     private String videoUrl;
     private double capacityMB;

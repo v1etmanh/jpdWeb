@@ -33,4 +33,11 @@ public class Customer {
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Creator creator;
 
+    //link to Enrollment
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Enrollment> enrollments;
+    //link to progressCourse
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<ProgressCourse> progressCourses;
+
 }

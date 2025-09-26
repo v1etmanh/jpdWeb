@@ -1,30 +1,25 @@
 package com.jpd.model;
 
+
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Entity
-@Data
+@Entity @Table(name="module",
+        indexes = @Index(columnList="chapter_id"))
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Module {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String name;
+    @Column(name="title_of_module")
+    private String titleOfModule;
 
+    @ManyToOne(fetch =  FetchType.LAZY, optional = false)
+    @JoinColumn(name="chapter_id", nullable = false)
+    private Chapter chapter;
 
-    //    link to Course
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
-
-
-    //    link to Lesson
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Lesson> lessons;
-
-
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ModuleContent> moduleContent;
 }

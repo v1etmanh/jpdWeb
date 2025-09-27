@@ -1,6 +1,7 @@
 package com.jpd.web.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +12,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.sql.Date;
 
 @Entity
-@Table(name = "wish_list")
+@Table(name = "wish_list",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uc_customer_course", columnNames = {"customer_id", "course_id"})
+        }
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,6 +33,7 @@ public class Wishlist {
     //link to Customer
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
+    @JsonBackReference
     private Customer customer;
 
 

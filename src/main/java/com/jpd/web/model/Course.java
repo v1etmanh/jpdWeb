@@ -1,6 +1,7 @@
 package com.jpd.web.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -63,6 +64,7 @@ public class Course {
     //link to Creator
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "creator_id", nullable = false)
+    @JsonBackReference
     private Creator creator;
 
     //Link to chapter

@@ -2,8 +2,6 @@ package com.jpd.web.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.DiscriminatorOptions;
 
@@ -18,6 +16,7 @@ import org.hibernate.annotations.DiscriminatorOptions;
 public abstract class ModuleContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "module_id")
     private long Id;
     @Enumerated(EnumType.STRING)
     private TypeOfContent typeOfContent;

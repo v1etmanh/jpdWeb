@@ -1,6 +1,7 @@
 package com.jpd.web.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -50,10 +51,12 @@ public class Creator {
 
     //link to Course
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference
     private List<Course> courses;
 
     //link to Withdraw
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference
     private List<Withdraw> withdrawList;
 
 

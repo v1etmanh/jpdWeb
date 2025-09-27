@@ -24,7 +24,7 @@ public class Feedback {
     @Max(5)
     private int rate;
 
-    //link to Enrollment
+    //link to Enrollmentk
     @OneToOne
     @JoinColumn(name = "enrollment_id")
     private Enrollment enrollment;

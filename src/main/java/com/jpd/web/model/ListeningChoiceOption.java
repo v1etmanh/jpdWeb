@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Builder
 @Entity
-@Table(name = "listion_choice_options")
+@Table(name = "listen_choice_options")
 public class ListeningChoiceOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

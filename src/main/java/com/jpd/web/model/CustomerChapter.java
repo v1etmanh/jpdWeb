@@ -1,6 +1,8 @@
 package com.jpd.web.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,12 +24,13 @@ public class CustomerChapter {
 
 
     //link to Customer
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id")
+    @JsonBackReference
     private Customer customer;
 
     //link to Chapter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "chapter_id")
     private Chapter chapter;
 

@@ -27,6 +27,10 @@ public class Module {
     private Chapter chapter;
 
 
+    //link to Customer_module
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CustomerModule> customerModules;
+
     //link to ModuleContent
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ModuleContent> moduleContent;

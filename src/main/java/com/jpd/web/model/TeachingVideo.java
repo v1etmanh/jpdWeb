@@ -1,5 +1,8 @@
 package com.jpd.web.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -13,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @DiscriminatorValue("VIDEO")
 public class TeachingVideo extends ModuleContent {
-
+	
     @Column(name = "title_video")
     private String titleVideo;
     private String videoUrl;
-    private double capacityMB;
+    
     private double durationMinutes;
 }

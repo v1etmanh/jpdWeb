@@ -1,13 +1,17 @@
 package com.jpd.web.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -21,8 +25,9 @@ public class GapFillQuestion extends ModuleContent {
     private String feedback;
 
     //link to GapFillAnswer
-    @OneToMany(mappedBy = "gapfillQuestion", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @OneToMany(mappedBy = "gapfillQuestion", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JsonManagedReference
+    @ToString.Exclude
     private List<GapFillAnswer> answers;
 
 }

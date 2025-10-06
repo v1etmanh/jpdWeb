@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class WritingQuestion extends ModuleContent {
     private String question;
-    private List<String> requirements;
+    private String requirements;
     @Column(name = "url_image")
     private String imageUrl;
 

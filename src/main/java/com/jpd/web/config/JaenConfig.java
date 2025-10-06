@@ -3,6 +3,7 @@ package com.jpd.web.config;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,10 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-
+import com.jpd.web.model.FlashCard;
+import com.jpd.web.model.TypeOfContent;
+import com.jpd.web.repository.ModuleContentRepository;
+import com.jpd.web.repository.ModuleRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 @Configuration

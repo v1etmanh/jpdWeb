@@ -11,6 +11,7 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @DiscriminatorValue("SPEAKING_PICTURE")
@@ -22,6 +23,7 @@ public class SpeakingPictureQuestion extends ModuleContent {
     private String pictureUrl;
     @OneToMany(mappedBy = "speakingPictureQuestion", cascade = CascadeType.ALL)
     @JsonManagedReference
+    @ToString.Exclude
     private List<SpeakingPictureListQuestions> speakingPictureListQuestions;
 
 }

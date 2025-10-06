@@ -1,10 +1,13 @@
 package com.jpd.web.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
@@ -20,12 +23,14 @@ public class ListeningChoiceOption {
 
     //link to ListeningChoiceQuestion
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "mc_id", nullable = false)
+    @JsonBackReference
+    @ToString.Exclude
     private ListeningChoiceQuestion question;
 
     @Column(name = "option_text", length = 1000)
     private String optionText;
 
-    @Column(name = "is_correct", nullable = false)
+    @Column( nullable = false)
     private boolean correct;
 }

@@ -1,6 +1,9 @@
 package com.jpd.web.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,11 +26,13 @@ public class CustomerModuleContent {
     //link to Customer
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enroll_id")
+    @JsonBackReference("enrollment-customerContent")  // ← Đ
     private Enrollment enrollment;
 
     //link to Course
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mc_id")
+    @JsonIgnore
     private ModuleContent moduleContent;
 
 }

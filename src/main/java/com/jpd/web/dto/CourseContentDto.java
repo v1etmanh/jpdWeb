@@ -4,6 +4,12 @@ import java.util.List;
 
 import com.jpd.web.model.Chapter;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Data
 public class CourseContentDto {
 /* course name 
  * 

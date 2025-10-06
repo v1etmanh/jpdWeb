@@ -1,10 +1,15 @@
 package com.jpd.web.transform;
 
+import java.util.List;
+
 import com.jpd.web.dto.CourseCardDto;
+import com.jpd.web.dto.CourseContentDto;
 import com.jpd.web.dto.CourseFormDto;
 import com.jpd.web.model.AccessMode;
+import com.jpd.web.model.Chapter;
 import com.jpd.web.model.Course;
 import com.jpd.web.model.Enrollment;
+import com.jpd.web.model.ModuleContent;
 
 public class CourseTransForm {
 public static Course transformFromCourseFormDto(CourseFormDto courseFormDto) {
@@ -46,5 +51,31 @@ public static CourseCardDto transformToCourseCardDto(Course course) {
    c.setImage(course.getUrlImg());
    c.setType(course.getAccessMode());
 	return c;
+}
+public static CourseContentDto transformToCourseContentDto(Course course) {
+    CourseContentDto contentDto = new CourseContentDto();
+    contentDto.setName(course.getName());
+    contentDto.setPublic(course.isPublic());
+    
+    // Force load chapters và nested data
+    List<Chapter> chapters = course.getChapters();
+    if (chapters != null) {
+        chapters.forEach(chapter -> {
+            // Force load modules
+            List<com.jpd.web.model.Module> modules = chapter.getModules();
+            if (modules != null) {
+                modules.forEach(module -> {
+                    // Force load module contents - ĐÂY LÀ QUAN TRỌNG!
+                    List<ModuleContent> contents = module.getModuleContent();
+                    if (contents != null) {
+                        contents.size(); // Trigger lazy loading
+                    }
+                });
+            }
+        });
+    }
+    
+    contentDto.setChapters(chapters);
+    return contentDto;
 }
 }

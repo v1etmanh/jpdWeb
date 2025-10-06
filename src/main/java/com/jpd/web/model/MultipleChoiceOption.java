@@ -1,10 +1,13 @@
 package com.jpd.web.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @RequiredArgsConstructor
@@ -21,7 +24,9 @@ public class MultipleChoiceOption {
     @Column(nullable = false)
     private boolean isCorrect;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "mc_id", nullable = false)
+    @JsonBackReference
+    @ToString.Exclude  
     private MultipleChoiceQuestion multiple_choice_question;
 }

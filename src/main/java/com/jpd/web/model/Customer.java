@@ -53,7 +53,7 @@ public class Customer {
 
     //link to Enrollment
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference("customer-enrollment")
     private List<Enrollment> enrollments;
 
 

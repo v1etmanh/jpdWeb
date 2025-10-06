@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @AllArgsConstructor
@@ -20,7 +21,8 @@ public class SpeakingPictureListQuestions {
 
     private String answer;
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "mc_id")
     @JsonBackReference
+    @ToString.Exclude
     private SpeakingPictureQuestion speakingPictureQuestion;
 }

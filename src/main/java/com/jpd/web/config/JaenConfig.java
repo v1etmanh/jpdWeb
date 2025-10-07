@@ -18,6 +18,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.jpd.web.filter.CreatorFilter;
 import com.jpd.web.model.FlashCard;
 import com.jpd.web.model.TypeOfContent;
 import com.jpd.web.repository.ModuleContentRepository;
@@ -34,7 +35,7 @@ public class JaenConfig {
 				  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 				  .ignoringRequestMatchers("/api/*","/webhook/**"));
 		  http.cors(corsCongif->corsCongif.configurationSource(new CorsConfigurationSource() {
-			
+		  
 			@Override
 			public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 				CorsConfiguration corsF=new CorsConfiguration();
@@ -47,6 +48,7 @@ public class JaenConfig {
 			}
 	})				
 		  );
+		 
 		  http.formLogin(AbstractHttpConfigurer::disable);
 		  JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
 		  jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new JwtRoleConverted());
@@ -56,7 +58,12 @@ public class JaenConfig {
 				  .requestMatchers("/actuator/**").hasRole("ADMIN")   
 				  .requestMatchers("/homepage/**").permitAll() // Public course listing
 		            .requestMatchers("/api/**", "/course/**", "/account/**","/upDirect/**").hasRole("USER")
-		            .requestMatchers("/webhook/**").permitAll()
+		            .requestMatchers("/webhook/**").permitAll().
+		            requestMatchers("/swagger-ui/**",
+		                    "/swagger-ui.html",
+		                    "/v3/api-docs/**",
+		                    "/v3/api-docs.yaml",
+		                    "/actuator/**").permitAll()
 		            .anyRequest().authenticated()
 		        );
 		  http.oauth2ResourceServer(rsc->rsc.jwt(JwtConfigurer->JwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));

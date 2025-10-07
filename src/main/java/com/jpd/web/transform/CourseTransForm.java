@@ -38,16 +38,19 @@ public static CourseCardDto transformToCourseCardDto(Course course) {
 	c.setName(course.getName());
 	double total=0;
 	double i=0;
+	if(course.getEnrollments()!=null) {
     for(Enrollment e:course.getEnrollments()) {
     	if(e.getFeedback()!=null) {
     	total+=e.getFeedback().getRate();
     	i++;
     	}
     }
+	
     double rating=total/i;
 		c.setRating(rating);
 	
 	c.setStudentCount(course.getEnrollments().size());
+	}
    c.setImage(course.getUrlImg());
    c.setType(course.getAccessMode());
 	return c;

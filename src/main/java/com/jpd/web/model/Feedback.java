@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.hibernate.annotations.Check;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Check(constraints = "rate BETWEEN 1 AND 5")
 @Table(name = "feed_back")
@@ -28,6 +30,7 @@ public class Feedback {
     //link to Enrollment
     @OneToOne
     @JoinColumn(name = "enrollment_id")
+    @JsonBackReference("enrollment-feedback")
     private Enrollment enrollment;
 
 

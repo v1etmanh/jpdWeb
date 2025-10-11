@@ -25,7 +25,8 @@ public class CourseCardDto {
 	private LocalDate createdDate;
 	private int studentCount;
 	private double reviewCount;
+	private double totalRevenue;
 	private double rating;
 	private String image;
-	private AccessMode type;
+	private AccessMode type;         
 }

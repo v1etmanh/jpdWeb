@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,19 +25,23 @@ public class Withdraw {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "withdraw_id")
     private long withdrawId;
-    private String payoutItemId;
+    @Column(name = "payout_batch_id")
+    private String payoutBatchId;
   
     private double amount;
     private String currency;
     private String content;
-    private String status; // PENDING, SUCCESS, FAILED, CANCELLED
-    private Date createdAt;
+    @Enumerated(EnumType.STRING)
+    private Status status; // PENDING, SUCCESS, FAILED, CANCELLED
+    @CreationTimestamp
+    private LocalDateTime createdAt;
     private Date updatedAt;
 
 
     //link to Creator
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "creator_id")
+    @JsonBackReference
     private Creator creator;
 
 

@@ -19,4 +19,6 @@ List<ModuleContent> findByModule(Module module);
 @Query("DELETE FROM ModuleContent mc WHERE mc.module.moduleId = :moduleId")
 void deleteByModuleId(@Param("moduleId") Long moduleId);
 void deleteByTypeOfContentAndModule(TypeOfContent typeOfContent, Module module);
+List<ModuleContent> findByTypeOfContentAndModule(TypeOfContent typeOfContent, Module module);
+
 }

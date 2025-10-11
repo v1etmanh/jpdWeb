@@ -17,8 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.jpd.web.dto.CourseCardDto;
 import com.jpd.web.dto.CourseContentDto;
 import com.jpd.web.dto.CourseFormDto;
-import com.jpd.web.dto.ModuleContentDto;
-import com.jpd.web.dto.ModuleDto;
+
+import com.jpd.web.dto.PopularCourseDTO;
 import com.jpd.web.exception.ApiException;
 import com.jpd.web.exception.CourseNotFoundException;
 import com.jpd.web.exception.CreatorNotFoundException;
@@ -37,13 +37,13 @@ import com.jpd.web.model.TypeOfFile;
 import com.jpd.web.repository.ChapterRepository;
 import com.jpd.web.repository.CourseRepository;
 import com.jpd.web.repository.CreatorRepository;
-import com.jpd.web.repository.CustomerRepository;
+
 import com.jpd.web.repository.ModuleContentRepository;
-import com.jpd.web.repository.ModuleRepository;
-import com.jpd.web.repository.PendingImgRepository;
+
 import com.jpd.web.service.utils.CodeGenerator;
 import com.jpd.web.service.utils.ValidationResources;
 import com.jpd.web.transform.CourseTransForm;
+import com.jpd.web.transform.CreatorTransform;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -154,5 +154,13 @@ public class CourseService {
 		CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
 		return cdto;
 	}
+  public List<PopularCourseDTO > retrieveCCourse(long creatorId){
+	  Creator creator=this.resourceValidator.validateCreatorExists(creatorId);
+	  List<Course> paidCourses = creator.getCourses().stream()
+	            .filter(c -> c.getAccessMode() == AccessMode.PAID)
+	            .toList();
+	  List<PopularCourseDTO>ppc=paidCourses.stream().map(e->CreatorTransform.transform(e)).collect(Collectors.toList());
+     return ppc;
+  }
 
 }

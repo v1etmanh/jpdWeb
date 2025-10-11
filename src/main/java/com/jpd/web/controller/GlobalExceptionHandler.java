@@ -5,8 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.jpd.web.exception.BusinessException;
 import com.jpd.web.exception.ChapterNotFoundException;
 import com.jpd.web.exception.ErrorResponse;
+import com.jpd.web.exception.FileUploadException;
 import com.jpd.web.exception.UnauthorizedException;
 
 import lombok.AllArgsConstructor;
@@ -39,6 +41,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("INTERNAL_ERROR", "An error occurred"));
+    }
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleGeneralBuss(Exception e) {
+        log.error("Unexpected error", e);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("INTERNAL_ERROR", "An error occurred"));
+    }
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ErrorResponse> handleFileUpload(FileUploadException e) {
+        log.error("File upload error: {}", e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("FILE_UPLOAD_ERROR", e.getMessage()));
     }
 }
 

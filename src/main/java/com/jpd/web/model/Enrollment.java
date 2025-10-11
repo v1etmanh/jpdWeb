@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -24,11 +25,12 @@ public class Enrollment {
     private long enrollId;
     @Column(name = "create_date")
     @CreationTimestamp
-    private Date createDate;
+    private LocalDateTime createDate;
 
     //link to Course
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
+    @JsonBackReference("course-enrollment")
     private Course course;
 
     //link to Customer
@@ -39,6 +41,7 @@ public class Enrollment {
 
     //link to feedback
     @OneToOne(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("enrollment-feedback")
     private Feedback feedback;
 
     //link to Transaction
@@ -48,5 +51,10 @@ public class Enrollment {
     @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL)
     @JsonManagedReference("enrollment-customerContent")  // ← ĐỔI thành 
     private List<CustomerModuleContent> customerModuleContents;
-
+    
+    private boolean isFinish;
+    @PrePersist
+    public void setUpFi() {
+    	isFinish=false;
+    }
 }

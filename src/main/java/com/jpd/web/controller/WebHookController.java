@@ -23,8 +23,7 @@ public class WebHookController {
 	@Autowired
     private PayPalPayoutServiceV2 payoutService;
  
-    @Autowired
-    private PayoutTrackingRepository payoutRepository;
+
     // Helper method
     private boolean isPayoutEvent(String eventType) {
         return eventType != null && (

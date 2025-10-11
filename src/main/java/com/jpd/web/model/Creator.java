@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,8 +41,13 @@ public class Creator {
     private String paymentEmail;
     @Column(name = "title_self")   
     private String titleSelf;
-    @Column()
-    private List< String> certificateUrl;
+    @ElementCollection
+    @CollectionTable(
+        name = "creator_certificates",
+        joinColumns = @JoinColumn(name = "creator_id")
+    )
+    @Column(name = "certificate_url")
+    private  List<String> certificateUrl= new ArrayList<>();
     @Column(name = "status")
     private Status status;
 
@@ -57,6 +63,7 @@ public class Creator {
 
     //link to Withdraw
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference
     private List<Withdraw> withdrawList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
     private List<PayoutTracking>payoutTrackings ;

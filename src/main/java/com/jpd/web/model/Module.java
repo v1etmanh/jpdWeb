@@ -36,7 +36,7 @@ public class Module {
 @CreationTimestamp
   private LocalDateTime createDate;
     //link to ModuleContent
-    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
    @JsonManagedReference("module_modulecontent")
     private List<ModuleContent> moduleContent;
     @Column(name = "order_in_chapter")

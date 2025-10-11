@@ -73,7 +73,8 @@ public class Course {
     private List<Chapter> chapters;
 
     //Link to Enrollment
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course",fetch = FetchType.LAZY)
+    @JsonManagedReference("course-enrollment")
     private List<Enrollment> enrollments;
 
  

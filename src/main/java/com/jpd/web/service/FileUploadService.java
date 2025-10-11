@@ -19,8 +19,7 @@ import com.jpd.web.service.utils.ValidationResources;
 
 @Service
 public class FileUploadService {
-	@Autowired
-	private CustomerRepository customerRepository;
+
 	@Autowired
 	private PendingImgRepository pendingImgRepository; 
 	@Autowired

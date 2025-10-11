@@ -41,7 +41,7 @@ public class ChapterController {
         
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .build();
+                .body(chapter);
     }
     @DeleteMapping("/{chapterId}")
     public ResponseEntity<Void> deleteChapter(

@@ -1,5 +1,5 @@
 package com.jpd.web.model;
 
 public enum TypeOfFile {
-PDF,IMG
+PDF,IMG,CERTIFICATE
 }

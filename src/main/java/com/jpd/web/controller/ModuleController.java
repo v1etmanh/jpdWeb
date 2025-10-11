@@ -46,13 +46,13 @@ public class ModuleController {
 			@Positive(message = "Chapter ID must be positive") @PathVariable("chapterId") Long chapterId,
 			HttpServletRequest request) {
 		// TODO: process POST request
-
+         
 		Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
 
 		// GlobalExceptionHandler sẽ xử lý exceptions
-		moduleService.createModule(moduleName, creatorId, courseId, chapterId);
+	Module module=	moduleService.createModule(moduleName, creatorId, courseId, chapterId);
 
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.status(HttpStatus.CREATED).body(module);
 
 	}
 }

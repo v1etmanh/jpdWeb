@@ -124,4 +124,21 @@ public class ModuleContentService {
 	        log.info("Successfully deleted {} {} contents from module {}", 
 	                type.toString(), type, moduleId);
 	    }
+		@Transactional
+	public List<ModuleContent>getModuleContentsByTypeAndModuleId( TypeOfContent type, Long moduleId, Long chapterId, Long courseId, Long creatorId){
+		Module module = validationResources.validateCompleteOwnership(moduleId, chapterId, courseId, creatorId);
+		List<ModuleContent> mds=this.moduleContentRepository.findByTypeOfContentAndModule(type, module);
+		
+		List<ModuleContent>res=new ArrayList<ModuleContent>();
+		for(ModuleContent md:mds) {
+			
+		Optional<ModuleContent> m=	this.moduleContentRepository.findById(md.getMcId());
+		System.out.print(m.get());
+		if(m.isPresent())
+		 res.add(m.get());
+		}
+		return res;
+
+		}
+	
 }

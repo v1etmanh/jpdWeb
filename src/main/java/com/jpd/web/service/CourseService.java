@@ -51,116 +51,119 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class CourseService {
-	@Autowired
-	private FireBaseService fireBaseService;
-	
+    @Autowired
+    private FireBaseService fireBaseService;
 
-	@Autowired
-	private CourseRepository courseRepository;
-	@Autowired
-	private ModuleContentRepository moduleContentRepository;
-	@Autowired
-	private CreatorRepository creatorRepository;
-	@Autowired
-	private ValidationResources resourceValidator;
-	@Autowired
-	private CodeGenerator codeGenerator;
 
-	private void validatePaidCourseRequirements(Creator creator, CourseFormDto courseFormDto) {
-		// Check creator status
-		if (creator.getStatus() != Status.SUCCESS) {
-			log.warn("Creator {} attempted to create paid course without verified status", creator.getCreatorId());
-			throw new UnauthorizedException(
-					"You must verify your payment information and certificate before creating paid courses");
-		}
+    @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
+    private ModuleContentRepository moduleContentRepository;
+    @Autowired
+    private CreatorRepository creatorRepository;
+    @Autowired
+    private ValidationResources resourceValidator;
+    @Autowired
+    private CodeGenerator codeGenerator;
 
-		// Check price
-		if (courseFormDto.getPrice() <= 0) {
-			throw new IllegalArgumentException("Price must be greater than 0 for paid courses");
-		}
-	}
+    private void validatePaidCourseRequirements(Creator creator, CourseFormDto courseFormDto) {
+        // Check creator status
+        if (creator.getStatus() != Status.SUCCESS) {
+            log.warn("Creator {} attempted to create paid course without verified status", creator.getCreatorId());
+            throw new UnauthorizedException(
+                    "You must verify your payment information and certificate before creating paid courses");
+        }
 
-	private String uploadCourseImage(MultipartFile imgFile) {
-		try {
-			String imgUrl = fireBaseService.uploadFile(imgFile, TypeOfFile.IMG);
+        // Check price
+        if (courseFormDto.getPrice() <= 0) {
+            throw new IllegalArgumentException("Price must be greater than 0 for paid courses");
+        }
+    }
 
-			if (imgUrl == null || imgUrl.trim().isEmpty()) {
-				throw new FileUploadException("Failed to upload course image");
-			}
+    private String uploadCourseImage(MultipartFile imgFile) {
+        try {
+            String imgUrl = fireBaseService.uploadFile(imgFile, TypeOfFile.IMG);
 
-			return imgUrl;
-		} catch (Exception e) {
-			log.error("Error uploading course image", e);
-			throw new ApiException("Failed to upload course image: " + e.getMessage());
-		}
-	}
+            if (imgUrl == null || imgUrl.trim().isEmpty()) {
+                throw new FileUploadException("Failed to upload course image");
+            }
 
-	@Transactional
-	public Course createCourse(CourseFormDto courseFormDto, Long creatorId) {
-		log.info("Creating course '{}' for creator {}", courseFormDto.getName(), creatorId);
+            return imgUrl;
+        } catch (Exception e) {
+            log.error("Error uploading course image", e);
+            throw new ApiException("Failed to upload course image: " + e.getMessage());
+        }
+    }
 
-		// Validate creator exists
-		Creator creator = resourceValidator.validateCreatorExists(creatorId);
+    @Transactional
+    public Course createCourse(CourseFormDto courseFormDto, Long creatorId) {
+        log.info("Creating course '{}' for creator {}", courseFormDto.getName(), creatorId);
 
-		// Transform DTO to entity
-		Course course = CourseTransForm.transformFromCourseFormDto(courseFormDto);
+        // Validate creator exists
+        Creator creator = resourceValidator.validateCreatorExists(creatorId);
 
-		// Validate paid course requirements
-		if (course.getAccessMode() == AccessMode.PAID) {
-			validatePaidCourseRequirements(creator, courseFormDto);
-		}
+        // Transform DTO to entity
+        Course course = CourseTransForm.transformFromCourseFormDto(courseFormDto);
 
-		// Upload course image
-		String imgUrl = uploadCourseImage(courseFormDto.getImgFile());
-		course.setUrlImg(imgUrl);
+        // Validate paid course requirements
+        if (course.getAccessMode() == AccessMode.PAID) {
+            validatePaidCourseRequirements(creator, courseFormDto);
+        }
 
-		// Set creator
-		course.setCreator(creator);
+        // Upload course image
+        if (courseFormDto.getImgFile() != null) {
+            String imgUrl = uploadCourseImage(courseFormDto.getImgFile());
+            course.setUrlImg(imgUrl);
+        }
 
-		// Generate join key for private courses
-		if (course.getAccessMode() == AccessMode.PRIVATE) {
-			course.setJoinKey(codeGenerator.generate6DigitCode());
-		}
+        // Set creator
+        course.setCreator(creator);
 
-		Course savedCourse = courseRepository.save(course);
-		log.info("Successfully created course {} for creator {}", savedCourse.getCourseId(), creatorId);
+        // Generate join key for private courses
+        if (course.getAccessMode() == AccessMode.PRIVATE) {
+            course.setJoinKey(codeGenerator.generate6DigitCode());
+        }
 
-		return savedCourse;
-	}
+        Course savedCourse = courseRepository.save(course);
+        log.info("Successfully created course {} for creator {}", savedCourse.getCourseId(), creatorId);
 
-	public List<CourseCardDto> retrieveCourseByemail(long creatorId)  {
-		Optional<Creator> c = this.creatorRepository.findById(creatorId);
+        return savedCourse;
+    }
 
-		List<Course> courses = c.get().getCourses();
-		return courses.stream().map(e -> CourseTransForm.transformToCourseCardDto(e)).collect(Collectors.toList());
-	}
+    public List<CourseCardDto> retrieveCourseByemail(long creatorId) {
+        Optional<Creator> c = this.creatorRepository.findById(creatorId);
 
-	@Transactional
-	public CourseContentDto getCourseById(long courseId, long creatorId)  {
+        List<Course> courses = c.get().getCourses();
+        return courses.stream().map(e -> CourseTransForm.transformToCourseCardDto(e)).collect(Collectors.toList());
+    }
 
-		log.info("Retrieving course {} for creator {}", courseId, creatorId);
+    @Transactional
+    public CourseContentDto getCourseById(long courseId, long creatorId) {
 
-		// Validate course exists and creator owns it
-		Course course = resourceValidator.validateCourseOwnership(courseId, creatorId);
+        log.info("Retrieving course {} for creator {}", courseId, creatorId);
 
-		course.getChapters().forEach(chapter -> {
-			chapter.getModules().forEach(module -> {
+        // Validate course exists and creator owns it
+        Course course = resourceValidator.validateCourseOwnership(courseId, creatorId);
 
-				List<ModuleContent> contents = this.moduleContentRepository.findByModule(module);
+        course.getChapters().forEach(chapter -> {
+            chapter.getModules().forEach(module -> {
 
-				module.setModuleContent(contents);
-			});
-		});
-		CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
-		return cdto;
-	}
-  public List<PopularCourseDTO > retrieveCCourse(long creatorId){
-	  Creator creator=this.resourceValidator.validateCreatorExists(creatorId);
-	  List<Course> paidCourses = creator.getCourses().stream()
-	            .filter(c -> c.getAccessMode() == AccessMode.PAID)
-	            .toList();
-	  List<PopularCourseDTO>ppc=paidCourses.stream().map(e->CreatorTransform.transform(e)).collect(Collectors.toList());
-     return ppc;
-  }
+                List<ModuleContent> contents = this.moduleContentRepository.findByModule(module);
+
+                module.setModuleContent(contents);
+            });
+        });
+        CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
+        return cdto;
+    }
+
+    public List<PopularCourseDTO> retrieveCCourse(long creatorId) {
+        Creator creator = this.resourceValidator.validateCreatorExists(creatorId);
+        List<Course> paidCourses = creator.getCourses().stream()
+                .filter(c -> c.getAccessMode() == AccessMode.PAID)
+                .toList();
+        List<PopularCourseDTO> ppc = paidCourses.stream().map(e -> CreatorTransform.transform(e)).collect(Collectors.toList());
+        return ppc;
+    }
 
 }

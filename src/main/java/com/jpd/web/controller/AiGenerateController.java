@@ -19,9 +19,7 @@ public class AiGenerateController {
 	private AIService aiService;
 	@PostMapping("/generateFeeback")
 	public ResponseEntity<?> generateFeedback( @RequestBody GenerateFeedbackForm form ) throws IllegalAccessException{
-		
 		String feedBack=this.aiService.generateFeedback(form.getQuestion(), form.getAnswer());
-		
 		return ResponseEntity.status(HttpStatus.CREATED).body(feedBack);
 	}
 }

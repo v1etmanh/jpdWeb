@@ -26,7 +26,7 @@ public class Course {
     @Column(name = "course_id")
     private long courseId;
     private String language;
-
+    private String teachingLanguage;
     
     private String description;
 

@@ -39,52 +39,49 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 @RequestMapping("/api/creator/course")
 public class CourseController {
-	@Autowired
-	private CourseService courseService;
+    @Autowired
+    private CourseService courseService;
 
-	@PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<CourseCardDto> createCourse(@Valid @ModelAttribute CourseFormDto entity,
-			HttpServletRequest request) {
-		// TODO: process POST request
-		Course c;
-		
-		long creatorId= RequestAttributeExtractor.extractCreatorId(request);
-			c = this.courseService.createCourse(entity, creatorId);
-			return ResponseEntity.status(HttpStatus.CREATED).body(CourseTransForm.transformToCourseCardDto(c));
-		
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CourseCardDto> createCourse(@Valid @ModelAttribute CourseFormDto entity,
+                                                      HttpServletRequest request) {
+        // TODO: process POST request
+        Course c;
+        long creatorId = RequestAttributeExtractor.extractCreatorId(request);
+        c = this.courseService.createCourse(entity, creatorId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CourseTransForm.transformToCourseCardDto(c));
+    }
 
-	}
+    @GetMapping()
+    public ResponseEntity<List<CourseCardDto>> retrieveAll(HttpServletRequest httpServletRequest) {
+        long creatorId = RequestAttributeExtractor.extractCreatorId(httpServletRequest);
+        List<CourseCardDto> courses = this.courseService.retrieveCourseByemail(creatorId);
+        return ResponseEntity.status(HttpStatus.OK).body(courses);
 
-	@GetMapping()
-	public ResponseEntity<List<CourseCardDto>> retrieveAll(HttpServletRequest httpServletRequest) {
-		
-			long creatorId=RequestAttributeExtractor.extractCreatorId(httpServletRequest);
-			List<CourseCardDto> courses = this.courseService.retrieveCourseByemail(creatorId);
-			return ResponseEntity.status(HttpStatus.OK).body(courses);
-		
-	}
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<CourseContentDto> retrieveCourseById(
-			 @Positive(message = "Course ID must be positive") 
-			@PathVariable("id") long id, 
-			HttpServletRequest request ) {
-		
-			long creatorId= RequestAttributeExtractor.extractCreatorId(request);
-			return ResponseEntity.status(HttpStatus.OK).body(this.courseService.getCourseById(id, creatorId));
-		
+    @GetMapping("/{id}")
+    public ResponseEntity<CourseContentDto> retrieveCourseById(
+            @Positive(message = "Course ID must be positive")
+            @PathVariable("id") long id,
+            HttpServletRequest request) {
 
-	}
+        long creatorId = RequestAttributeExtractor.extractCreatorId(request);
+        return ResponseEntity.status(HttpStatus.OK).body(this.courseService.getCourseById(id, creatorId));
 
-	public CourseController() {
-		// TODO Auto-generated constructor stub
-	}
-	@GetMapping("/retrieve_CommercialCourese")
-	public ResponseEntity<List<PopularCourseDTO>>retrieveCCourse(HttpServletRequest request) {
-		long creatorId= RequestAttributeExtractor.extractCreatorId(request);
-		List<PopularCourseDTO>cpp=this.courseService.retrieveCCourse(creatorId);
-		return ResponseEntity.ok(cpp);
-	}
-	
-	 
+
+    }
+
+    public CourseController() {
+        // TODO Auto-generated constructor stub
+    }
+
+    @GetMapping("/retrieve_CommercialCourese")
+    public ResponseEntity<List<PopularCourseDTO>> retrieveCCourse(HttpServletRequest request) {
+        long creatorId = RequestAttributeExtractor.extractCreatorId(request);
+        List<PopularCourseDTO> cpp = this.courseService.retrieveCCourse(creatorId);
+        return ResponseEntity.ok(cpp);
+    }
+
+
 }

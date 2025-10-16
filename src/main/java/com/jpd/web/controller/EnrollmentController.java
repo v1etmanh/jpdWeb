@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("api/enrollment")
 public class EnrollmentController {
-@Autowired
-private EnrollmentService enrollmentService;
-@GetMapping("/{courseId}")
-public ResponseEntity<List<Enrollment>> retrieveByCourse(@PathVariable("courseId") long courseId) {
-  return ResponseEntity.status(HttpStatus.OK).body( this.enrollmentService.findByCourseId(courseId));
-}
+    @Autowired
+    private EnrollmentService enrollmentService;
+
+    @GetMapping("/{courseId}")
+    public ResponseEntity<List<Enrollment>> retrieveByCourse(@PathVariable("courseId") long courseId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.enrollmentService.findByCourseId(courseId));
+    }
 
 }

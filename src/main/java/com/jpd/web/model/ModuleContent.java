@@ -59,10 +59,6 @@ public abstract class ModuleContent {
     protected Module module;
     @OneToMany(mappedBy = "moduleContent",cascade = CascadeType.ALL)
    @JsonIgnore
-    
     private List<CustomerModuleContent>customerModuleContents;
-    
-   
-
 
 }

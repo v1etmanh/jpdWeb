@@ -41,7 +41,6 @@ public class CourseFormDto {
     @PositiveOrZero(message = "Price must be zero or positive")
     private double price;
 
-   
     private MultipartFile imgFile;
 
     @NotNull(message = "Course type is required")

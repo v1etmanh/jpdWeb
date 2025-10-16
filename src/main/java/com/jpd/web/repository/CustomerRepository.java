@@ -1,11 +1,15 @@
 package com.jpd.web.repository;
 
+import com.jpd.web.model.Customer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.Optional;
 
-import org.springframework.data.repository.CrudRepository;
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    Optional<Customer> findByEmail(String email);
 
-import com.jpd.web.model.Customer;
+    Optional<Customer> findByUsername(String username);
 
-public interface CustomerRepository extends CrudRepository<Customer, Long> {
-Optional<Customer> findByEmail(String email);
+
+
 }

@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class RememberWordDto {
-    long id;
+    long rwId;
     String word;
     String meaning;
     String description;

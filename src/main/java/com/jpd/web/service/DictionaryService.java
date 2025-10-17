@@ -46,7 +46,7 @@ public class DictionaryService {
             return null;
     }
     public RememberWordDto updateRememberWord(RememberWordDto rememberWordDto) {
-        RememberWord rememberWord= repository.findById(rememberWordDto.getId()).orElseThrow(()-> new RuntimeException("Remember word not found"));
+        RememberWord rememberWord= repository.findById(rememberWordDto.getRwId()).orElseThrow(()-> new RuntimeException("Remember word not found"));
         transform.UpdateRememberWord(rememberWord,rememberWordDto);
         return  transform.toRememberWordDto(repository.save(rememberWord));
     }

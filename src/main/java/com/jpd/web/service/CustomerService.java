@@ -3,6 +3,7 @@ package com.jpd.web.service;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.google.api.gax.rpc.NotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -34,8 +35,8 @@ public class CustomerService {
 	private CustomerRepository cusRe;
 	@Autowired
 	private CreatorRepository creatorRe;
-	@Autowired
-	private FireBaseService fireBaseService;
+//	@Autowired
+//	private FireBaseService fireBaseService;
 
 	private Customer createNewCustomer(Jwt jwt) {
 		String email = jwt.getClaimAsString("email");
@@ -71,51 +72,58 @@ public class CustomerService {
 
 		return CustomerTransform.transToUserInfor(customer, isCreator);
 	}
+    public Customer getOrCreateAccount(String email) {
+        log.info("Getting or creating account for email: {}", email);
+        Customer customer = cusRe.findByEmail(email).orElseThrow(()-> new CustomerNotFoundException(email));
 
-	private String uploadProfileImage(CreatorProfileDto profileDto, String email) {
-		try {
-			log.debug("Uploading profile image for email: {}", email);
+        return customer;
+    }
 
-			String imageUrl = fireBaseService.uploadFile(profileDto.getProfileImage(), TypeOfFile.IMG);
-
-			if (imageUrl == null || imageUrl.trim().isEmpty()) {
-				throw new FileUploadException("Failed to upload profile image");
-			}
-
-			log.debug("Profile image uploaded successfully for email: {}", email);
-
-			return imageUrl;
-
-		} catch (IOException e) {
-			log.error("Error uploading profile image for email: {}", email, e);
-			throw new ApiException("Failed to upload profile image: " + e.getMessage());
-		}
-	}
-
-	public CreatorDto uploadProfile(String email, CreatorProfileDto profileDto) {
-		Customer customer = cusRe.findByEmail(email)
-				.orElseThrow(() -> new CustomerNotFoundException("Customer not found with email: " + email));
-		Optional<Creator> existingCreator = creatorRe.findByCustomer(customer);
-		if (existingCreator.isPresent()) {
-			log.warn("Creator profile already exists for email: {}", email);
-			throw new CreatorAlreadyExistsException("You already have a creator profile");
-		}
-
-		// 3. Tạo mới Creator
-		Creator creator = CreatorTransform.transformFromCreatorDto(profileDto);
-		creator.setCustomer(customer);
-		creator.setStatus(Status.PENDING);
-		// 4. Upload ảnh nếu có
-		if (profileDto.getProfileImage() != null && !profileDto.getProfileImage().isEmpty()) {
-			String imageUrl = uploadProfileImage(profileDto, email);
-			creator.setImageUrl(imageUrl);
-		}
-
-		// 5. Gán customer cho creator
-
-		// 6. Lưu vào database
-		Creator cr1= creatorRe.save(creator);
-		return CreatorTransform.transToCreatorDto(cr1);
-	}
+//
+//	private String uploadProfileImage(CreatorProfileDto profileDto, String email) {
+//		try {
+//			log.debug("Uploading profile image for email: {}", email);
+//
+//			String imageUrl = fireBaseService.uploadFile(profileDto.getProfileImage(), TypeOfFile.IMG);
+//
+//			if (imageUrl == null || imageUrl.trim().isEmpty()) {
+//				throw new FileUploadException("Failed to upload profile image");
+//			}
+//
+//			log.debug("Profile image uploaded successfully for email: {}", email);
+//
+//			return imageUrl;
+//
+//		} catch (IOException e) {
+//			log.error("Error uploading profile image for email: {}", email, e);
+//			throw new ApiException("Failed to upload profile image: " + e.getMessage());
+//		}
+//	}
+//
+//	public CreatorDto uploadProfile(String email, CreatorProfileDto profileDto) {
+//		Customer customer = cusRe.findByEmail(email)
+//				.orElseThrow(() -> new CustomerNotFoundException("Customer not found with email: " + email));
+//		Optional<Creator> existingCreator = creatorRe.findByCustomer(customer);
+//		if (existingCreator.isPresent()) {
+//			log.warn("Creator profile already exists for email: {}", email);
+//			throw new CreatorAlreadyExistsException("You already have a creator profile");
+//		}
+//
+//		// 3. Tạo mới Creator
+//		Creator creator = CreatorTransform.transformFromCreatorDto(profileDto);
+//		creator.setCustomer(customer);
+//		creator.setStatus(Status.PENDING);
+//		// 4. Upload ảnh nếu có
+//		if (profileDto.getProfileImage() != null && !profileDto.getProfileImage().isEmpty()) {
+//			String imageUrl = uploadProfileImage(profileDto, email);
+//			creator.setImageUrl(imageUrl);
+//		}
+//
+//		// 5. Gán customer cho creator
+//
+//		// 6. Lưu vào database
+//		Creator cr1= creatorRe.save(creator);
+//		return CreatorTransform.transToCreatorDto(cr1);
+//	}
 
 }

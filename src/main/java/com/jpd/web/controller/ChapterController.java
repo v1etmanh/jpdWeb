@@ -20,7 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/creator/{courseId}/chapter")
 @RequiredArgsConstructor
-public class ChapterController {
+public class
+
+ChapterController {
 
     private final ChapterService chapterService;
 

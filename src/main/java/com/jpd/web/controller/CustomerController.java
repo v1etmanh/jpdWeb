@@ -31,14 +31,14 @@ public ResponseEntity<UserInfoDto> getCustomerAccountInf(@AuthenticationPrincipa
 	System.out.print("recieve");
 	return ResponseEntity.status(HttpStatus.OK).body(c);
 }
-@PostMapping(value="/upload_profile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<CreatorDto> postMethodName( @Valid @ModelAttribute CreatorProfileDto creatorProfileDto,@AuthenticationPrincipal Jwt jwt) {
-    //TODO: process POST request
-	String email=jwt.getClaimAsString("email");
- CreatorDto crdto=   this.customerSer.uploadProfile(email, creatorProfileDto);
-  return ResponseEntity.status(HttpStatus.CREATED).body(crdto);
- 
-    
-    
-}
+//@PostMapping(value="/upload_profile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//public ResponseEntity<CreatorDto> postMethodName( @Valid @ModelAttribute CreatorProfileDto creatorProfileDto,@AuthenticationPrincipal Jwt jwt) {
+//    //TODO: process POST request
+//	String email=jwt.getClaimAsString("email");
+// CreatorDto crdto=   this.customerSer.uploadProfile(email, creatorProfileDto);
+//  return ResponseEntity.status(HttpStatus.CREATED).body(crdto);
+//
+//
+//
+//}
 }

@@ -1,5 +1,6 @@
 package com.jpd.web.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
 import org.springframework.context.annotation.Bean;
@@ -81,6 +82,10 @@ public class JaenConfig {
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
+    }
+    @Bean
+    ObjectMapper openObjectMapper() {
+        return new ObjectMapper();
     }
 
 

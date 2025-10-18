@@ -1,7 +1,11 @@
 package com.jpd.web.controller;
 
-import com.jpd.web.dto.*;
-import com.jpd.web.service.ModuleContentService;
+import com.jpd.web.dto.CreatorDto;
+import com.jpd.web.dto.CreatorProfileDto;
+import com.jpd.web.dto.MyLearningDto;
+import com.jpd.web.dto.UserInfoDto;
+import com.jpd.web.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,16 +14,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import com.jpd.web.model.Customer;
-import com.jpd.web.service.CustomerService;
-
-import jakarta.validation.Valid;
-
-import java.util.List;
-
 @RestController
 @RequestMapping("api/customer")
 public class CustomerController {
+
     @Autowired
     private CustomerService customerSer;
 

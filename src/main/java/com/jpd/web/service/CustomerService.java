@@ -1,27 +1,24 @@
 package com.jpd.web.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import com.jpd.web.dto.*;
-import com.jpd.web.mapper.CourseMapper;
+import com.jpd.web.exception.ApiException;
+import com.jpd.web.exception.CreatorAlreadyExistsException;
+import com.jpd.web.exception.CustomerNotFoundException;
 import com.jpd.web.model.*;
 import com.jpd.web.repository.*;
+import com.jpd.web.transform.CourseMapper;
+import com.jpd.web.transform.CreatorTransform;
+import com.jpd.web.transform.CustomerTransform;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import com.jpd.web.exception.ApiException;
-import com.jpd.web.exception.CreatorAlreadyExistsException;
-import com.jpd.web.exception.CustomerNotFoundException;
-import com.jpd.web.transform.CreatorTransform;
-import com.jpd.web.transform.CustomerTransform;
-
-import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,8 +40,9 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
-    private ModuleContentService moduleContentService;
-    private final int completeThreshold = 80;
+    private ModuleRepository moduleRepository;
+    // tính theo %
+    private final long completeThreshold = 80L;
 
 
     private Customer createNewCustomer(Jwt jwt) {
@@ -130,46 +128,85 @@ public class CustomerService {
 
 
     public MyLearningDto getLearningCourse(Long customerId) {
-        List<CourseProgressDto> wishListCourses = new ArrayList<>();
+        //tu customer id -> lay ra cac khoa hoc ma no da enroll
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(
+                "Customer not found" + customerId));
+        //wishlist
+        List<CourseProgressDto> wishListCourses = customer.getWishlists().stream().map(wishlist ->
+                CourseMapper.INSTANCE.courseToCourseProgressDto(wishlist.getCourse())).collect(Collectors.toList());
+
+        //lấy các enrollment của customer id đó -> các course mà người đó đã tham gia
+        List<Enrollment> myEnrollments = customer.getEnrollments();
+        //No enrollment from customer
+        if (myEnrollments == null || myEnrollments.isEmpty()) {
+            return MyLearningDto.builder()
+                    .wishListCourses(wishListCourses)
+                    .myLearningCourse(null)
+                    .myCourses(null).build();
+        }
+        /*
+         * calculate progress in each course
+         */
+        //đi qua từng enrollment -> đại diện cho từng course mà customer đó đã enroll
+        List<Course> enrolledCourses = myEnrollments.stream().map(Enrollment::getCourse).collect(Collectors.toList());
+
+        //tính tổng số mục con cho mỗi hoạt động
+        List<ActivityCountDto> totalActivities = moduleContentRepository.countItemsInActivitiesByCourses(enrolledCourses);
+
+        //tính tổng số mục con đã hoàn thành cho mỗi hoạt động
+        List<ActivityCountDto> completedActivities = customerModuleContentRepository.countCompletedItemsInActivities(customer, enrolledCourses);
+
+        //chuyển List hoàn thành -> Map hoàn thành
+        //Key: "moduleId:typeOfContent", Value: số mục con đã hoàn thành
+        Map<String, Long> completedMap = completedActivities.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getModuleId() + ":" + dto.getTypeOfContent().name(),
+                        ActivityCountDto::getItemCount
+                ));
+
+
+        //Map lưu tổng số hoạt động của mỗi khóa học
+        Map<Long, Integer> courseTotalActivities = new HashMap<>();
+        //Map lưu tổng số hoạt động hoàn thành của mỗi khóa học
+        Map<Long, Integer> courseCompletedActivities = new HashMap<>();
+
+
+        for (ActivityCountDto item : totalActivities) {
+            long courseId = item.getCourseId();
+            long totalItems = item.getItemCount();
+            String activityKey = item.getModuleId() + ":" + item.getTypeOfContent().name();
+            //Tăng tổng số hoạt động của course lên 1
+            courseTotalActivities.merge(courseId, 1, Integer::sum);
+
+            //Lấy số mục con đã hoàn thành từ Map
+            long completedItems = completedMap.getOrDefault(activityKey, 0L);
+
+            //Kiểm tra điều kiện để được tính là đã hoàn thành 1 Activity
+            if (totalItems > 0 && (completedItems * 100) / totalItems >= completeThreshold) {
+                //Tăng số Activity đã hoàn thành của khóa học lên 1
+                courseCompletedActivities.merge(courseId, 1, Integer::sum);
+            }
+        }
+
         List<CourseProgressDto> myLearningCourse = new ArrayList<>();
         List<CourseProgressDto> myCourses = new ArrayList<>();
-        //tu customer id -> lay ra cac khoa hoc ma no da enroll
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
-        customer.getWishlists().forEach(wishlist -> {
-            //dung mapper
-            wishListCourses.add(CourseMapper.INSTANCE.courseToCourseProgressDto(wishlist.getCourse()));
-        });
-        List<Enrollment> myEnrollments = customer.getEnrollments();
-        /*
-        * calculate progress in each course
-        */
-        //đi qua từng enrollment -> đại diện cho từng course mà customer đó đã enroll
-        for (Enrollment enrollment : myEnrollments) {
-            int totalOfModuleContentInCourse = courseRepository.countModuleContentByCourse(enrollment.getCourse());
-            int totalOfModuleContentDone = 0;
-            List<ModuleContentGroupDto> ls = customerModuleContentRepository.findGroupedByModuleContentForEnrollment(enrollment);
-            for (ModuleContentGroupDto moduleContentGroupDto : ls) {
-                int numberOfContentDone = (int) moduleContentGroupDto.getCount();
-                int totalOfContent = moduleContentService.countContentByType(moduleContentGroupDto.getModuleContent());
-                //dieu kien hoan thanh 1 module content
-                if (numberOfContentDone >= completeThreshold * totalOfContent / 100 &&
-                        numberOfContentDone <= totalOfContent) {
-                    totalOfModuleContentDone++;
-                }
-            }
-            int progress = 0;
-            if (totalOfModuleContentDone != 0 && totalOfModuleContentInCourse != 0) {
-                progress = totalOfModuleContentDone / totalOfModuleContentInCourse;
-            }
-            CourseProgressDto courseProgressDto =
-                    CourseMapper.INSTANCE.courseToCourseProgressDto(enrollment.getCourse());
-            courseProgressDto.setProgress(progress);
-            if (progress != 0) {
-                //TH: customer da hoc chi chi do
-                myLearningCourse.add(courseProgressDto);
+
+        for (Course course : enrolledCourses) {
+            long courseId = course.getCourseId();
+            int total = courseTotalActivities.getOrDefault(courseId, 0);
+            int completed = courseCompletedActivities.getOrDefault(courseId, 0);
+
+            log.info("Total of {}: {}", courseId, total);
+            log.info("Completed of {}: {}", courseId, completed);
+            int progress = (total > 0) ? (completed * 100) / total : 0;
+
+            CourseProgressDto dto = CourseMapper.INSTANCE.courseToCourseProgressDto(course);
+            dto.setProgress(progress);
+
+            if (progress > 0) {
+                myLearningCourse.add(dto);
             } else {
-                //TH: customer chua hoc cai j het
-                myCourses.add(courseProgressDto);
+                myCourses.add(dto);
             }
         }
         return MyLearningDto.builder()

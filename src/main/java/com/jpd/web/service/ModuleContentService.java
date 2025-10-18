@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.jpd.web.dto.CourseProgressDto;
-import com.jpd.web.dto.MyLearningDto;
-import com.jpd.web.exception.CustomerNotFoundException;
-import com.jpd.web.mapper.CourseMapper;
 import com.jpd.web.model.*;
 import com.jpd.web.model.Module;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,31 +138,6 @@ public class ModuleContentService {
         }
         return res;
     }
-
-
-    public int countContentByType(ModuleContent moduleContent) {
-        TypeOfContent type = moduleContent.getTypeOfContent();
-        switch (type) {
-            case TypeOfContent.FLASHCARD -> {
-                return -1;
-            }
-            case TypeOfContent.GAPFILL -> {
-                return -1;
-            }
-            case TypeOfContent.MULTIPLE_CHOICE -> {
-                return -1;
-            }
-            case TypeOfContent.WRITING -> {
-                return -1;
-            }
-            default -> {
-                return 0;
-            }
-        }
-    }
-
-
-
 
 
 }

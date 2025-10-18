@@ -1,4 +1,4 @@
-package com.jpd.web.mapper;
+package com.jpd.web.transform;
 
 
 import com.jpd.web.dto.CourseProgressDto;
@@ -12,9 +12,9 @@ public interface CourseMapper {
 
     CourseMapper INSTANCE = Mappers.getMapper(CourseMapper.class);
 
-    @Mapping(source = "courseId",target = "courseId")
-    @Mapping(source = "name",target = "course_name")
-    @Mapping(source = "urlImg",target = "course_img")
+    @Mapping(source = "courseId", target = "courseId")
+    @Mapping(source = "name", target = "course_name")
+    @Mapping(source = "urlImg", target = "course_img")
     CourseProgressDto courseToCourseProgressDto(Course course);
 
 

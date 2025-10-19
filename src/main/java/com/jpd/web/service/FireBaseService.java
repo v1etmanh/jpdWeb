@@ -1,11 +1,13 @@
 package com.jpd.web.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.cloud.storage.Blob;
@@ -89,5 +91,44 @@ public class FireBaseService {
 	            pendingImageRepository.delete(img);
 	        }
 	        System.out.println("✅ Cleaned " + oldImages.size() + " expired pending images");
+	    }
+	    
+	    public byte[] getFileFromUrl(String url) throws IOException {
+	        try {
+	            if (!StringUtils.hasText(url)) {
+	                throw new IllegalArgumentException("URL không hợp lệ");
+	            }
+	            
+	            Bucket bucket = storageClient.bucket();
+	            
+	            // Tách path file từ URL
+	            String prefix = "https://firebasestorage.googleapis.com/v0/b/" + bucket.getName() + "/o/";
+	            
+	            if (!url.contains(prefix)) {
+	                throw new IllegalArgumentException("URL không phải từ Firebase Storage");
+	            }
+	            
+	            String objectName = url.substring(prefix.length());
+	            
+	            // Xóa query parameter
+	            if (objectName.contains("?")) {
+	                objectName = objectName.substring(0, objectName.indexOf("?"));
+	            }
+	            
+	            // Decode URL encoding
+	            objectName = objectName.replace("%2F", "/");
+	            
+	            // Lấy file từ Firebase
+	            Blob blob = bucket.get(objectName);
+	            
+	            if (blob == null) {
+	                throw new IOException("File không tồn tại: " + objectName);
+	            }
+	            
+	            return blob.getContent();
+	            
+	        } catch (Exception e) {
+	            throw new IOException("Lỗi tải file: " + e.getMessage(), e);
+	        }
 	    }
 }

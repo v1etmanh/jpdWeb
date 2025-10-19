@@ -24,7 +24,7 @@ public class MultipleChoiceOption {
     @Column(nullable = false)
     private boolean isCorrect;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne()
     @JoinColumn(name = "mc_id", nullable = false)
     @JsonBackReference
     @ToString.Exclude  

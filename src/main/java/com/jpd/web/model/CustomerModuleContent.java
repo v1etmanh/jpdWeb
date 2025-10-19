@@ -30,9 +30,9 @@ public class CustomerModuleContent {
     private Enrollment enrollment;
 
     //link to Course
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mc_id")
-    @JsonIgnore
-    private ModuleContent moduleContent;
+   private TypeOfContent typeOfContent;
+   @ManyToOne()
+   @JoinColumn(name = "module_id")
+    private Module module;
 
 }

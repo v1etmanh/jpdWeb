@@ -10,27 +10,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
-@Table(name = "reading_question_options")
+@Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReadingQuestionOptions {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    
     @Column(name = "option_text")
     private String optionText;
     
+    @Column(name = "is_correct", nullable = false)
     private boolean isCorrect;
-    
-    
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "rq_id", nullable = false)
-    @JsonBackReference
-    @ToString.Exclude
-    private ReadingQuestion readingQuestion;
-
-
 }

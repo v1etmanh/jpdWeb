@@ -23,8 +23,7 @@ import jakarta.transaction.Transactional;
 public class ModuleService {
 	@Autowired
 	private ModuleRepository moduleRepository;
-	@Autowired
-	private CustomerRepository customerRepository;
+
 	@Autowired
 	private ModuleContentRepository moduleContentRepository;
 	@Autowired

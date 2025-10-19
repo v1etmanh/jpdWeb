@@ -118,9 +118,9 @@ public class CourseService {
 		course.setCreator(creator);
 
 		// Generate join key for private courses
-		if (course.getAccessMode() == AccessMode.PRIVATE) {
+		
 			course.setJoinKey(codeGenerator.generate6DigitCode());
-		}
+		
 
 		Course savedCourse = courseRepository.save(course);
 		log.info("Successfully created course {} for creator {}", savedCourse.getCourseId(), creatorId);
@@ -144,12 +144,13 @@ public class CourseService {
 		Course course = resourceValidator.validateCourseOwnership(courseId, creatorId);
 
 		course.getChapters().forEach(chapter -> {
-			chapter.getModules().forEach(module -> {
+			chapter.getModules();
+			/*.forEach(module -> {
 
 				List<ModuleContent> contents = this.moduleContentRepository.findByModule(module);
 
 				module.setModuleContent(contents);
-			});
+			});*/
 		});
 		CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
 		return cdto;
@@ -161,6 +162,12 @@ public class CourseService {
 	            .toList();
 	  List<PopularCourseDTO>ppc=paidCourses.stream().map(e->CreatorTransform.transform(e)).collect(Collectors.toList());
      return ppc;
+  }
+  public void changeCourseSatus(long courseId, long creatorId) {
+	  Course c=this.resourceValidator.validateCourseOwnership(courseId, creatorId);
+	  c.setPublic(!c.isPublic());
+	  courseRepository.save(c);
+	  return;
   }
 
 }

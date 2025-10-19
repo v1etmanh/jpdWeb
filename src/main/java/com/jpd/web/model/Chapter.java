@@ -6,6 +6,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -26,7 +28,7 @@ public class Chapter {
 
     @Column(name = "chapter_name")
     private String ChapterName;
-    
+    @CreationTimestamp
     private LocalDateTime createDate;
     @Column(name = "order_in_course")
     private int orderInCourse;

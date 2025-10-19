@@ -3,6 +3,7 @@ package com.jpd.web.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,16 @@ import com.jpd.web.model.Creator;
 import com.jpd.web.model.Customer;
 import com.jpd.web.model.Module;
 import com.jpd.web.model.ModuleContent;
+import com.jpd.web.model.Passage;
+import com.jpd.web.model.ReadingQuestion;
 import com.jpd.web.model.TypeOfContent;
 import com.jpd.web.repository.CustomerRepository;
 import com.jpd.web.repository.ModuleContentRepository;
+import com.jpd.web.repository.PassageRepository;
+import com.jpd.web.repository.ReadingQuestionRepository;
 import com.jpd.web.service.utils.ValidationResources;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,11 +34,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ModuleContentService {
-	@Autowired
-	private CustomerRepository customerRepository;
+
 	@Autowired ModuleContentRepository moduleContentRepository;
 	@Autowired
 	private ValidationResources validationResources;
+	@Autowired
+	private ReadingQuestionRepository readingQuestionRepository;
+	@Autowired
+	private PassageRepository passageRepository;
+	 @Autowired
+	    private EntityManager entityManager;
 	@Transactional
 	public List<ModuleContent> updateCourseMaterial(ModuleContentDto moduleContentDto,long creatorId) {
 		 Module module = validationResources.validateCompleteOwnership(
@@ -49,7 +60,7 @@ public class ModuleContentService {
 	    // 7️⃣ Phân loại: MỚI vs ĐÃ TỒN TẠI
 	    List<ModuleContent> toInsert = new ArrayList<>();
 	    List<Long> idsToDelete = new ArrayList<>();
-
+        
 	    for (ModuleContent mc : dtoContents) {
 	        mc.setModule(module);
 	        
@@ -59,20 +70,31 @@ public class ModuleContentService {
 	            toInsert.add(mc);
 	        } else {
 	            // ✅ ĐÃ TỒN TẠI: Xóa rồi insert lại
+	        	  
+	        	   
+	        	   
 	            idsToDelete.add(mc.getMcId());
 	            mc.setMcId(null);  // Set null để generate ID mới
 	            toInsert.add(mc);
+	        	   
 	        }
 	    }
+	  
 
 	    // 8️⃣ XÓA các bản ghi cũ trước
 	    if (!idsToDelete.isEmpty()) {
 	        System.out.println("Deleting IDs: " + idsToDelete);
-	        moduleContentRepository.deleteAllById(idsToDelete);
+	        
+	        this.moduleContentRepository.deleteAllById(idsToDelete);
+	        this.moduleContentRepository.flush();
 	         // ⚠️ Quan trọng: Force delete ngay
 	    }
+	    this.entityManager.clear();
 
+   //
+	    
 	    // 9️⃣ INSERT tất cả
+	    
 	    System.out.println("Inserting " + toInsert.size() + " records");
 	    List<ModuleContent>mds=  (List<ModuleContent>) moduleContentRepository.saveAll(toInsert);
 	    return mds;
@@ -115,8 +137,7 @@ public class ModuleContentService {
 	        
 	        // Validate complete ownership
 	        Module module = validationResources.validateCompleteOwnership(
-	                moduleId, chapterId, courseId, creatorId
-	        );
+	                moduleId, chapterId, courseId, creatorId );
 	        
 	        // Delete by type
 	         moduleContentRepository.deleteByTypeOfContentAndModule(type, module);

@@ -1,20 +1,27 @@
 package com.jpd.web.service.utils;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jpd.web.exception.ChapterNotFoundException;
 import com.jpd.web.exception.CourseNotFoundException;
 import com.jpd.web.exception.CreatorNotFoundException;
+import com.jpd.web.exception.CustomerNotFoundException;
 import com.jpd.web.exception.ModuleNotFoundException;
 import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.model.Chapter;
 import com.jpd.web.model.Course;
 import com.jpd.web.model.Creator;
+import com.jpd.web.model.Customer;
+import com.jpd.web.model.Enrollment;
 import com.jpd.web.model.ModuleContent;
 import com.jpd.web.repository.ChapterRepository;
 import com.jpd.web.repository.CourseRepository;
 import com.jpd.web.repository.CreatorRepository;
+import com.jpd.web.repository.CustomerRepository;
+import com.jpd.web.repository.EnrollmentRepository;
 import com.jpd.web.repository.ModuleRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +34,8 @@ public class ValidationResources {
 	    private final CourseRepository courseRepository;
 	    private final ChapterRepository chapterRepository;
 	    private final  ModuleRepository moduleRepository;
+	    private final EnrollmentRepository enrollmentRepository;
+	    private final CustomerRepository customerRepository;
 	public  Course validateCourseOwnership(Long courseId, Long creatorId) {
         log.debug("Validating course {} ownership for creator {}", courseId, creatorId);
         
@@ -103,5 +112,35 @@ public class ValidationResources {
 		    log.debug("Complete ownership chain validated successfully");
 		    return module;
 		}
-	 
+	  public Customer validateCustomerExist(String email) {
+		  Optional<Customer>customer=this.customerRepository.findByEmail(email);
+		  if(customer.isEmpty())throw new CustomerNotFoundException(email);
+		  return customer.get();
+	  }
+	 public Course validateCustomerWithCourse(String email , long courseId) {
+		 Course course=validateCourseExists(courseId);
+		 if(course.getCreator().getCustomer().getEmail().equals(email)) {
+			 return course;
+		 }
+		 Customer customer=validateCustomerExist(email);
+		
+		Optional< Enrollment> enr=this.enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(courseId, customer.getCustomerId());
+		 if(enr.isEmpty())throw new UnauthorizedException("you must enroll after learning");
+		 return course;
+	 }
+	 public com.jpd.web.model.Module validateModuleContentOwnerShip(Long moduleId, Long chapterId, Long courseId, String email) {
+		    log.debug("Validating complete ownership chain for module {}", moduleId);
+		    
+		    // Validate course ownership (includes creator & course validation)
+		    Course course = validateCustomerWithCourse(email,courseId);
+		    
+		    // Validate chapter belongs to course
+		    Chapter chapter = validateChapterBelongsToCourse(chapterId, courseId);
+		    
+		    // Validate module belongs to chapter
+		    com.jpd.web.model.Module module = validateModuleBelongsToChapter(moduleId, chapterId);
+		    
+		    log.debug("Complete ownership chain validated successfully");
+		    return module;
+		}
 }

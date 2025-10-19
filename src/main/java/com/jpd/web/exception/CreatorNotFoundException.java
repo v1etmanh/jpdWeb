@@ -1,8 +1,8 @@
 package com.jpd.web.exception;
 
 
-public class CreatorNotFoundException extends RuntimeException{
-	   public CreatorNotFoundException(Long id) {
-	        super("Course not found with id: " + id);
+public class CreatorNotFoundException extends BusinessException {
+	 public CreatorNotFoundException(Long id) {
+	        super("CREATOR_NOT_FOUND", "Creator not found with id: " + id);
 	    }
 }

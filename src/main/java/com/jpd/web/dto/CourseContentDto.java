@@ -3,6 +3,7 @@ package com.jpd.web.dto;
 import java.util.List;
 
 import com.jpd.web.model.Chapter;
+import com.jpd.web.model.Language;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,5 +21,7 @@ public class CourseContentDto {
  * */
 	private String name;
 	private boolean isPublic;
+	private Language language;
+	private Language teachingLanguage;
 	private List<Chapter>chapters;
 }

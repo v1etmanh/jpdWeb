@@ -28,5 +28,6 @@ public class CourseCardDto {
 	private double totalRevenue;
 	private double rating;
 	private String image;
-	private AccessMode type;         
+	private AccessMode type;
+	private boolean isPublic;
 }

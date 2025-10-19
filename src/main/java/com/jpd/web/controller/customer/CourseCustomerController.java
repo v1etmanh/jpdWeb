@@ -21,7 +21,7 @@ public class CourseCustomerController {
         return courseService.findALlCourse();
     }
     @GetMapping("/{courseId}")
-    public CourseDetailResponse getCourseDetailById(@PathVariable("courseId") Long courseId){
+    public CourseDetailResponse getCourseDetailById(@PathVariable("courseId") long courseId){
         log.info("[GET] /api/customer/course/{} - received courseId={}", courseId, courseId);
         return courseService.getCourseDetailById(courseId);
     }

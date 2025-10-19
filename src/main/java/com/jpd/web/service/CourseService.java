@@ -153,7 +153,7 @@ private static final Logger log = LoggerFactory.getLogger(CourseCustomerControll
         Specification<Course> spec = Specification.allOf(CourseSpecs.isVisible())
                 .and(CourseSpecs.freeText(norm)); // tìm trên name/creator/language
 
-        List<Course> courses = courseRepository.findAll(spec); // có thể đổi sang Pageable sau
+        List<Course> courses = courseRepository.findAll(spec);
         return courses.stream()
                 .map(CourseTransForm::transformToCourseCardDto)
                 .toList();

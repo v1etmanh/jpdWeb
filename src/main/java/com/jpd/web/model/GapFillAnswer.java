@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @AllArgsConstructor
@@ -17,9 +18,10 @@ public class GapFillAnswer {
     private long answerId;
 
     //link to GapFillQuestion
-    @ManyToOne
-    @JoinColumn(name = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "mc_id")
     @JsonBackReference
+    @ToString.Exclude
     private GapFillQuestion gapfillQuestion;
     private String answer;
 }

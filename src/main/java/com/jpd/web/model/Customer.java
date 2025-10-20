@@ -7,7 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -42,7 +41,7 @@ public class Customer {
     //link to Remember_word
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     
-    private List<Remember_word> rememberWords;
+    private List<RememberWord> rememberWords;
 
 
 
@@ -53,7 +52,7 @@ public class Customer {
 
     //link to Enrollment
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference("customer-enrollment")
     private List<Enrollment> enrollments;
 
 

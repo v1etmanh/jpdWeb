@@ -12,7 +12,9 @@ import com.jpd.web.dto.CreatorDto;
 import com.jpd.web.dto.CreatorProfileDto;
 import com.jpd.web.model.Creator;
 import com.jpd.web.service.CreatorService;
+import com.jpd.web.service.utils.RequestAttributeExtractor;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,41 +31,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CreatorController {
 @Autowired
 private CreatorService creatorService;
-@PostMapping(value="/upload_profile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<?> postMethodName( @Valid @ModelAttribute CreatorProfileDto creatorProfileDto,@AuthenticationPrincipal Jwt jwt) {
-    //TODO: process POST request
-	String email=jwt.getClaimAsString("email");
-  try {  this.creatorService.uploadProfile(email, creatorProfileDto);
-  return ResponseEntity.status(HttpStatus.OK).build();
-  }
-  catch (Exception e) {
-	// TODO: handle exception
-	  System.out.print(e);
-	  return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-}
-    
-    
-}
+
 @GetMapping("/getAccount")
-public ResponseEntity<CreatorDto> getAccount(@AuthenticationPrincipal Jwt jwt) {
-	String email=jwt.getClaimAsString("email");
-    CreatorDto c=this.creatorService.getAccount(email);
+public ResponseEntity<CreatorDto> getAccount(HttpServletRequest request) {
+    long creatorId=RequestAttributeExtractor.extractCreatorId(request);
+    CreatorDto c=this.creatorService.getAccount(creatorId);
     return ResponseEntity.status(HttpStatus.OK).body(c);
 }
 @PostMapping("/upload/paypalEmail")
-public ResponseEntity<?> uploadPaypalEmail(@RequestParam("pEmail") String  paypalemail,
-		@AuthenticationPrincipal Jwt jwt){
-	String email=jwt.getClaimAsString("email");
+public ResponseEntity<?> uploadPaypalEmail(@RequestParam("pEmail") String  paypalemail
+	,HttpServletRequest request	){
+	
     //TODO: process POST request
-    try {
+        long creatorId=RequestAttributeExtractor.extractCreatorId(request);
     	int length=paypalemail.length();
-		this.creatorService.sendMoneyToVerify(email, paypalemail.substring(0,length-1));
-		 return  ResponseEntity.status(HttpStatus.OK).build();
-	} catch (Exception e) {
+		this.creatorService.sendMoneyToVerify(creatorId, paypalemail.substring(0,length-1));
+		
+		 return  ResponseEntity.status(HttpStatus.CREATED).build();
+	
 		// TODO Auto-generated catch block
-		e.printStackTrace();
-		 return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	}
+	
    
 }
 

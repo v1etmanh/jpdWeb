@@ -1,5 +1,5 @@
 package com.jpd.web.model;
 
 public enum Status {
-PENDING,SUCESS,FAILED,CANCEL
+PENDING,SUCCESS,FAILED,CANCEL
 }

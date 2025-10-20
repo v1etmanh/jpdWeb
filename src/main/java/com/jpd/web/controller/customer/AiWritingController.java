@@ -3,6 +3,7 @@ package com.jpd.web.controller.customer;
 import com.jpd.web.dto.Request.AiWritingRequest;
 import com.jpd.web.dto.Response.AiWritingResponse;
 import com.jpd.web.service.AIService;
+import com.jpd.web.service.AiWritingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/customer/AIWriting")
 public class AiWritingController {
     @Autowired
-    private AIService aiService;
+    private AiWritingService aiService;
     @PostMapping("/grade/{questionId}")
     public ResponseEntity<AiWritingResponse> gradeEssay(@PathVariable("questionId") long questionId,
             @Valid @RequestBody AiWritingRequest aiWritingRequest) {

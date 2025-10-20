@@ -17,9 +17,9 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 public class PayoutTracking {
-    @Id
-    private String payoutBatchId;
-    private String payoutItemId;
+	@Id
+    private String payoutBatchId; 
+  
     private String recipientEmail;
     private Double amount;
     private String currency;
@@ -27,6 +27,7 @@ public class PayoutTracking {
     private String status; // PENDING, SUCCESS, FAILED, CANCELLED
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private TargetPayout targetPayout;
     @ManyToOne
     @JoinColumn(name="creator_id")
     private Creator creator;

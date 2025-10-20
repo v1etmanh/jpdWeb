@@ -25,7 +25,13 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private long courseId;
-    private String language;
+    @Enumerated(EnumType.STRING)
+    private Language language;
+    @Enumerated(EnumType.STRING)
+    @Column(name="teaching_language")
+    private Language teachingLanguage;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
 
     @Column(name = "isban", nullable = false)
@@ -37,7 +43,7 @@ public class Course {
     private LocalDate createdAt;
     @UpdateTimestamp
     @Column(name = "last_update")
-    private Date lastUpdate;
+    private LocalDate lastUpdate;
     @Column(name = "learning_object")
     private String learningObject;
    
@@ -71,7 +77,8 @@ public class Course {
     private List<Chapter> chapters;
 
     //Link to Enrollment
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course",fetch = FetchType.LAZY)
+    @JsonManagedReference("course-enrollment")
     private List<Enrollment> enrollments;
 
  

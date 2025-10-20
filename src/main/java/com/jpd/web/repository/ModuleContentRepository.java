@@ -13,10 +13,12 @@ import com.jpd.web.model.ModuleContent;
 import com.jpd.web.model.TypeOfContent;
 
 
-public interface ModuleContentRepository extends CrudRepository<ModuleContent, Long> {
+public interface ModuleContentRepository extends JpaRepository<ModuleContent, Long> {
 List<ModuleContent> findByModule(Module module);
 @Modifying
 @Query("DELETE FROM ModuleContent mc WHERE mc.module.moduleId = :moduleId")
 void deleteByModuleId(@Param("moduleId") Long moduleId);
 void deleteByTypeOfContentAndModule(TypeOfContent typeOfContent, Module module);
+List<ModuleContent> findByTypeOfContentAndModule(TypeOfContent typeOfContent, Module module);
+ModuleContent  deleteByMcId(Long mcId);
 }

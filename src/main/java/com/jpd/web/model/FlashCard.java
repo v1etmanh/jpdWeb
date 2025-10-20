@@ -1,7 +1,5 @@
 package com.jpd.web.model;
 
-
-import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
@@ -23,10 +21,6 @@ public class FlashCard extends ModuleContent {
 
 	    private String imgUrl;
 
-	
-		
-
-		
 	    
 }
 

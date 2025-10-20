@@ -43,4 +43,5 @@ public class CustomerTransaction {
 
     @Column(name = "creator_get", nullable = false)
     private double creatorGet;
+    private String  paymentId;
 }

@@ -21,7 +21,7 @@ public class Passage extends ModuleContent {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String content;
-    @OneToMany(mappedBy = "passage",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "passage",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
     @ToString.Exclude
     private List<ReadingQuestion>readingQuestion;

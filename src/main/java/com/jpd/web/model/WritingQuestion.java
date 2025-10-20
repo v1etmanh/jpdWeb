@@ -22,7 +22,7 @@ import java.util.List;
 @DiscriminatorValue("WRITING")
 @AllArgsConstructor
 public class WritingQuestion extends ModuleContent {
-    @Lob
+	@Lob
     @Column(columnDefinition = "LONGTEXT")
     private String question;
     @Lob
@@ -34,19 +34,19 @@ public class WritingQuestion extends ModuleContent {
     private TaskTypeCategory taskTypeCategory;
     @ElementCollection
     @CollectionTable(
-            name = "writing_criterias",
-            joinColumns = @JoinColumn(name = "mc_id")
+        name = "writing_criterias",
+        joinColumns = @JoinColumn(name = "mc_id")
     )
     @Column(name = "criteria")
-
+    
     private List<String> criterias = new ArrayList<>();
-    // table này chỉ tồn tại nếu url img !=null + this report categories
+    // table này chỉ tồn tại nếu url img !=null + this report categories 
     @ElementCollection
     @CollectionTable(
-            name = "writing_features",
-            joinColumns = @JoinColumn(name = "mc_id")
+        name = "writing_features",
+        joinColumns = @JoinColumn(name = "mc_id")
     )
     @Column(name = "feature")
     private List<String> features = new ArrayList<>();
-
+    
 }

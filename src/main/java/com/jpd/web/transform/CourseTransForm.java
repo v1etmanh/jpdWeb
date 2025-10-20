@@ -3,6 +3,7 @@ package com.jpd.web.transform;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jpd.web.dto.CourseCardDto;
 import com.jpd.web.dto.CourseContentDto;
@@ -10,6 +11,8 @@ import com.jpd.web.dto.CourseFormDto;
 import com.jpd.web.dto.Response.CourseDetailResponse;
 import com.jpd.web.dto.Response.CreatorDtoResponse;
 import com.jpd.web.dto.Response.FeedbackDtoResponse;
+import com.jpd.web.dto.CourseInfDto;
+import com.jpd.web.dto.CourseLearningCardDto;
 import com.jpd.web.model.AccessMode;
 import com.jpd.web.model.Chapter;
 import com.jpd.web.model.Course;
@@ -25,10 +28,11 @@ public static Course transformFromCourseFormDto(CourseFormDto courseFormDto) {
 			.learningObject(courseFormDto.getLearningObject())
 			.targetAudience(courseFormDto.getTargetAudience())
 			.price(0)
-			.requirements(courseFormDto.getRequirements()) // ❌ Thiếu field này
+			.requirements(courseFormDto.getRequirements())
 	        .language(courseFormDto.getLanguage()) 
 			.isBan(false)
 			.isPublic(false)
+			.teachingLanguage(courseFormDto.getTeachingLanguage())
 			.build();
 	if(c.getAccessMode()==AccessMode.PAID) {
 		c.setPrice(courseFormDto.getPrice());
@@ -58,13 +62,15 @@ public static CourseCardDto transformToCourseCardDto(Course course) {
 	}
    c.setImage(course.getUrlImg());
    c.setType(course.getAccessMode());
+   c.setPublic(course.isPublic());
 	return c;
 }
 public static CourseContentDto transformToCourseContentDto(Course course) {
     CourseContentDto contentDto = new CourseContentDto();
     contentDto.setName(course.getName());
     contentDto.setPublic(course.isPublic());
-    
+    contentDto.setLanguage(course.getLanguage());
+    contentDto.setTeachingLanguage(course.getTeachingLanguage());
     // Force load chapters và nested data
     List<Chapter> chapters = course.getChapters();
     if (chapters != null) {
@@ -150,4 +156,33 @@ public static CourseContentDto transformToCourseContentDto(Course course) {
                 .totalRatings((int)totalRatings)
                 .build();
     }
+public static CourseInfDto transformToCourseInfDto(Course course, int numberS, double avtR) {
+	return CourseInfDto.builder()
+			.id(course.getCourseId())
+			.img(course.getUrlImg())
+			.instructor(course.getCreator().getFullName())
+			.name(course.getName())
+			.numberStudent(numberS)
+			.price(course.getPrice())
+			.rating(avtR)
+			.language(course.getLanguage())
+			.build();
+}
+public static CourseLearningCardDto transformToCourseLearningCardDto(Course course,long numerberFinishContent) {
+	 AtomicInteger total = new AtomicInteger(0);
+
+	    course.getChapters().forEach(c -> {
+	        c.getModules().forEach(m -> {
+	            total.addAndGet(m.getContentTypes().size());
+	        });
+	    });
+
+	    double progress = total.get() == 0 ? 0 : (double) numerberFinishContent / total.get();
+return CourseLearningCardDto.builder()
+.course_img(course.getUrlImg())
+.course_name(course.getName())
+.courseId(course.getCourseId())
+.progress(progress)
+.build();
+}
 }

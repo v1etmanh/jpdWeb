@@ -2,6 +2,7 @@ package com.jpd.web.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 import com.jpd.web.model.AccessMode;
+import com.jpd.web.model.Language;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,9 +36,10 @@ public class CourseFormDto {
     @Size(max = 2000, message = "Learning objectives are too long")
     private String learningObject;
 
-    @NotBlank(message = "Language is required")
-    private String language;
-
+    @NotNull
+    private Language language;
+    @NotNull
+    private Language teachingLanguage;
     @PositiveOrZero(message = "Price must be zero or positive")
     private double price;
 

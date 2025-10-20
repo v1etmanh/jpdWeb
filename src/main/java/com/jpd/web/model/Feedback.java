@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.hibernate.annotations.Check;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.sql.Date;
 
 @Entity
@@ -30,6 +32,7 @@ public class Feedback {
     //link to Enrollment
     @OneToOne
     @JoinColumn(name = "enrollment_id")
+    @JsonBackReference("enrollment-feedback")
     private Enrollment enrollment;
 
 

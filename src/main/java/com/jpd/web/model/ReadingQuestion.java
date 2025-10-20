@@ -10,10 +10,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,10 +39,14 @@ public class ReadingQuestion  {
 	@Column(name="rq_id")
 	private long rqId;
     private String question;
-    @OneToMany(mappedBy = "readingQuestion",cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+        name = "reading_question_options",
+        joinColumns = @JoinColumn(name = "rq_id", nullable = false)
+    )
     @ToString.Exclude
-    private List<ReadingQuestionOptions>readingQuestionOptions;
+    private List<ReadingQuestionOptions> readingQuestionOptions;
+    
     @ManyToOne
     @JoinColumn(name = "mc_id")
     @JsonBackReference

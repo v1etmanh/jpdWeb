@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.jpd.web.model.*;
+import com.jpd.web.repository.WithdrawRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.scheduling.ScheduledTasksEndpoint.LastExecution;
 import org.springframework.http.HttpEntity;
@@ -22,8 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
 import com.jpd.web.config.PayPalV2Config;
-import com.jpd.web.model.Creator;
-import com.jpd.web.model.PayoutTracking;
 import com.jpd.web.repository.CreatorRepository;
 import com.jpd.web.repository.PayoutTrackingRepository;
 
@@ -45,7 +45,8 @@ public class PayPalPayoutServiceV2 {
 	private PayoutTrackingRepository payoutRepository;
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
-    
+    @Autowired
+	private WithdrawRepository withdrawRepository;
 	
 	public boolean  isMax(Creator creator) {
 		List<PayoutTracking>lpay= creator.getPayoutTrackings();
@@ -61,7 +62,7 @@ public class PayPalPayoutServiceV2 {
 	}
 	
 
-	public Map<String, Object> createSinglePayout(String recipientEmail, double amount, String currency, String note,Creator creator)
+	public PayoutTracking createSinglePayout(String recipientEmail, double amount, String currency, String note,Creator creator,TargetPayout targetPayout)
 			throws Exception {
 
 		String accessToken = tokenService.getAccessToken();
@@ -122,11 +123,12 @@ public class PayPalPayoutServiceV2 {
 			tracking.setStatus("PENDING");
 			// Lưu sender batch id để reference
 			tracking.setCreator(creator);
+			tracking.setTargetPayout(targetPayout);
 			payoutRepository.save(tracking);
 
 			log.info("Saved single payout tracking with batch_id: {}", finalBatchId);
 
-			return responseBody;
+			return tracking;
 
 		} else {
 			log.error("Single payout creation failed with status: {}, body: {}", response.getStatusCode(), response.getBody());
@@ -187,15 +189,25 @@ public class PayPalPayoutServiceV2 {
 		if (trackingOpt.isPresent()) {
 			PayoutTracking tracking = trackingOpt.get();
 
-			if (finalStatus != null && !finalStatus.equals(tracking.getStatus())) {
+			if (finalStatus != null &&!finalStatus.equals("FAILED")&&!finalStatus.equals("CANCELLED")) {
 				String oldStatus = tracking.getStatus();
 				tracking.setStatus(finalStatus);
 				tracking.setUpdatedAt(LocalDateTime.now());
 				payoutRepository.save(tracking);
-				Creator c=tracking.getCreator();
-				c.setPaymentEmail(tracking.getRecipientEmail());
-				
-              creatorRepository.save(c);
+                if(trackingOpt.get().getTargetPayout()== TargetPayout.VERIFY_EMAIL) {
+					Creator c = tracking.getCreator();
+					c.setPaymentEmail(tracking.getRecipientEmail());
+
+					creatorRepository.save(c);
+				}
+				else if(trackingOpt.get().getTargetPayout() == TargetPayout.WITHDRAW) {
+					Optional<Withdraw> withdraw=withdrawRepository.findByPayoutBatchId(trackingOpt.get().getPayoutBatchId());
+					if(withdraw.isPresent()) {
+						withdraw.get().setStatus(Status.SUCCESS);
+						
+						withdrawRepository.save(withdraw.get());
+					}
+				}
                 
 				log.info("Updated single payout batch {} status: {} -> {}", batchId, oldStatus, finalStatus);
 			} else {

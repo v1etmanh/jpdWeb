@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.jpd.web.controller.customer.CourseCustomerController;
 import com.jpd.web.dto.Response.CourseDetailResponse;
+import com.jpd.web.exception.*;
 import com.jpd.web.model.*;
 import com.jpd.web.service.utils.CourseSpecs;
 import org.slf4j.Logger;
@@ -21,10 +22,6 @@ import com.jpd.web.dto.CourseContentDto;
 import com.jpd.web.dto.CourseFormDto;
 
 import com.jpd.web.dto.PopularCourseDTO;
-import com.jpd.web.exception.ApiException;
-import com.jpd.web.exception.CourseNotFoundException;
-import com.jpd.web.exception.CreatorNotFoundException;
-import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.repository.CourseRepository;
 import com.jpd.web.repository.CreatorRepository;
 import com.jpd.web.repository.ModuleContentRepository;

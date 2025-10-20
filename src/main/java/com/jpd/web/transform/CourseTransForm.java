@@ -138,7 +138,7 @@ public static CourseContentDto transformToCourseContentDto(Course course) {
         return CourseDetailResponse.builder()
                 .name(course.getName())
                 .description(course.getDescription())
-                .language(course.getLanguage())
+                .language(course.getLanguage().name())
                 .img(course.getUrlImg())
                 .price(price)
                 .originalPrice(originalPrice)

@@ -71,7 +71,12 @@ public class CustomerService {
 
 		return savedCustomer;
 	}
+    public Customer getOrCreateAccount(String email) {
+        log.info("Getting or creating account for email: {}", email);
+        Customer customer = customerRepository.findByEmail(email).orElseThrow(()-> new CustomerNotFoundException(email));
 
+        return customer;
+    }
 	@Transactional
 	public UserInfoDto getOrCreateAccount(Jwt jwt) {
 		String email = jwt.getClaimAsString("email");

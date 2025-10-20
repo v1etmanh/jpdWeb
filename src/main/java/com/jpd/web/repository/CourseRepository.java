@@ -18,7 +18,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface CourseRepository  extends JpaRepository<Course, Long>{
+public interface CourseRepository  extends JpaRepository<Course, Long> , JpaSpecificationExecutor<Course>{
 List<Course> findByAccessMode(AccessMode accessMode);
 @Query("SELECT DISTINCT c.language FROM Course c")
 List<Language> findDistinctLanguages();

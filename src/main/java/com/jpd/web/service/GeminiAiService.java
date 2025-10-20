@@ -57,7 +57,7 @@ public class GeminiAiService {
         }
         return "No response from Gemini";
     }
-    public String generateContentWithImage(String prompt, String base64Image, String mimeType) {
+    public String generateContentWithImage1(String prompt, String base64Image, String mimeType) {
         // Thêm hướng dẫn cụ thể hơn
         String enhancedPrompt = prompt + "\n\nIMPORTANT: Your response must start with [ and end with ] only. Nothing else.";
 

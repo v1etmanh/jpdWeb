@@ -9,6 +9,7 @@ import com.jpd.web.dto.CreatorDashboardDTO;
 import com.jpd.web.dto.CreatorDto;
 import com.jpd.web.dto.CreatorProfileDto;
 import com.jpd.web.dto.PopularCourseDTO;
+import com.jpd.web.dto.Response.CreatorDtoResponse;
 import com.jpd.web.model.AccessMode;
 import com.jpd.web.model.Course;
 import com.jpd.web.model.Creator;
@@ -22,6 +23,25 @@ public static Creator transformFromCreatorDto(CreatorProfileDto creatorProfileDt
 			.build();
 	return creator;
 }
+    public  static CreatorDtoResponse transToCreatorDtoResponse(Creator creator) {
+        if(creator == null) return null;
+
+        CreatorDtoResponse.CreatorDtoResponseBuilder builder=CreatorDtoResponse.builder();
+        builder.name(creator.getFullName());
+        builder.email(creator.getCustomer().getEmail());
+        builder.avatar(creator.getImageUrl());
+        builder.description(creator.getTitleSelf());
+        builder.totalCourse(creator.getCourses().size());
+        builder.totalStudents(countTotalStudent(creator));
+        return builder.build();
+    }
+    private static int countTotalStudent(Creator creator) {
+        int totalStudent =0;
+        for (Course course : creator.getCourses()) {
+            totalStudent+=course.getEnrollments().size();
+        }
+        return totalStudent;
+    }
 public static CreatorDto transToCreatorDto(Creator creator) {
 	CreatorDto creatorDto=new CreatorDto();
 	creatorDto.setBio(creator.getTitleSelf());

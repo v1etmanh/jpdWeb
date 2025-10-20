@@ -24,24 +24,24 @@ public class FileUploadService {
 	private PendingImgRepository pendingImgRepository; 
 	@Autowired
 	private ValidationResources validationResources;
-//	@Autowired
-//	private FireBaseService fireBaseService;
-//	public String saveImgIntoFirebase(long creatorId,MultipartFile img,TypeOfFile type) throws IllegalAccessException {
-//
-//		Creator creator=	validationResources.validateCreatorExists(creatorId);
-//		try {
-//			String url= this.fireBaseService.uploadFile(img, type);
-//			PendingImage p=new PendingImage();
-//			p.setCreatorId(creator.getCreatorId());
-//			p.setStatus(Status.PENDING);
-//			p.setUrl(url);
-//			this.pendingImgRepository.save(p);
-//			return url;
-//		}
-//		catch (Exception e) {
-//			// TODO: handle exception
-//			throw new ApiException("error to save file");
-//		}
-//
-//	}
+	@Autowired
+	private FireBaseService fireBaseService;
+	public String saveImgIntoFirebase(long creatorId,MultipartFile img,TypeOfFile type) throws IllegalAccessException {
+
+		Creator creator=	validationResources.validateCreatorExists(creatorId);
+		try {
+			String url= this.fireBaseService.uploadFile(img, type);
+			PendingImage p=new PendingImage();
+			p.setCreatorId(creator.getCreatorId());
+			p.setStatus(Status.PENDING);
+			p.setUrl(url);
+			this.pendingImgRepository.save(p);
+			return url;
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			throw new ApiException("error to save file");
+		}
+
+	}
 }

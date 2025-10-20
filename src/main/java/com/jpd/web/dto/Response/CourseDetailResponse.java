@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -24,7 +25,7 @@ public class CourseDetailResponse {
     private double price;
     private double originalPrice;
     private double discount;
-    private Date lastUpdated;
+    private LocalDate lastUpdated;
     private int totalLectures;
     private String language;
     private String learningOutcomes;

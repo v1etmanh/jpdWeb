@@ -21,6 +21,8 @@ import com.jpd.web.service.utils.RequestAttributeExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/api/creator/{courseId}/{chapterId}/module")
@@ -54,5 +56,13 @@ public class ModuleController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(module);
 
+	}
+	@PutMapping("/{moduleId}/update")
+	public ResponseEntity<?> putMethodName(@PathVariable("moduleId") long moduleId, @RequestParam String name,
+			HttpServletRequest request) {
+		//TODO: process PUT request
+		Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
+		this.moduleService.updateModuleName(creatorId, moduleId, name);
+		return ResponseEntity.noContent().build();
 	}
 }

@@ -206,6 +206,45 @@ public class GlobalExceptionHandler {
 	                        .traceId(traceId)
 	                        .build());
 	    }
+	    @ExceptionHandler(CreatorIdNotFoundInRequestException.class)
+	    public ResponseEntity<ErrorResponse> handleCreatorIdNotFound(
+	            CreatorIdNotFoundInRequestException e,
+	            WebRequest request) {
+	        
+	        String traceId = getTraceId();
+	        log.warn("[{}] Creator ID not found: {}", traceId, e.getMessage());
+	        
+	        return ResponseEntity
+	                .status(HttpStatus.BAD_REQUEST)
+	                .body(ErrorResponse.builder()
+	                        .code(e.getErrorCode())
+	                        .message(e.getMessage())
+	                        .userMessage("Có lỗi xảy ra khi xác thực tác giả")
+	                        .path(getPath(request))
+	                        .timestamp(LocalDateTime.now())
+	                        .traceId(traceId)
+	                        .build());
+	    }
+
+	    @ExceptionHandler(EmailSendingFailedException.class)
+	    public ResponseEntity<ErrorResponse> handleEmailSendingFailed(
+	            EmailSendingFailedException e,
+	            WebRequest request) {
+	        
+	        String traceId = getTraceId();
+	        log.error("[{}] Email sending failed: {}", traceId, e.getMessage());
+	        
+	        return ResponseEntity
+	                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(ErrorResponse.builder()
+	                        .code(e.getErrorCode())
+	                        .message(e.getMessage())
+	                        .userMessage(e.getUserMessage())
+	                        .path(getPath(request))
+	                        .timestamp(LocalDateTime.now())
+	                        .traceId(traceId)
+	                        .build());
+	    }
 }
 
 // DTO cho error response

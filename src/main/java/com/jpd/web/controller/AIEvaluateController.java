@@ -7,14 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.jpd.web.dto.WritingScores;
+import com.jpd.web.dto.WritingTextEvaluateForm;
 import com.jpd.web.model.Language;
 import com.jpd.web.model.SemanticResult;
+import com.jpd.web.service.AIService;
 import com.jpd.web.service.AiEvaluateService;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AIEvaluateController {
 @Autowired
 private AiEvaluateService aiEvaluateService;
+@Autowired
+private AIService aiService;
 @PostMapping("/evaluate")
 public ResponseEntity<SemanticResult> evaluateAnswer(
 		@RequestParam("audio") MultipartFile file,
@@ -45,5 +52,11 @@ public ResponseEntity<SemanticResult> evaluateAnswer(
         return ResponseEntity.badRequest().build();
     }
 }
-
+@PostMapping("/evaluateWriting")
+public ResponseEntity<?> evaluateWritingText(@RequestBody WritingTextEvaluateForm form)
+{ System.out.print(form.getWritingText());
+	WritingScores score=this.aiService.evaluateWritingSimple(form.getWritingText(), form.getLanguage());
+	System.out.print(score);
+	return ResponseEntity.ok(score);
+}
 }

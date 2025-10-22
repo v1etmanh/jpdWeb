@@ -40,7 +40,7 @@ public class JaenConfig {
 			public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 				CorsConfiguration corsF=new CorsConfiguration();
 				corsF.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-				corsF.setAllowedMethods(Arrays.asList("GET","POST","DELETE"));
+				corsF.setAllowedMethods(Arrays.asList("GET","POST","DELETE","PUT"));
 				corsF.setAllowCredentials(true);
 				corsF.setAllowedHeaders(Collections.singletonList("*"));
 				corsF.setMaxAge(3600L);

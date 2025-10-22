@@ -5,6 +5,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.jpd.web.dto.NoticeForm;
+import com.jpd.web.exception.EmailSendingFailedException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +29,7 @@ public class SendNoticeService {
     } catch (Exception e) {
       log.error("Failed to send email to {}: {}", recipientEmail, e.getMessage(), e);
       notice.setEmailSent(false);
-      throw new RuntimeException("Không thể gửi email", e);
+      throw new EmailSendingFailedException(recipientEmail, e);
     }
   }
 

@@ -30,7 +30,7 @@ public static CreatorDto transToCreatorDto(Creator creator) {
 	creatorDto.setPaypalEmail(creator.getPaymentEmail());
 	creatorDto.setPhone(creator.getMobiPhone());
 	creatorDto.setStatus(creator.getStatus());
-	
+	creatorDto.setCertificateUrl(creator.getCertificateUrl());
 	return creatorDto;
 }
 /* totalRevenue: 15750000,

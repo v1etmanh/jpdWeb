@@ -58,6 +58,7 @@ public static CourseCardDto transformToCourseCardDto(Course course) {
    c.setImage(course.getUrlImg());
    c.setType(course.getAccessMode());
    c.setPublic(course.isPublic());
+   c.setJoinKey(course.getJoinKey());
 	return c;
 }
 public static CourseContentDto transformToCourseContentDto(Course course) {

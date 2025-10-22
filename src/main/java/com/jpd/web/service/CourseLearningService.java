@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpd.web.dto.CourseContentDto;
+import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.model.Course;
 import com.jpd.web.model.Module;
 import com.jpd.web.model.ModuleContent;
@@ -35,7 +36,7 @@ public class CourseLearningService {
 
 		
 		Course course = validationResources.validateCustomerWithCourse(email,courseId);
-
+      if(course.isPublic()==false) throw new UnauthorizedException("this course is not exist");
 		course.getChapters().forEach(chapter -> {
 			chapter.getModules();
 			/*.forEach(module -> {

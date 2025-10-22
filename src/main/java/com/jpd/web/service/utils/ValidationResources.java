@@ -5,10 +5,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jpd.web.exception.ChapterNotBelongsToCourseException;
 import com.jpd.web.exception.ChapterNotFoundException;
 import com.jpd.web.exception.CourseNotFoundException;
 import com.jpd.web.exception.CreatorNotFoundException;
 import com.jpd.web.exception.CustomerNotFoundException;
+import com.jpd.web.exception.ModuleNotBelongsToChapterException;
 import com.jpd.web.exception.ModuleNotFoundException;
 import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.model.Chapter;
@@ -65,7 +67,7 @@ public class ValidationResources {
 	        
 	        if (chapter.getCourse().getCourseId()!=(courseId)) {
 	            log.warn("Chapter {} does not belong to course {}", chapterId, courseId);
-	            throw new IllegalArgumentException("Chapter does not belong to this course");
+	            throw new ChapterNotBelongsToCourseException(chapterId,courseId);
 	        }
 	        
 	        log.debug("Chapter {} validated successfully for course {}", chapterId, courseId);
@@ -91,7 +93,7 @@ public class ValidationResources {
 	        
 	        if (module.getChapter().getChapterId()!=(chapterId)) {
 	            log.warn("Module {} does not belong to chapter {}", moduleId, chapterId);
-	            throw new IllegalArgumentException("Module does not belong to this chapter");
+	            throw new ModuleNotBelongsToChapterException(moduleId, chapterId);
 	        }
 	        
 	        log.debug("Module {} validated successfully for chapter {}", moduleId, chapterId);

@@ -40,9 +40,10 @@ public class ModuleContentController {
 																				 @Positive @PathVariable("courseId") Long courseId,
 																				 HttpServletRequest request) {
 		//return
+		 System.out.print("da");
 		long creatorId=RequestAttributeExtractor.extractCreatorId(request);
 		List<ModuleContent>mds=moduleContentService.getModuleContentsByTypeAndModuleId(typeOfContent,moduleId,chapterId,courseId,creatorId);
-
+     
 		return ResponseEntity.ok().body(mds);
 	}
 	@DeleteMapping("/{moduleContentId}")
@@ -75,17 +76,9 @@ public class ModuleContentController {
 	@PostMapping
     public ResponseEntity<?> updateModuleContents(
             @Valid @RequestBody ModuleContentDto moduleContentDto,
-           
             HttpServletRequest request) {
-        
-        
-        
         Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
-        
-       
-        
         List<ModuleContent> contents = moduleContentService.updateCourseMaterial(moduleContentDto, creatorId);
-        
         return ResponseEntity.ok(contents);
     }
 }

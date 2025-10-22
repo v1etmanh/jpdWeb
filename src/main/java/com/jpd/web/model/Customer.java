@@ -42,7 +42,7 @@ public class Customer {
     //link to Remember_word
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     
-    private List<Remember_word> rememberWords;
+    private List<RememberWord> rememberWords;
 
 
 

@@ -3,6 +3,9 @@ package com.jpd.web.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.beans.factory.annotation.Value;
@@ -116,18 +119,20 @@ public class OpenAIService {
         headers.set("Authorization", "Bearer " + openaiApiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
         
-        // Tạo request body
-        String requestBody = String.format("""
-            {
-                "input": "%s",
-                "model": "text-embedding-3-small"
-            }
-            """, text.replace("\"", "\\\""));
+        // ✅ Trim whitespace và newlines trước khi gửi
+        String cleanedText = text.trim();
         
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+        // ✅ Tạo request body bằng ObjectMapper để đảm bảo JSON hợp lệ
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("input", cleanedText);
+        requestBody.put("model", "text-embedding-3-small");
+        
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+        
+        HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
         
         // Gửi request
-        log.info("Đang lấy embedding cho text: {}", text);
+        log.info("Đang lấy embedding cho text: {}", cleanedText);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         
         // Parse response

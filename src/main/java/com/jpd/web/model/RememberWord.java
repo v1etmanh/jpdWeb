@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Remember_word {
+public class RememberWord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+   
     private long id;
     private String word;
     private String meaning;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class FireBaseService {
 	            return downloadUrl;
 	            
 	        } catch (Exception e) {
-	            throw new RuntimeException("Failed to upload file: " + e.getMessage(), e);
+	            throw new FileUploadException("Failed to upload file: " + e.getMessage(), e);
 	        }
 	    }
 	    public String deleteImgByUrl(String url) {

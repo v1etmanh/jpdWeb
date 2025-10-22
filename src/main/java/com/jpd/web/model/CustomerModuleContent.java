@@ -7,6 +7,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Data
 @Table(name = "customer_question")
@@ -30,7 +34,12 @@ public class CustomerModuleContent {
     private Enrollment enrollment;
 
     //link to Course
-   private TypeOfContent typeOfContent;
+    @ElementCollection
+    @CollectionTable(
+        name = "finished_type_of_content", // tên bảng trung gian
+        joinColumns = @JoinColumn(name = "cq_id") // khóa ngoại trỏ đến Course
+    )
+   private Set<TypeOfContent> typeOfContent=new HashSet<>();
    @ManyToOne()
    @JoinColumn(name = "module_id")
     private Module module;

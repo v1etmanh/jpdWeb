@@ -197,7 +197,7 @@ public class PayPalPayoutServiceV2 {
                 if(trackingOpt.get().getTargetPayout()== TargetPayout.VERIFY_EMAIL) {
 					Creator c = tracking.getCreator();
 					c.setPaymentEmail(tracking.getRecipientEmail());
-
+                    
 					creatorRepository.save(c);
 				}
 				else if(trackingOpt.get().getTargetPayout() == TargetPayout.WITHDRAW) {

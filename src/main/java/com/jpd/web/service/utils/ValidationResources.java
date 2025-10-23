@@ -130,6 +130,15 @@ public class ValidationResources {
 		 if(enr.isEmpty())throw new UnauthorizedException("you must enroll after learning");
 		 return course;
 	 }
+	 public Enrollment validateCustomerWithCourseGetE(String email , long courseId) {
+		 Course course=validateCourseExists(courseId);
+		 
+		 Customer customer=validateCustomerExist(email);
+		
+		Optional< Enrollment> enr=this.enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(courseId, customer.getCustomerId());
+		 if(enr.isEmpty())throw new UnauthorizedException("you must enroll after learning");
+		 return enr.get();
+	 }
 	 public com.jpd.web.model.Module validateModuleContentOwnerShip(Long moduleId, Long chapterId, Long courseId, String email) {
 		    log.debug("Validating complete ownership chain for module {}", moduleId);
 		    

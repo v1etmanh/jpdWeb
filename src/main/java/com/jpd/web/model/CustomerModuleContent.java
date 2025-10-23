@@ -13,7 +13,12 @@ import java.util.Set;
 
 @Entity
 @Data
-@Table(name = "customer_question")
+@Table(
+	    name = "customer_question",
+	    uniqueConstraints = {
+	        @UniqueConstraint(columnNames = {"enroll_id", "module_id"})
+	    }
+)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -42,6 +47,7 @@ public class CustomerModuleContent {
    private Set<TypeOfContent> typeOfContent=new HashSet<>();
    @ManyToOne()
    @JoinColumn(name = "module_id")
+   @JsonBackReference("module-cm")
     private Module module;
 
 }

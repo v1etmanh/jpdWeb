@@ -81,7 +81,9 @@ public class Course {
     @JsonManagedReference("course-enrollment")
     private List<Enrollment> enrollments;
 
- 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course",fetch = FetchType.LAZY)
+    @JsonManagedReference("course-report")
+    private List<Report> report;
 
     //link to Wishlist
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")

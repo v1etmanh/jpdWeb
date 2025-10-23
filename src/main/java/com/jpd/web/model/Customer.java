@@ -55,7 +55,9 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonManagedReference("customer-enrollment")
     private List<Enrollment> enrollments;
-
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonManagedReference("customer-report")
+    private List<Report>report;
 
 
 }

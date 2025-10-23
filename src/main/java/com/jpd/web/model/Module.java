@@ -58,7 +58,7 @@ public class Module {
                 .collect(Collectors.toSet());
     }
     @OneToMany(mappedBy = "module",cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference("module-cm")
      
      private List<CustomerModuleContent>customerModuleContents;
      

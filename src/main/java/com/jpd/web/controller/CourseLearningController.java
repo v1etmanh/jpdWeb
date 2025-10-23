@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jpd.web.dto.CourseContentDto;
 import com.jpd.web.model.ModuleContent;
 import com.jpd.web.model.TypeOfContent;
+import com.jpd.web.repository.CreatorRepository;
 import com.jpd.web.service.CourseLearningService;
 import com.jpd.web.service.CourseService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,8 +24,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api/customer/learning/{courseId}")
 public class CourseLearningController {
+
+    private final CreatorRepository creatorRepository;
 @Autowired
 private CourseLearningService courseLearningService;
+
+    CourseLearningController(CreatorRepository creatorRepository) {
+        this.creatorRepository = creatorRepository;
+    }
 @GetMapping("/courseOverview")
 public ResponseEntity<CourseContentDto> getMethodName(@AuthenticationPrincipal Jwt jwt,
 		@PathVariable("courseId")long courseId) {
@@ -39,5 +47,10 @@ public ResponseEntity<?> retrieveModuleContent(@RequestParam("typeOfContent")Typ
 	return ResponseEntity.ok(mds);
 	
 }
-
+@PostMapping("/{moduleId}/finish_content")
+public ResponseEntity<?> updateCustomerWithModuleContent(@PathVariable("courseId")long courseId,@PathVariable("moduleId")long moduleId,@RequestParam("type") TypeOfContent typeOfContent,@AuthenticationPrincipal Jwt jwt)
+{ String email=jwt.getClaimAsString("email");
+		this.courseLearningService.updateCustomerFinishModule(courseId, email, moduleId, typeOfContent);
+		return ResponseEntity.noContent().build();
+	}
 }

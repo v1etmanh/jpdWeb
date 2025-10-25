@@ -20,10 +20,12 @@ public class FeedbackController {
 @Autowired
 private FeedbackService feedbackService;
 @PostMapping("/{courseId}")
-public ResponseEntity<?>addFeedback(@PathVariable("courseId") long courseId, @RequestParam("detail")String detail,
+public ResponseEntity<?>addFeedback(@PathVariable("courseId") long courseId, 
+		@RequestParam("rate") int rate
+		,@RequestParam("detail")String detail,
 		@AuthenticationPrincipal Jwt jwt){
 	String email=jwt.getClaimAsString("email");
-	this.feedbackService.addFeedback(email, courseId, detail);
+	this.feedbackService.addFeedback(email, courseId, detail,rate);
 	return ResponseEntity.noContent().build();
 }
 }

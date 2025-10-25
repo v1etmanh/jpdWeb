@@ -4,9 +4,11 @@ package com.jpd.web.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.jpd.web.exception.WithdrawException;
 import com.jpd.web.model.*;
+import com.jpd.web.repository.CourseRepository;
 import com.jpd.web.repository.CreatorRepository;
 import com.jpd.web.repository.WithdrawRepository;
 
@@ -19,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.jpd.web.dto.CreatorDashboardDTO;
 import com.jpd.web.dto.CreatorDto;
-
+import com.jpd.web.dto.PopularCourseDTO;
 import com.jpd.web.exception.PaymentEmailAlreadyExistsException;
 import com.jpd.web.exception.PayoutLimitExceededException;
 import com.jpd.web.exception.UnauthorizedException;
@@ -38,7 +40,8 @@ Dashboard
 @Service
 @Slf4j
 public class CreatorService {
-
+	@Autowired
+	 private  MonthlyBalanceService monthlyBalanceService;
 	@Autowired
 	private PayPalPayoutServiceV2 palPayoutServiceV2;
     @Value("${creator.withdraw.minimize_amount}")  // Có dấu $
@@ -54,7 +57,8 @@ public class CreatorService {
     private WithdrawRepository withdrawRepository;
     @Autowired
     private FireBaseService fireBaseService;
-    
+    @Autowired
+    private CourseRepository courseRepository;
     @Autowired
     private CreatorRepository creatorRepository;
 	@Transactional()
@@ -65,7 +69,13 @@ public class CreatorService {
 
 		return CreatorTransform.transToCreatorDto(creator);
 	}
+	public double getblance(Long creatorId) {
+		log.info("Retrieving account information for creator {}", creatorId);
 
+		Creator creator = validationResources.validateCreatorExists(creatorId);
+
+		return creator.getBalance();
+	}
 	// upload paypalEmail
 
 	public void sendMoneyToVerify(long creatorId, String paypalEmail) {
@@ -156,7 +166,19 @@ public class CreatorService {
 		   System.out.print(c.getStatus());
 		   throw new UnauthorizedException("error to fget");
 }
-	   return CreatorTransform.transformFromCreator(c);
+	   
+	   MonthlyCreatorBalance currentMonthBalance = 
+	            monthlyBalanceService.getCurrentMonthDashboard(creatorId);
+	   List<PopularCourseDTO> popularCourseDTOs = currentMonthBalance.getPopularCourses().stream()
+	            .map(courseId -> {
+	                Course course = courseRepository.findById(courseId).orElse(null);
+	                return course != null ?CreatorTransform.transform(course) : null;
+	            })
+	            .filter(dto -> dto != null)
+	            .collect(Collectors.toList());
+	        // Transform sang DTO
+	        return CreatorTransform.transformFromMonthlyBalance(currentMonthBalance,popularCourseDTOs);
+	   
    }
    public void upLoadCertificate(long creatorId,MultipartFile multipartFile) throws FileUploadException {	   
 	   Creator c=validationResources.validateCreatorExists(creatorId);

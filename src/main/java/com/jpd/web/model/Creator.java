@@ -66,7 +66,10 @@ public class Creator {
     @JsonManagedReference
     private List<Withdraw> withdrawList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference
     private List<PayoutTracking>payoutTrackings ;
-    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference
+    private List<MonthlyCreatorBalance> monthlyBalances;
 
 }

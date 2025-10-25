@@ -25,16 +25,17 @@ private EnrollmentRepository enrollmentRepository;
 @Autowired
 private ValidationResources validationResources;
 
-public void addFeedback(String email,long courseId,String detail) {
+public void addFeedback(String email,long courseId,String detail,int rate) {
 	
 	Customer c=	this.validationResources.validateCustomerExist(email);
 	Optional<Enrollment> eo=this.enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(courseId, c.getCustomerId());
 	if(eo.isEmpty())throw new UnauthorizedException("you dont own this cours");
 Optional<Feedback>f1=	this.feedbackRepository.findByEnrollment(eo.get());
-	if(f1.isEmpty())throw new ExceedLimitRequestException("use can only feedback 1 per");
+	if(f1.isPresent())throw new ExceedLimitRequestException("use can only feedback 1 per");
 	Feedback f=Feedback.builder()
 			.content(detail)
 			.enrollment(eo.get())
+			.rate(rate)
 			.build();
 	this.feedbackRepository.save(f);
 	return ;

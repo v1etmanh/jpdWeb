@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.sql.Date;
 import java.time.LocalDateTime;
 
@@ -25,6 +27,7 @@ public class CustomerTransaction {
     //link to Enrollment
     @OneToOne
     @JoinColumn(name = "enroll_id")
+    @JsonBackReference("enroll-trans")
     private Enrollment enrollment;
 
    

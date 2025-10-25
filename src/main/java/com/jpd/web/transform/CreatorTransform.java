@@ -13,6 +13,7 @@ import com.jpd.web.model.AccessMode;
 import com.jpd.web.model.Course;
 import com.jpd.web.model.Creator;
 import com.jpd.web.model.Enrollment;
+import com.jpd.web.model.MonthlyCreatorBalance;
 
 public class CreatorTransform {
 public static Creator transformFromCreatorDto(CreatorProfileDto creatorProfileDto) {
@@ -115,5 +116,23 @@ public static PopularCourseDTO transform(Course course) {
             .price(course.getPrice())
             .build();
 }
-
+public static CreatorDashboardDTO transformFromMonthlyBalance(MonthlyCreatorBalance balance,List<PopularCourseDTO> popularCourseDTOs) {
+    if (balance == null) {
+        return null;
+    }
+    
+    // Lấy thông tin popular courses
+     
+    
+    return CreatorDashboardDTO.builder()
+        .totalRevenue(balance.getTotalRevenue())
+        .totalStudents(balance.getTotalStudents())
+        .totalCourses(balance.getTotalCourses())
+        .avgRating(balance.getAvgRating())
+        .completionRate(balance.getCompletionRate())
+        .newEnrollments(balance.getNewEnrollments())
+        .totalReviews(balance.getTotalReviews())
+        .ppc(popularCourseDTOs)
+        .build();
+}
 }

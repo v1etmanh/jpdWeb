@@ -79,9 +79,6 @@ public class CourseController {
 
 	}
 
-	public CourseController() {
-		// TODO Auto-generated constructor stub
-	}
 	@GetMapping("/retrieve_CommercialCourese")
 	public ResponseEntity<List<PopularCourseDTO>>retrieveCCourse(HttpServletRequest request) {
 		long creatorId= RequestAttributeExtractor.extractCreatorId(request);

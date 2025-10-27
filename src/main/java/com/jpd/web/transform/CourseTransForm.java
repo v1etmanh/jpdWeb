@@ -1,16 +1,11 @@
 package com.jpd.web.transform;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jpd.web.dto.CourseCardDto;
 import com.jpd.web.dto.CourseContentDto;
 import com.jpd.web.dto.CourseFormDto;
-import com.jpd.web.dto.Response.CourseDetailResponse;
-import com.jpd.web.dto.Response.CreatorDtoResponse;
-import com.jpd.web.dto.Response.FeedbackDtoResponse;
 import com.jpd.web.dto.CourseInfDto;
 import com.jpd.web.dto.CourseLearningCardDto;
 import com.jpd.web.model.AccessMode;
@@ -63,6 +58,7 @@ public static CourseCardDto transformToCourseCardDto(Course course) {
    c.setImage(course.getUrlImg());
    c.setType(course.getAccessMode());
    c.setPublic(course.isPublic());
+   c.setJoinKey(course.getJoinKey());
 	return c;
 }
 public static CourseContentDto transformToCourseContentDto(Course course) {
@@ -92,70 +88,6 @@ public static CourseContentDto transformToCourseContentDto(Course course) {
     contentDto.setChapters(chapters);
     return contentDto;
 }
-    public static CourseDetailResponse courseToCourseDetailResponse(Course course) {
-        if (course == null) return null;
-
-        // 1) numberstudent = tổng enrollments (không có status)
-        int numberStudent = course.getEnrollments() == null ? 0 : course.getEnrollments().size();
-
-        // 2) totalLectures = tổng số module của tất cả chapter
-        int totalLectures = 0;
-        if (course.getChapters() != null) {
-            for (Chapter ch : course.getChapters()) {
-                if (ch != null && ch.getModules() != null) {
-                    totalLectures += ch.getModules().size();
-                }
-            }
-        }
-
-        // 3) curriculum = danh sách ChapterDtoResponse { section = chapter.name, lectures = chapter.module.size }
-        List<Chapter> curriculum =
-                course.getChapters() == null ? Collections.emptyList() : course.getChapters();
-
-        // 4) creator: map các trường cơ bản; các số liệu tổng hợp để 0 theo yêu cầu
-        CreatorDtoResponse creatorDto = null;
-        if (course.getCreator() != null) {
-          creatorDto=  CreatorTransform.transToCreatorDtoResponse(course.getCreator());
-        }
-
-        // 5) feedback & rating: mặc định theo yêu cầu (feedback nằm trong enrollments)
-        List<FeedbackDtoResponse> feedback = new ArrayList<>();
-        for (Enrollment e : course.getEnrollments()) {
-            feedback.add(FeedbackTransForm.transformFeedbackDtoResponse(e));
-        }
-       double totalRatings= feedback.isEmpty() ? 0 : feedback.size();
-        double rating = 0.0;
-        for (FeedbackDtoResponse f : feedback) {
-            rating+=  f.getRating() /totalRatings;
-        }
-
-
-        // 6) giá/khuyến mãi: chưa có cơ chế giảm giá
-        double price = course.getPrice();
-        double originalPrice = price;
-        double discount = 0.0;
-
-        return CourseDetailResponse.builder()
-                .name(course.getName())
-                .description(course.getDescription())
-                .language(course.getLanguage().name())
-                .img(course.getUrlImg())
-                .price(price)
-                .originalPrice(originalPrice)
-                .discount(discount)
-                .lastUpdated(course.getLastUpdate())
-                .learningOutcomes(course.getLearningObject())
-                .requirements(course.getRequirements())
-                .targetAudience(course.getTargetAudience())
-                .numberstudent(numberStudent)
-                .totalLectures(totalLectures)
-                .curriculum(curriculum)
-                .creator(creatorDto)
-                .feedback(feedback)
-                .rating(rating)
-                .totalRatings((int)totalRatings)
-                .build();
-    }
 public static CourseInfDto transformToCourseInfDto(Course course, int numberS, double avtR) {
 	return CourseInfDto.builder()
 			.id(course.getCourseId())

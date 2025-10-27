@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.checkerframework.checker.units.qual.A;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,8 @@ import com.jpd.web.repository.PendingImgRepository;
 public class FireBaseService {
 	 @Autowired
 	    private StorageClient storageClient;
-
-    public String uploadFile(MultipartFile file, TypeOfFile moduleContent) throws IOException {
+	    
+	    public String uploadFile(MultipartFile file,TypeOfFile moduleContent) throws IOException {
 	        try {
 	        	System.out.print("hello22");
 	            // Lấy bucket từ StorageClient
@@ -47,7 +47,7 @@ public class FireBaseService {
 	            return downloadUrl;
 	            
 	        } catch (Exception e) {
-	            throw new RuntimeException("Failed to upload file: " + e.getMessage(), e);
+	            throw new FileUploadException("Failed to upload file: " + e.getMessage(), e);
 	        }
 	    }
 	    public String deleteImgByUrl(String url) {

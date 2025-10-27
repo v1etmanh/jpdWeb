@@ -1,0 +1,4 @@
+courseId,creatorId,errorType
+3,10,NOT_OWNER
+4,10,COURSE_NOT_FOUND
+5,10,VALIDATOR_RUNTIME

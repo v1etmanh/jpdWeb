@@ -6,8 +6,8 @@ import com.google.api.Http;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
-//import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +40,10 @@ public class ModuleContentController {
 																				 @Positive @PathVariable("courseId") Long courseId,
 																				 HttpServletRequest request) {
 		//return
+		 System.out.print("da");
 		long creatorId=RequestAttributeExtractor.extractCreatorId(request);
 		List<ModuleContent>mds=moduleContentService.getModuleContentsByTypeAndModuleId(typeOfContent,moduleId,chapterId,courseId,creatorId);
-
+     
 		return ResponseEntity.ok().body(mds);
 	}
 	@DeleteMapping("/{moduleContentId}")
@@ -75,17 +76,9 @@ public class ModuleContentController {
 	@PostMapping
     public ResponseEntity<?> updateModuleContents(
             @Valid @RequestBody ModuleContentDto moduleContentDto,
-           
             HttpServletRequest request) {
-        
-        
-        
         Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
-        
-       
-        
         List<ModuleContent> contents = moduleContentService.updateCourseMaterial(moduleContentDto, creatorId);
-        
         return ResponseEntity.ok(contents);
     }
 }

@@ -1,12 +1,15 @@
 package com.jpd.web.service;
 
+import java.io.NotActiveException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.jpd.web.dto.ModuleDto;
 import com.jpd.web.exception.ModuleNotFoundException;
+import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.model.Chapter;
 import com.jpd.web.model.Course;
 import com.jpd.web.model.Creator;
@@ -50,6 +53,15 @@ public class ModuleService {
 		moduleContentRepository.deleteByModuleId(module.getModuleId());
 
 		moduleRepository.deleteByModuleId(moduleId);
+	}
+	public void updateModuleName(long  id, long moduleId,String title) {
+	   Creator c=  validationResources.validateCreatorExists(id);
+	   Optional<Module> m=this.moduleRepository.findById(moduleId);
+	   if(m.isEmpty())throw new ModuleNotFoundException(moduleId);
+	   if(m.get().getChapter().getCourse().getCreator().getCreatorId()!=id)
+		   throw new UnauthorizedException("ko so huu module ");
+	   m.get().setTitleOfModule(title);
+	   this.moduleRepository.save(m.get());
 	}
 
 }

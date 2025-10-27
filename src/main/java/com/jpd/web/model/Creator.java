@@ -21,7 +21,6 @@ import java.util.List;
 public class Creator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     @Column(name = "creator_id")
     private long creatorId;
     @Column(nullable = false)

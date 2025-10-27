@@ -30,4 +30,5 @@ public class CourseCardDto {
 	private String image;
 	private AccessMode type;
 	private boolean isPublic;
+	private String joinKey;
 }

@@ -9,8 +9,6 @@ import org.hibernate.annotations.Check;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import java.sql.Date;
-
 @Entity
 @Check(constraints = "rate BETWEEN 1 AND 5")
 @Table(name = "feed_back")
@@ -28,7 +26,7 @@ public class Feedback {
     @Min(1)
     @Max(5)
     private int rate;
-    private Date createAt;
+
     //link to Enrollment
     @OneToOne
     @JoinColumn(name = "enrollment_id")

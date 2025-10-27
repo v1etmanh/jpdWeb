@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.jpd.web.dto.NoticeForm;
 import com.jpd.web.model.*;
 import com.jpd.web.repository.WithdrawRepository;
+import com.jpd.web.service.utils.SendNoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.scheduling.ScheduledTasksEndpoint.LastExecution;
 import org.springframework.http.HttpEntity;
@@ -47,6 +49,8 @@ public class PayPalPayoutServiceV2 {
 	private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
 	private WithdrawRepository withdrawRepository;
+    @Autowired
+    private SendNoticeService sendNoticeService;
 	
 	public boolean  isMax(Creator creator) {
 		List<PayoutTracking>lpay= creator.getPayoutTrackings();
@@ -197,7 +201,7 @@ public class PayPalPayoutServiceV2 {
                 if(trackingOpt.get().getTargetPayout()== TargetPayout.VERIFY_EMAIL) {
 					Creator c = tracking.getCreator();
 					c.setPaymentEmail(tracking.getRecipientEmail());
-
+                    
 					creatorRepository.save(c);
 				}
 				else if(trackingOpt.get().getTargetPayout() == TargetPayout.WITHDRAW) {
@@ -206,6 +210,16 @@ public class PayPalPayoutServiceV2 {
 						withdraw.get().setStatus(Status.SUCCESS);
 						
 						withdrawRepository.save(withdraw.get());
+                        // send email to creator withdraw success
+                        Creator creator =  tracking.getCreator();
+                        if(creator!=null&& creator.getPaymentEmail()!=null) {
+                            NoticeForm notice = new NoticeForm();
+                            notice.setCreatedAt(LocalDateTime.now());
+                            notice.setMessage("Yêu cầu rút tiền của bạn đã được xử lý thành công. "
+                                    + "Số tiền: " + withdraw.get().getAmount()+ " " + withdraw.get().getCurrency()
+                                    + "\nCảm ơn bạn đã sử dụng nền tảng của chúng tôi!");
+                            sendNoticeService.sendNoticePayment(notice, creator.getCustomer().getEmail());
+                        }
 					}
 				}
                 

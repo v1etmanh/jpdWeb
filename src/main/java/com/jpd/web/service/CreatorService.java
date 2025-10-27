@@ -10,7 +10,7 @@ import com.jpd.web.model.*;
 import com.jpd.web.repository.CreatorRepository;
 import com.jpd.web.repository.WithdrawRepository;
 
-import org.apache.hc.client5.http.entity.mime.MultipartPart;
+import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +37,7 @@ Dashboard
  * UNCLAIMED*/
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CreatorService {
 
 	@Autowired
@@ -57,6 +58,7 @@ public class CreatorService {
     
     @Autowired
     private CreatorRepository creatorRepository;
+
 	@Transactional()
 	public CreatorDto getAccount(Long creatorId) {
 		log.info("Retrieving account information for creator {}", creatorId);

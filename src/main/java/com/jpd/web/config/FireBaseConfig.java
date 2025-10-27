@@ -18,13 +18,13 @@ import jakarta.annotation.PostConstruct;
 public class FireBaseConfig {
 	  @Value("${firebase.config.path:firebase-service-account.json}")
 	    private String firebaseConfigPath;
-
+	  
 	    @PostConstruct
 	    public void init() throws IOException {
 	    	System.out.print(firebaseConfigPath);
 	        // Sử dụng ClassPathResource thay vì FileInputStream
 	        ClassPathResource resource = new ClassPathResource(firebaseConfigPath);
-
+	        
 	        FirebaseOptions options = FirebaseOptions.builder()
 	                .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
 	                .setStorageBucket("jpdweb-9d3d3.firebasestorage.app") // Từ application.properties

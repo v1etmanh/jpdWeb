@@ -5,10 +5,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jpd.web.exception.ChapterNotBelongsToCourseException;
 import com.jpd.web.exception.ChapterNotFoundException;
 import com.jpd.web.exception.CourseNotFoundException;
 import com.jpd.web.exception.CreatorNotFoundException;
 import com.jpd.web.exception.CustomerNotFoundException;
+import com.jpd.web.exception.ModuleNotBelongsToChapterException;
 import com.jpd.web.exception.ModuleNotFoundException;
 import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.model.Chapter;
@@ -36,6 +38,7 @@ public class ValidationResources {
 	    private final  ModuleRepository moduleRepository;
 	    private final EnrollmentRepository enrollmentRepository;
 	    private final CustomerRepository customerRepository;
+
 	public  Course validateCourseOwnership(Long courseId, Long creatorId) {
         log.debug("Validating course {} ownership for creator {}", courseId, creatorId);
         
@@ -65,7 +68,7 @@ public class ValidationResources {
 	        
 	        if (chapter.getCourse().getCourseId()!=(courseId)) {
 	            log.warn("Chapter {} does not belong to course {}", chapterId, courseId);
-	            throw new IllegalArgumentException("Chapter does not belong to this course");
+	            throw new ChapterNotBelongsToCourseException(chapterId,courseId);
 	        }
 	        
 	        log.debug("Chapter {} validated successfully for course {}", chapterId, courseId);
@@ -91,7 +94,7 @@ public class ValidationResources {
 	        
 	        if (module.getChapter().getChapterId()!=(chapterId)) {
 	            log.warn("Module {} does not belong to chapter {}", moduleId, chapterId);
-	            throw new IllegalArgumentException("Module does not belong to this chapter");
+	            throw new ModuleNotBelongsToChapterException(moduleId, chapterId);
 	        }
 	        
 	        log.debug("Module {} validated successfully for chapter {}", moduleId, chapterId);
@@ -127,6 +130,15 @@ public class ValidationResources {
 		Optional< Enrollment> enr=this.enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(courseId, customer.getCustomerId());
 		 if(enr.isEmpty())throw new UnauthorizedException("you must enroll after learning");
 		 return course;
+	 }
+	 public Enrollment validateCustomerWithCourseGetE(String email , long courseId) {
+		 Course course=validateCourseExists(courseId);
+		 
+		 Customer customer=validateCustomerExist(email);
+		
+		Optional< Enrollment> enr=this.enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(courseId, customer.getCustomerId());
+		 if(enr.isEmpty())throw new UnauthorizedException("you must enroll after learning");
+		 return enr.get();
 	 }
 	 public com.jpd.web.model.Module validateModuleContentOwnerShip(Long moduleId, Long chapterId, Long courseId, String email) {
 		    log.debug("Validating complete ownership chain for module {}", moduleId);

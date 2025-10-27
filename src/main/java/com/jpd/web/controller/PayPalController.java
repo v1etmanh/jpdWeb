@@ -37,6 +37,7 @@ public class PayPalController {
             @AuthenticationPrincipal Jwt jwt) {
         try {
             // Lấy customer ID từ JWT
+        	System.out.print(courseId);
             long customerId = customerRepository
                 .findByEmail(jwt.getClaimAsString("email"))
                 .orElseThrow(() -> new RuntimeException("Customer not found"))

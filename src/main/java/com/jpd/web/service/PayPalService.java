@@ -185,7 +185,7 @@ public class PayPalService {
     /**
      * Kiểm tra xem khách hàng đã đăng ký khóa học chưa
      */
-    private void validateEnrollment(long courseId, long customerId) throws EnrollmentExistException {
+    public void validateEnrollment(long courseId, long customerId) throws EnrollmentExistException {
         Optional<Enrollment> existingEnrollment = enrollmentRepository
             .findByCourse_CourseIdAndCustomer_CustomerId(courseId, customerId);
         
@@ -199,10 +199,10 @@ public class PayPalService {
     /**
      * Lưu thông tin payment tracking
      */
-    private void savePaymentTracking(String paymentId, double amount, String description, 
+    public void savePaymentTracking(String paymentId, double amount, String description,
                                      long courseId, long customerId) {
         PaymentTracking tracking = PaymentTracking.builder()
-            .paymentId(paymentId)
+        .paymentId(paymentId)
             .status("CREATED")
             .amount(amount)
             .currency(DEFAULT_CURRENCY)
@@ -218,7 +218,7 @@ public class PayPalService {
     /**
      * Cập nhật trạng thái payment tracking
      */
-    private PaymentTracking updatePaymentTrackingStatus(String orderId, String status) {
+    public PaymentTracking updatePaymentTrackingStatus(String orderId, String status) {
         PaymentTracking tracking = paymentRepository.findById(orderId)
             .orElseThrow(() -> new RuntimeException("Payment tracking not found: " + orderId));
         
@@ -233,7 +233,7 @@ public class PayPalService {
     /**
      * Tạo enrollment và transaction cho khách hàng
      */
-    private void createEnrollmentAndTransaction(PaymentTracking tracking) {
+    public void createEnrollmentAndTransaction(PaymentTracking tracking) {
         Customer customer = customerRepository.findById(tracking.getCustomerId())
             .orElseThrow(() -> new RuntimeException("Customer not found: " + tracking.getCustomerId()));
         
@@ -272,13 +272,13 @@ public class PayPalService {
     /**
      * Cập nhật balance của creator (hiện tại chưa thực sự cộng tiền)
      */
-    private void updateCreatorBalance(long courseId) {
+    public void updateCreatorBalance(long courseId) {
         Course course = courseRepository.findById(courseId)
             .orElseThrow(() -> new RuntimeException("Course not found: " + courseId));
         
         Creator creator = course.getCreator();
         // TODO: Cập nhật logic cộng tiền vào balance
-        double currentBalance = creator.getBalance();
+        double currentBalance = creator.getBalance()+course.getPrice();
         creator.setBalance(currentBalance);
         
         creatorRepository.save(creator);
@@ -289,7 +289,7 @@ public class PayPalService {
     /**
      * Tạo mô tả cho payment
      */
-    private String generateDescription(long courseId, long customerId) {
+    public String generateDescription(long courseId, long customerId) {
         String timestamp = LocalDateTime.now()
             .format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         return String.format("Payment-%s-Course%d-Customer%d", timestamp, courseId, customerId);

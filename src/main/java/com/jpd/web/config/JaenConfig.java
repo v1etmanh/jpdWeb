@@ -76,9 +76,20 @@ public class JaenConfig {
     /**
      * Cấu hình này CHỈ chạy khi profile là "dev"
      * -> Vô hiệu hóa bảo mật
-     */@Bean
+     */
+
+    @Bean
+    @Profile("dev")
+    SecurityFilterChain securityDisabled(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
+
+    @Bean
     public JavaMailSender javaMailSender(){
-         return new JavaMailSenderImpl();
+        return new JavaMailSenderImpl();
     }
 
 

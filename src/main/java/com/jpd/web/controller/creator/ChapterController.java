@@ -20,50 +20,67 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/creator/{courseId}/chapter")
 @RequiredArgsConstructor
-public class
-
-ChapterController {
+public class ChapterController {
 
     private final ChapterService chapterService;
 
     @PostMapping
     public ResponseEntity<?> createChapter(
-            @NotBlank(message = "Chapter name is required") 
+            @NotBlank(message = "Chapter name is required")
             @RequestParam("chapterName") String name,
-            @Positive(message = "Course ID must be positive") 
+            @Positive(message = "Course ID must be positive")
             @PathVariable("courseId") Long courseId,
             HttpServletRequest request) {
-        
+
         log.info("Creating chapter '{}' for course {}", name, courseId);
-        
+
         Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
-        
+
         // ✅ KHÔNG cần try-catch - để GlobalExceptionHandler xử lý
         Chapter chapter = chapterService.createChapter(name, courseId, creatorId);
-        
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(chapter);
     }
     @DeleteMapping("/{chapterId}")
     public ResponseEntity<Void> deleteChapter(
-            @Positive(message = "Chapter ID must be positive") 
+            @Positive(message = "Chapter ID must be positive")
             @PathVariable("chapterId") Long chapterId,
-            @Positive(message = "Course ID must be positive") 
+            @Positive(message = "Course ID must be positive")
             @PathVariable("courseId") Long courseId,
             HttpServletRequest request) {
-        
+
         log.info("Deleting chapter {} from course {}", chapterId, courseId);
-        
+
         Long creatorId =RequestAttributeExtractor.extractCreatorId(request);
-        
+
         // ✅ KHÔNG cần try-catch - để GlobalExceptionHandler xử lý
         chapterService.deleteChapter(chapterId, courseId, creatorId);
-        
+
         return ResponseEntity.noContent().build();
     }
+    @PutMapping("/{chapterID}/update")
+    public ResponseEntity<?> updateChapter(
+            @RequestParam String name,
+            HttpServletRequest request,
+            @PathVariable("chapterID") long chapterId) {
 
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Chapter name cannot be null, empty, or blank");
+        }
+        if (chapterId <= 0) {
+            throw new IllegalArgumentException("Chapter ID must be positive");
+        }
+        if (request == null) {
+            throw new NullPointerException("HttpServletRequest cannot be null");
+        }
+        Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
+        if (creatorId == null) {
+            throw new NullPointerException("Creator ID not found in request");
+        }
 
-   
-   
+        chapterService.updateChapter(creatorId, name, chapterId);
+        return ResponseEntity.noContent().build();
+    }
 }

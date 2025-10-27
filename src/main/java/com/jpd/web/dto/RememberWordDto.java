@@ -1,17 +1,24 @@
 package com.jpd.web.dto;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import java.time.LocalDate;
 
-@Data
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Data
 public class RememberWordDto {
-    long rwId;
-    String word;
-    String meaning;
-    String description;
+
+	
+	private long rwId;
+	@NotBlank
+	private String word;
+	@NotBlank
+	private String meaning;
+	@NotBlank
+	private String description;
 }

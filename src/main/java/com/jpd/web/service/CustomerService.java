@@ -71,12 +71,7 @@ public class CustomerService {
 
 		return savedCustomer;
 	}
-    public Customer getOrCreateAccount(String email) {
-        log.info("Getting or creating account for email: {}", email);
-        Customer customer = customerRepository.findByEmail(email).orElseThrow(()-> new CustomerNotFoundException(email));
 
-        return customer;
-    }
 	@Transactional
 	public UserInfoDto getOrCreateAccount(Jwt jwt) {
 		String email = jwt.getClaimAsString("email");
@@ -122,7 +117,7 @@ public class CustomerService {
 				.createdAt(LocalDateTime.now())
 				.message("customer with given name "+customer.getGivenName()+"vs email " +customer.getEmail()+" đăng kí để thành creator => status thành công")
 				.build();
-		this.sendNoticeService.sendNotice(n, email);
+//		this.sendNoticeService.sendNotice(n, email);
 		if (existingCreator.isPresent()) {
 			log.warn("Creator profile already exists for email: {}", email);
 			throw new CreatorAlreadyExistsException("You already have a creator profile");

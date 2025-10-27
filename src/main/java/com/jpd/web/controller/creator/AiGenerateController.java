@@ -60,7 +60,7 @@ public class AiGenerateController {
 	    LocalDateTime now = LocalDateTime.now();
 	    LocalDateTime today0h = now.toLocalDate().atStartOfDay();
 	    
-	    // Reset nếu lastUpdate < hôm nay 0h
+	    // Reset nếu lastUpdate < hn     ôm nay 0h
 	    if (record.getLastUpdate().isBefore(today0h)) {
 	        record.setNumber(1);
 	        record.setLastUpdate(now);
@@ -102,4 +102,5 @@ public class AiGenerateController {
 	 * 
 	 * return ResponseEntity.status(HttpStatus.CREATED).body(features); }
 	 */
+	
 }

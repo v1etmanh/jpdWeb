@@ -27,7 +27,7 @@ public class FileUploadService {
 	@Autowired
 	private FireBaseService fireBaseService;
 	public String saveImgIntoFirebase(long creatorId,MultipartFile img,TypeOfFile type) throws IllegalAccessException {
-
+		    
 		Creator creator=	validationResources.validateCreatorExists(creatorId);
 		try {
 			String url= this.fireBaseService.uploadFile(img, type);
@@ -42,6 +42,6 @@ public class FileUploadService {
 			// TODO: handle exception
 			throw new ApiException("error to save file");
 		}
-
+		
 	}
 }

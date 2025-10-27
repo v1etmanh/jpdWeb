@@ -32,21 +32,15 @@ public class WritingQuestion extends ModuleContent {
     private String imageUrl;
     @Enumerated(EnumType.STRING)
     private TaskTypeCategory taskTypeCategory;
+  
     @ElementCollection
     @CollectionTable(
-        name = "writing_criterias",
+        name = "writing_templates",
         joinColumns = @JoinColumn(name = "mc_id")
     )
-    @Column(name = "criteria")
-    
-    private List<String> criterias = new ArrayList<>();
-    // table này chỉ tồn tại nếu url img !=null + this report categories 
-    @ElementCollection
-    @CollectionTable(
-        name = "writing_features",
-        joinColumns = @JoinColumn(name = "mc_id")
-    )
-    @Column(name = "feature")
-    private List<String> features = new ArrayList<>();
+    @Column(columnDefinition = "LONGTEXT", name = "template")
+    @Lob
+    private List<String> templates = new ArrayList<>();
+
     
 }

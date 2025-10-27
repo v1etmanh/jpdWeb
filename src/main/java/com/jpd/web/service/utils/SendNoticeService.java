@@ -5,6 +5,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.jpd.web.dto.NoticeForm;
+import com.jpd.web.exception.EmailSendingFailedException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +29,7 @@ public class SendNoticeService {
     } catch (Exception e) {
       log.error("Failed to send email to {}: {}", recipientEmail, e.getMessage(), e);
       notice.setEmailSent(false);
-      throw new RuntimeException("Không thể gửi email", e);
+      throw new EmailSendingFailedException(recipientEmail, e);
     }
   }
 
@@ -41,4 +42,26 @@ public class SendNoticeService {
       "Chúng tôi mong bạn cống hiến cho cộng đồng học tập tích cực.\n\n" +
       "Trân trọng,\nĐội ngũ hỗ trợ";
   }
+  public void sendNoticePayment(NoticeForm notice, String recipientEmail) {
+      try{
+          SimpleMailMessage message = new SimpleMailMessage();
+          message.setTo(recipientEmail);
+          message.setSubject("Thông báo thanh toán ");
+            message.setText(buildEmailContentPayment(notice));
+            mailSender.send(message);
+            notice.setEmailSent(true);
+            log.info("Email sent successfully to: {}", recipientEmail);
+      }catch (Exception e){
+            log.error("Failed to send email to {}: {}", recipientEmail, e.getMessage(), e);
+            notice.setEmailSent(false);
+            throw new EmailSendingFailedException(recipientEmail, e);
+      }
+  }
+
+    private String buildEmailContentPayment(NoticeForm notice) {
+        return "Xin chào,\n\n"
+                + notice.getMessage() + "\n\n"
+                + "Thời gian: " + notice.getCreatedAt() + "\n\n"
+                + "Trân trọng,\nĐội ngũ hỗ trợ.";
+    }
 }

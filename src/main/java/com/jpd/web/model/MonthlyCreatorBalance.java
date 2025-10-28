@@ -32,7 +32,7 @@ public class MonthlyCreatorBalance {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("creator-monthlyBalance")
     private Creator creator;
     
     @Column(nullable = false)

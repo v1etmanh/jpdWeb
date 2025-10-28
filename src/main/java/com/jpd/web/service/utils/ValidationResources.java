@@ -10,6 +10,7 @@ import com.jpd.web.exception.ChapterNotFoundException;
 import com.jpd.web.exception.CourseNotFoundException;
 import com.jpd.web.exception.CreatorNotFoundException;
 import com.jpd.web.exception.CustomerNotFoundException;
+import com.jpd.web.exception.KahootNotFoundException;
 import com.jpd.web.exception.ModuleNotBelongsToChapterException;
 import com.jpd.web.exception.ModuleNotFoundException;
 import com.jpd.web.exception.UnauthorizedException;
@@ -18,12 +19,14 @@ import com.jpd.web.model.Course;
 import com.jpd.web.model.Creator;
 import com.jpd.web.model.Customer;
 import com.jpd.web.model.Enrollment;
+import com.jpd.web.model.KahootListFunction;
 import com.jpd.web.model.ModuleContent;
 import com.jpd.web.repository.ChapterRepository;
 import com.jpd.web.repository.CourseRepository;
 import com.jpd.web.repository.CreatorRepository;
 import com.jpd.web.repository.CustomerRepository;
 import com.jpd.web.repository.EnrollmentRepository;
+import com.jpd.web.repository.KahootRepository;
 import com.jpd.web.repository.ModuleRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -38,6 +41,28 @@ public class ValidationResources {
 	    private final  ModuleRepository moduleRepository;
 	    private final EnrollmentRepository enrollmentRepository;
 	    private final CustomerRepository customerRepository;
+	    private final KahootRepository kahootRepository;
+	    public  KahootListFunction validateKahootOwnership(Long kahootId, Long creatorId) {
+	        log.debug("Validating course {} ownership for creator {}", kahootId, creatorId);
+	        
+	        // Validate creator exists
+	        Creator creator = creatorRepository.findById(creatorId)
+	                .orElseThrow(() -> new CreatorNotFoundException(creatorId));
+	        
+	        // Validate course exists
+	        KahootListFunction kh = kahootRepository.findById(kahootId)
+	                .orElseThrow(() -> new KahootNotFoundException(kahootId));
+	        
+	        // Validate ownership
+	        if (kh.getCreator().getCreatorId()!=(creatorId)) {
+	            log.warn("Creator {} attempted to access course {} owned by creator {}", 
+	                    creatorId,kahootId);
+	            throw new UnauthorizedException("You don't have permission to modify this course");
+	        }
+	        
+	        log.debug("Course {} ownership validated successfully for creator {}", kahootId, creatorId);
+	        return kh;
+	    }
 	public  Course validateCourseOwnership(Long courseId, Long creatorId) {
         log.debug("Validating course {} ownership for creator {}", courseId, creatorId);
         

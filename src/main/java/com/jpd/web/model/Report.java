@@ -2,6 +2,8 @@ package com.jpd.web.model;
 
 import org.springframework.data.convert.ReadingConverter;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.annotation.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,9 +34,11 @@ private String detail;
 
 @ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "course_id")
+@JsonBackReference("course-report")
 private Course course;
 
 @ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "customer_id")
+@JsonBackReference("customer-report")
 private Customer customer;
 }

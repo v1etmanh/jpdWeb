@@ -21,7 +21,7 @@ import java.util.List;
 public class Creator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
+    
     @Column(name = "creator_id")
     private long creatorId;
     @Column(nullable = false)
@@ -58,18 +58,23 @@ public class Creator {
 
     //link to Course
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    @JsonManagedReference
+    @JsonManagedReference("creator-course")
     private List<Course> courses;
 
-    //link to Withdraw
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    @JsonManagedReference
+    @JsonManagedReference("creator-kahoot")
+    private List<KahootListFunction> kahootListFunctions;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference("creator-withdraw")
     private List<Withdraw> withdrawList;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    @JsonManagedReference
-    private List<PayoutTracking>payoutTrackings ;
+    @JsonManagedReference("creator-payout")
+    private List<PayoutTracking> payoutTrackings;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    @JsonManagedReference
+    @JsonManagedReference("creator-monthlyBalance")
     private List<MonthlyCreatorBalance> monthlyBalances;
 
 }

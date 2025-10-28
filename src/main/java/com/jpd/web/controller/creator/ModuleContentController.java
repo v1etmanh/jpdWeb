@@ -40,8 +40,7 @@ public class ModuleContentController {
 																				 @Positive @PathVariable("courseId") Long courseId,
 																				 HttpServletRequest request) {
 		//return
-		 System.out.print("da");
-		long creatorId=RequestAttributeExtractor.extractCreatorId(request);
+		 System.out.print("da");long creatorId=RequestAttributeExtractor.extractCreatorId(request);
 		List<ModuleContent>mds=moduleContentService.getModuleContentsByTypeAndModuleId(typeOfContent,moduleId,chapterId,courseId,creatorId);
      
 		return ResponseEntity.ok().body(mds);

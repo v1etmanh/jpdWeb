@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,7 +34,7 @@ public class JaenConfig {
 	  CsrfTokenRequestAttributeHandler csrfTokenHandler=new CsrfTokenRequestAttributeHandler();
 		  http.csrf(csrfConfig->csrfConfig.csrfTokenRequestHandler(csrfTokenHandler)
 				  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				  .ignoringRequestMatchers("/api/*","/webhook/**"));
+				  .ignoringRequestMatchers("/api/*","/webhook/**","/api/redis-test/*","/api/quiz/*"));
 		  http.cors(corsCongif->corsCongif.configurationSource(new CorsConfigurationSource() {
 		  
 			@Override
@@ -53,9 +54,10 @@ public class JaenConfig {
 		  JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
 		  jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new JwtRoleConverted());
 		  http.authorizeHttpRequests(auth -> auth
-				      
+				  .requestMatchers("/api/redis-test/**").permitAll()
 				  //.requestMatchers("/actuator","/actuator/health","/actuator/health/**" ,"/actuator/error","/actuator/health","/actuator/info","/actuator/beans").permitAll()
-				  .requestMatchers("/actuator/**").hasRole("ADMIN")   
+				  .requestMatchers("/actuator/**").hasRole("ADMIN") 
+				
 				  .requestMatchers("/homepage/**","/api/**").permitAll() // Public course listing
 		            .requestMatchers( "/course/**", "/account/**","/upDirect/**").hasRole("USER")
 		            .requestMatchers("/webhook/**").permitAll().
@@ -73,5 +75,15 @@ public class JaenConfig {
 	    public InMemoryHttpExchangeRepository httpExchangeRepository() {
 	        return new InMemoryHttpExchangeRepository();
 	    }
+	 @Bean
+	 @Order(0) // Execute đầu tiên
+	 SecurityFilterChain websocketSecurityFilterChain(HttpSecurity http) throws Exception {
+	     return http
+	         .securityMatcher("/ws-quiz/**")
+	         .csrf(AbstractHttpConfigurer::disable)
+	         .cors(AbstractHttpConfigurer::disable)
+	         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+	         .build();
+	 }
 	
 }

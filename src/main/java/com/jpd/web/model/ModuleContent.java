@@ -54,12 +54,16 @@ public abstract class ModuleContent {
     protected TypeOfContent typeOfContent;
 
     //link to Module
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "module_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "module_id", nullable = true)
    // @JsonBackReference("module_modulecontent")
     @JsonIgnore
     protected Module module;
     
-
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "kahoot_id", nullable = true)
+   // @JsonBackReference("module_modulecontent")
+    @JsonBackReference
+    protected KahootListFunction kahootListFunction;
 
 }

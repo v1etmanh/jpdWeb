@@ -68,7 +68,7 @@ public class Course {
     //link to Creator
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "creator_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("creator-course")
     private Creator creator;
 
     //Link to chapter
@@ -83,7 +83,7 @@ public class Course {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course",fetch = FetchType.LAZY)
     @JsonManagedReference("course-report")
-    private List<Report> report;
+    private List<Report> reports;
 
     //link to Wishlist
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")

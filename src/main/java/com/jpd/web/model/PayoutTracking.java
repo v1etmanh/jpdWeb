@@ -2,6 +2,8 @@ package com.jpd.web.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,6 +32,7 @@ public class PayoutTracking {
     private TargetPayout targetPayout;
     @ManyToOne
     @JoinColumn(name="creator_id")
+    @JsonBackReference("creator-payout")
     private Creator creator;
     // constructors, getters, setters
  public PayoutTracking() {}

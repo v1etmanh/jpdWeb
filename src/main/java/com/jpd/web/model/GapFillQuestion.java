@@ -25,7 +25,7 @@ public class GapFillQuestion extends ModuleContent {
     private String feedback;
 
     //link to GapFillAnswer
-    @OneToMany(mappedBy = "gapfillQuestion",orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "gapfillQuestion",orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonManagedReference
     @ToString.Exclude
     private List<GapFillAnswer> answers;

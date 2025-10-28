@@ -1,0 +1,5 @@
+testCase,courseId,creatorId,courseOwnerId,shouldSucceed,expectedErrorType,expectedErrorMessage
+valid_ownership,1,1,1,true,,
+creator_not_found,1,999,1,false,CreatorNotFoundException,Creator not found with id
+course_not_found,999,1,1,false,CourseNotFoundException,Course not found with id
+unauthorized_access,1,2,1,false,UnauthorizedException,don't have permission

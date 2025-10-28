@@ -1,0 +1,3 @@
+testCase,customerEmail,shouldSucceed,expectedErrorType,expectedErrorMessage
+valid_customer,test@test.com,true,,
+customer_not_found,notfound@test.com,false,CustomerNotFoundException,notfound@test.com

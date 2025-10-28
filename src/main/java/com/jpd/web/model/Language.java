@@ -1,0 +1,5 @@
+package com.jpd.web.model;
+
+public enum Language {ENGLISH,VIETNAMESE,
+CHINESE,JAPANESE,KOREAN,FRENCH,GERMAN,SPANISH,ITALIAN,RUSSIAN,
+}

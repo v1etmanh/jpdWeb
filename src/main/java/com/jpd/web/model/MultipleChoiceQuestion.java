@@ -25,6 +25,10 @@ public class MultipleChoiceQuestion extends ModuleContent {
     @Lob
     private String feedback;
     //link to MultipleChoiceOption
+<<<<<<< HEAD
+=======
+    @OneToMany(mappedBy = "multiple_choice_question", cascade = CascadeType.ALL,orphanRemoval=true)
+>>>>>>> jpdWeb6/master
     @JsonManagedReference
     @ToString.Exclude  // ← THÊM annotation này
     private List<MultipleChoiceOption> options;

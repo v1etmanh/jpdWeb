@@ -54,9 +54,18 @@ public abstract class ModuleContent {
     protected TypeOfContent typeOfContent;
 
     //link to Module
+<<<<<<< HEAD
+=======
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "module_id", nullable = false)
+>>>>>>> jpdWeb6/master
    // @JsonBackReference("module_modulecontent")
     @JsonIgnore
     protected Module module;
     
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> jpdWeb6/master
 }

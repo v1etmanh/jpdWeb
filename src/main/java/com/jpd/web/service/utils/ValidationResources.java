@@ -10,7 +10,10 @@ import com.jpd.web.exception.ChapterNotFoundException;
 import com.jpd.web.exception.CourseNotFoundException;
 import com.jpd.web.exception.CreatorNotFoundException;
 import com.jpd.web.exception.CustomerNotFoundException;
+<<<<<<< HEAD
 import com.jpd.web.exception.KahootNotFoundException;
+=======
+>>>>>>> jpdWeb6/master
 import com.jpd.web.exception.ModuleNotBelongsToChapterException;
 import com.jpd.web.exception.ModuleNotFoundException;
 import com.jpd.web.exception.UnauthorizedException;
@@ -19,14 +22,20 @@ import com.jpd.web.model.Course;
 import com.jpd.web.model.Creator;
 import com.jpd.web.model.Customer;
 import com.jpd.web.model.Enrollment;
+<<<<<<< HEAD
 import com.jpd.web.model.KahootListFunction;
+=======
+>>>>>>> jpdWeb6/master
 import com.jpd.web.model.ModuleContent;
 import com.jpd.web.repository.ChapterRepository;
 import com.jpd.web.repository.CourseRepository;
 import com.jpd.web.repository.CreatorRepository;
 import com.jpd.web.repository.CustomerRepository;
 import com.jpd.web.repository.EnrollmentRepository;
+<<<<<<< HEAD
 import com.jpd.web.repository.KahootRepository;
+=======
+>>>>>>> jpdWeb6/master
 import com.jpd.web.repository.ModuleRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +50,7 @@ public class ValidationResources {
 	    private final  ModuleRepository moduleRepository;
 	    private final EnrollmentRepository enrollmentRepository;
 	    private final CustomerRepository customerRepository;
+<<<<<<< HEAD
 	    private final KahootRepository kahootRepository;
 	    public  KahootListFunction validateKahootOwnership(Long kahootId, Long creatorId) {
 	        log.debug("Validating course {} ownership for creator {}", kahootId, creatorId);
@@ -63,6 +73,8 @@ public class ValidationResources {
 	        log.debug("Course {} ownership validated successfully for creator {}", kahootId, creatorId);
 	        return kh;
 	    }
+=======
+>>>>>>> jpdWeb6/master
 	public  Course validateCourseOwnership(Long courseId, Long creatorId) {
         log.debug("Validating course {} ownership for creator {}", courseId, creatorId);
         

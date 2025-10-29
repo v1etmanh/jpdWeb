@@ -24,7 +24,7 @@ public class CommentFilterService {
     
     private void loadBlacklist() {
         try {
-            ClassPathResource resource = new ClassPathResource("blacklist.json");
+//            ClassPathResource resource = new ClassPathResource("");
             Gson gson = new Gson();
             
             Type type = new TypeToken<Map<String, Object>>(){}.getType();

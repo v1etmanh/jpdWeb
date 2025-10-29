@@ -185,7 +185,11 @@ public class PayPalService {
     /**
      * Kiểm tra xem khách hàng đã đăng ký khóa học chưa
      */
+<<<<<<< HEAD
     public void validateEnrollment(long courseId, long customerId) throws EnrollmentExistException {
+=======
+    private void validateEnrollment(long courseId, long customerId) throws EnrollmentExistException {
+>>>>>>> jpdWeb6/master
         Optional<Enrollment> existingEnrollment = enrollmentRepository
             .findByCourse_CourseIdAndCustomer_CustomerId(courseId, customerId);
         
@@ -199,10 +203,17 @@ public class PayPalService {
     /**
      * Lưu thông tin payment tracking
      */
+<<<<<<< HEAD
     private void savePaymentTracking(String paymentId, double amount, String description,
                                      long courseId, long customerId) {
         PaymentTracking tracking = PaymentTracking.builder()
         .paymentId(paymentId)
+=======
+    private void savePaymentTracking(String paymentId, double amount, String description, 
+                                     long courseId, long customerId) {
+        PaymentTracking tracking = PaymentTracking.builder()
+            .paymentId(paymentId)
+>>>>>>> jpdWeb6/master
             .status("CREATED")
             .amount(amount)
             .currency(DEFAULT_CURRENCY)
@@ -218,7 +229,11 @@ public class PayPalService {
     /**
      * Cập nhật trạng thái payment tracking
      */
+<<<<<<< HEAD
     public PaymentTracking updatePaymentTrackingStatus(String orderId, String status) {
+=======
+    private PaymentTracking updatePaymentTrackingStatus(String orderId, String status) {
+>>>>>>> jpdWeb6/master
         PaymentTracking tracking = paymentRepository.findById(orderId)
             .orElseThrow(() -> new RuntimeException("Payment tracking not found: " + orderId));
         
@@ -233,7 +248,11 @@ public class PayPalService {
     /**
      * Tạo enrollment và transaction cho khách hàng
      */
+<<<<<<< HEAD
     public void createEnrollmentAndTransaction(PaymentTracking tracking) {
+=======
+    private void createEnrollmentAndTransaction(PaymentTracking tracking) {
+>>>>>>> jpdWeb6/master
         Customer customer = customerRepository.findById(tracking.getCustomerId())
             .orElseThrow(() -> new RuntimeException("Customer not found: " + tracking.getCustomerId()));
         
@@ -272,7 +291,11 @@ public class PayPalService {
     /**
      * Cập nhật balance của creator (hiện tại chưa thực sự cộng tiền)
      */
+<<<<<<< HEAD
     public void updateCreatorBalance(long courseId) {
+=======
+    private void updateCreatorBalance(long courseId) {
+>>>>>>> jpdWeb6/master
         Course course = courseRepository.findById(courseId)
             .orElseThrow(() -> new RuntimeException("Course not found: " + courseId));
         
@@ -289,7 +312,11 @@ public class PayPalService {
     /**
      * Tạo mô tả cho payment
      */
+<<<<<<< HEAD
     public String generateDescription(long courseId, long customerId) {
+=======
+    private String generateDescription(long courseId, long customerId) {
+>>>>>>> jpdWeb6/master
         String timestamp = LocalDateTime.now()
             .format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         return String.format("Payment-%s-Course%d-Customer%d", timestamp, courseId, customerId);

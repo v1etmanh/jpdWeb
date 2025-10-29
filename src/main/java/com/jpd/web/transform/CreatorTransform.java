@@ -13,7 +13,10 @@ import com.jpd.web.model.AccessMode;
 import com.jpd.web.model.Course;
 import com.jpd.web.model.Creator;
 import com.jpd.web.model.Enrollment;
+<<<<<<< HEAD
 import com.jpd.web.model.MonthlyCreatorBalance;
+=======
+>>>>>>> jpdWeb6/master
 
 public class CreatorTransform {
 public static Creator transformFromCreatorDto(CreatorProfileDto creatorProfileDto) {
@@ -116,6 +119,7 @@ public static PopularCourseDTO transform(Course course) {
             .price(course.getPrice())
             .build();
 }
+<<<<<<< HEAD
 public static CreatorDashboardDTO transformFromMonthlyBalance(MonthlyCreatorBalance balance,List<PopularCourseDTO> popularCourseDTOs) {
     if (balance == null) {
         return null;
@@ -135,4 +139,7 @@ public static CreatorDashboardDTO transformFromMonthlyBalance(MonthlyCreatorBala
         .ppc(popularCourseDTOs)
         .build();
 }
+=======
+
+>>>>>>> jpdWeb6/master
 }

@@ -33,4 +33,7 @@ build/
 .vscode/
 # Firebase secret key
 src/main/resources/firebase-service-account.json
+<<<<<<< HEAD
 .cursor/
+=======
+>>>>>>> jpdWeb6/master

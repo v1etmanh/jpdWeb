@@ -97,6 +97,7 @@ public ResponseEntity<List<Withdraw>> HistoryTransaction(HttpServletRequest requ
 	List<Withdraw> ls=this.creatorService.historyTransaction(creatorId);
 	return ResponseEntity.ok(ls);
 }
+<<<<<<< HEAD
 @GetMapping("/getBalance")
 public ResponseEntity<Double> getBalance(HttpServletRequest request){
 	long creatorId= RequestAttributeExtractor.extractCreatorId(request);
@@ -104,4 +105,8 @@ public ResponseEntity<Double> getBalance(HttpServletRequest request){
 	double balance=this.creatorService.getblance(creatorId);
 	return ResponseEntity.ok(balance);
 }
+=======
+
+
+>>>>>>> jpdWeb6/master
 }

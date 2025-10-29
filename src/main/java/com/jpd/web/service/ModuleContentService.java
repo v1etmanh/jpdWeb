@@ -154,7 +154,11 @@ public class ModuleContentService {
 		for(ModuleContent md:mds) {
 			
 		Optional<ModuleContent> m=	this.moduleContentRepository.findById(md.getMcId());
+<<<<<<< HEAD
 
+=======
+		System.out.print(m.get());
+>>>>>>> jpdWeb6/master
 		if(m.isPresent())
 		 res.add(m.get());
 		}

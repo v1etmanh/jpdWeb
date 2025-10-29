@@ -24,6 +24,10 @@ public class MultipleChoiceOption {
     @Column(nullable = false)
     private boolean isCorrect;
 
+<<<<<<< HEAD
+=======
+    @ManyToOne()
+>>>>>>> jpdWeb6/master
     @JoinColumn(name = "mc_id", nullable = false)
     @JsonBackReference
     @ToString.Exclude  

@@ -4,11 +4,17 @@ package com.jpd.web.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.stream.Collectors;
 
 import com.jpd.web.exception.WithdrawException;
 import com.jpd.web.model.*;
 import com.jpd.web.repository.CourseRepository;
+=======
+
+import com.jpd.web.exception.WithdrawException;
+import com.jpd.web.model.*;
+>>>>>>> jpdWeb6/master
 import com.jpd.web.repository.CreatorRepository;
 import com.jpd.web.repository.WithdrawRepository;
 
@@ -21,7 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.jpd.web.dto.CreatorDashboardDTO;
 import com.jpd.web.dto.CreatorDto;
+<<<<<<< HEAD
 import com.jpd.web.dto.PopularCourseDTO;
+=======
+
+>>>>>>> jpdWeb6/master
 import com.jpd.web.exception.PaymentEmailAlreadyExistsException;
 import com.jpd.web.exception.PayoutLimitExceededException;
 import com.jpd.web.exception.UnauthorizedException;
@@ -40,8 +50,12 @@ Dashboard
 @Service
 @Slf4j
 public class CreatorService {
+<<<<<<< HEAD
 	@Autowired
 	 private  MonthlyBalanceService monthlyBalanceService;
+=======
+
+>>>>>>> jpdWeb6/master
 	@Autowired
 	private PayPalPayoutServiceV2 palPayoutServiceV2;
     @Value("${creator.withdraw.minimize_amount}")  // Có dấu $
@@ -57,8 +71,12 @@ public class CreatorService {
     private WithdrawRepository withdrawRepository;
     @Autowired
     private FireBaseService fireBaseService;
+<<<<<<< HEAD
     @Autowired
     private CourseRepository courseRepository;
+=======
+    
+>>>>>>> jpdWeb6/master
     @Autowired
     private CreatorRepository creatorRepository;
 	@Transactional()
@@ -69,6 +87,7 @@ public class CreatorService {
 
 		return CreatorTransform.transToCreatorDto(creator);
 	}
+<<<<<<< HEAD
 	public double getblance(Long creatorId) {
 		log.info("Retrieving account information for creator {}", creatorId);
 
@@ -76,6 +95,9 @@ public class CreatorService {
 
 		return creator.getBalance();
 	}
+=======
+
+>>>>>>> jpdWeb6/master
 	// upload paypalEmail
 
 	public void sendMoneyToVerify(long creatorId, String paypalEmail) {
@@ -157,8 +179,13 @@ public class CreatorService {
 	    if (amount <= 0 || amount > creator.getBalance()) {
 	        return false;
 	    }
+<<<<<<< HEAD
 
        return true;
+=======
+	    
+	    return true;
+>>>>>>> jpdWeb6/master
 	}
    public CreatorDashboardDTO retrieveStatictisInfo(long creatorId) {
 	   Creator c=validationResources.validateCreatorExists(creatorId);
@@ -166,6 +193,7 @@ public class CreatorService {
 		   System.out.print(c.getStatus());
 		   throw new UnauthorizedException("error to fget");
 }
+<<<<<<< HEAD
 
 	   MonthlyCreatorBalance currentMonthBalance =
 	            monthlyBalanceService.getCurrentMonthDashboard(creatorId);
@@ -179,6 +207,9 @@ public class CreatorService {
 	        // Transform sang DTO
 	        return CreatorTransform.transformFromMonthlyBalance(currentMonthBalance,popularCourseDTOs);
 
+=======
+	   return CreatorTransform.transformFromCreator(c);
+>>>>>>> jpdWeb6/master
    }
    public void upLoadCertificate(long creatorId,MultipartFile multipartFile) throws FileUploadException {	   
 	   Creator c=validationResources.validateCreatorExists(creatorId);

@@ -40,7 +40,12 @@ public class ModuleContentController {
 																				 @Positive @PathVariable("courseId") Long courseId,
 																				 HttpServletRequest request) {
 		//return
+<<<<<<< HEAD
 		 System.out.print("da");long creatorId=RequestAttributeExtractor.extractCreatorId(request);
+=======
+		 System.out.print("da");
+		long creatorId=RequestAttributeExtractor.extractCreatorId(request);
+>>>>>>> jpdWeb6/master
 		List<ModuleContent>mds=moduleContentService.getModuleContentsByTypeAndModuleId(typeOfContent,moduleId,chapterId,courseId,creatorId);
      
 		return ResponseEntity.ok().body(mds);

@@ -25,6 +25,10 @@ public class GapFillQuestion extends ModuleContent {
     private String feedback;
 
     //link to GapFillAnswer
+<<<<<<< HEAD
+=======
+    @OneToMany(mappedBy = "gapfillQuestion",orphanRemoval = true, cascade = CascadeType.ALL)
+>>>>>>> jpdWeb6/master
     @JsonManagedReference
     @ToString.Exclude
     private List<GapFillAnswer> answers;

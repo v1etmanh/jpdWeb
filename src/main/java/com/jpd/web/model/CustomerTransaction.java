@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+<<<<<<< HEAD
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,14 @@ import java.time.LocalDateTime;
         @Index(name = "idx_transaction_created_at", columnList = "created_at"),
         @Index(name = "idx_transaction_enrollment", columnList = "enroll_id")
 })
+=======
+
+import java.sql.Date;
+import java.time.LocalDateTime;
+
+@Entity
+
+>>>>>>> jpdWeb6/master
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -26,11 +35,16 @@ public class CustomerTransaction {
     @Column(name = "transaction_id")
     private long transactionID;
 
+<<<<<<< HEAD
     // link to Enrollment
+=======
+    //link to Enrollment
+>>>>>>> jpdWeb6/master
     @OneToOne
     @JoinColumn(name = "enroll_id")
     private Enrollment enrollment;
 
+<<<<<<< HEAD
     @Column(name = "content", length = 255)
     private String content;
 
@@ -50,12 +64,25 @@ public class CustomerTransaction {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+=======
+
+
+    @Column(name = "content", length = 255)
+    private String content;
+    private String status; // CREATED, PENDING, COMPLETED, FAILED
+    private Double amount;
+    private String currency;
+
+    private Date createdAt;
+    private Date updatedAt;
+>>>>>>> jpdWeb6/master
 
     @Column(name = "admin_get", nullable = false)
     private double adminGet;
 
     @Column(name = "creator_get", nullable = false)
     private double creatorGet;
+<<<<<<< HEAD
 
     @Column(name = "payment_id", length = 100)
     private String paymentId;
@@ -63,4 +90,7 @@ public class CustomerTransaction {
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 20)
     private PaymentMethod paymentMethod;
+=======
+    private String paymentId;
+>>>>>>> jpdWeb6/master
 }

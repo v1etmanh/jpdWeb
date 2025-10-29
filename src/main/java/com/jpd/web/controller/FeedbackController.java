@@ -1,5 +1,9 @@
 package com.jpd.web.controller;
 
+<<<<<<< HEAD
+=======
+import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> jpdWeb6/master
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jpd.web.service.FeedbackService;
 
+<<<<<<< HEAD
 @RestController
 @RequestMapping("/api/customer/feedback")
 public class FeedbackController {
@@ -33,3 +38,20 @@ public class FeedbackController {
         return ResponseEntity.noContent().build();
     }
 }
+=======
+import jakarta.websocket.server.PathParam;
+
+@RestController
+@RequestMapping("/api/customer/feedback")
+public class FeedbackController {
+@Autowired
+private FeedbackService feedbackService;
+@PostMapping("/{courseId}")
+public ResponseEntity<?>addFeedback(@PathVariable("courseId") long courseId, @RequestParam("detail")String detail,
+		@AuthenticationPrincipal Jwt jwt){
+	String email=jwt.getClaimAsString("email");
+	this.feedbackService.addFeedback(email, courseId, detail);
+	return ResponseEntity.noContent().build();
+}
+}
+>>>>>>> jpdWeb6/master

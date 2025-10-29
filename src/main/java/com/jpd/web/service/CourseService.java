@@ -158,7 +158,13 @@ public class CourseService {
 	}
   public List<PopularCourseDTO > retrieveCCourse(long creatorId){
 	  Creator creator=this.resourceValidator.validateCreatorExists(creatorId);
+<<<<<<< HEAD
 	  List<Course> paidCourses = creator.getCourses();
+=======
+	  List<Course> paidCourses = creator.getCourses().stream()
+	            .filter(c -> c.getAccessMode() == AccessMode.PAID)
+	            .toList();
+>>>>>>> jpdWeb6/master
 	  List<PopularCourseDTO>ppc=paidCourses.stream().map(e->CreatorTransform.transform(e)).collect(Collectors.toList());
      return ppc;
   }

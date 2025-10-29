@@ -1,5 +1,6 @@
 package com.jpd.web.repository;
 
+<<<<<<< HEAD
 import com.jpd.web.model.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,13 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     Long countByCreator_CreatorIdAndCreatedAtAfter(
             @Param("creatorId") Long creatorId,
             @Param("since") LocalDateTime since);
+=======
+import org.springframework.data.jpa.repository.support.CrudMethodMetadata;
+import org.springframework.data.repository.CrudRepository;
+
+import com.jpd.web.model.Report;
+
+public interface ReportRepository extends CrudRepository<Report, Long>{
+
+>>>>>>> jpdWeb6/master
 }

@@ -1,5 +1,9 @@
 package com.jpd.web.model;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> jpdWeb6/master
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,7 +12,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+<<<<<<< HEAD
 import java.time.LocalDate;
+=======
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+>>>>>>> jpdWeb6/master
 import java.util.List;
 
 @Entity
@@ -19,11 +29,15 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Course {
+<<<<<<< HEAD
 
+=======
+>>>>>>> jpdWeb6/master
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private long courseId;
+<<<<<<< HEAD
 
     @Enumerated(EnumType.STRING)
     private Language language;
@@ -32,12 +46,20 @@ public class Course {
     @Column(name="teaching_language")
     private Language teachingLanguage;
 
+=======
+    @Enumerated(EnumType.STRING)
+    private Language language;
+    @Enumerated(EnumType.STRING)
+    @Column(name="teaching_language")
+    private Language teachingLanguage;
+>>>>>>> jpdWeb6/master
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String description;
 
     @Column(name = "isban", nullable = false)
     private boolean isBan;
+<<<<<<< HEAD
 
     @Column(name = "ispublic", nullable = false)
     private boolean isPublic;
@@ -60,12 +82,35 @@ public class Course {
     @Column(name = "target_audience")
     private String targetAudience;
 
+=======
+    @Column(name = "ispublic", nullable = false)
+    private boolean isPublic;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    @Column(name = "last_update")
+    private LocalDate lastUpdate;
+    @Column(name = "learning_object")
+    private String learningObject;
+   
+    private String name;
+    private double price;
+    private String requirements;
+   
+
+    @Column(name = "target_audience")
+    private String targetAudience;
+   
+   
+>>>>>>> jpdWeb6/master
     @Column(name = "url_img")
     private String urlImg;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "access_mode", nullable = false)
     private AccessMode accessMode;
+<<<<<<< HEAD
 
     @Column(name = "join_key")
     private String joinKey;
@@ -77,10 +122,23 @@ public class Course {
     private Creator creator;
 
     // Link to chapter
+=======
+    @Column(name = "join_key")
+    private String joinKey;
+
+    //link to Creator
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "creator_id", nullable = false)
+    @JsonBackReference
+    private Creator creator;
+
+    //Link to chapter
+>>>>>>> jpdWeb6/master
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     @JsonManagedReference
     private List<Chapter> chapters;
 
+<<<<<<< HEAD
     // Link to Enrollment
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
     @JsonManagedReference("course-enrollment")
@@ -92,6 +150,18 @@ public class Course {
     private List<Report> reports;
 
     // link to Wishlist
+=======
+    //Link to Enrollment
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course",fetch = FetchType.LAZY)
+    @JsonManagedReference("course-enrollment")
+    private List<Enrollment> enrollments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course",fetch = FetchType.LAZY)
+    @JsonManagedReference("course-report")
+    private List<Report> report;
+
+    //link to Wishlist
+>>>>>>> jpdWeb6/master
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     private List<Wishlist> wishlists;
 }

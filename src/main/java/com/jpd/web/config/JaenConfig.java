@@ -18,7 +18,10 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+<<<<<<< HEAD
 import com.jpd.web.filter.AdminFilter;
+=======
+>>>>>>> jpdWeb6/master
 import com.jpd.web.filter.CreatorFilter;
 import com.jpd.web.model.FlashCard;
 import com.jpd.web.model.TypeOfContent;
@@ -29,6 +32,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Configuration
 public class JaenConfig {
 	@Bean
+<<<<<<< HEAD
 	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, AdminFilter adminFilter) throws Exception {
 		http.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		CsrfTokenRequestAttributeHandler csrfTokenHandler = new CsrfTokenRequestAttributeHandler();
@@ -42,11 +46,27 @@ public class JaenConfig {
 				CorsConfiguration corsF = new CorsConfiguration();
 				corsF.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
 				corsF.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
+=======
+	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)throws Exception{
+	http.sessionManagement(sessionConfig->sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+	  CsrfTokenRequestAttributeHandler csrfTokenHandler=new CsrfTokenRequestAttributeHandler();
+		  http.csrf(csrfConfig->csrfConfig.csrfTokenRequestHandler(csrfTokenHandler)
+				  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				  .ignoringRequestMatchers("/api/*","/webhook/**"));
+		  http.cors(corsCongif->corsCongif.configurationSource(new CorsConfigurationSource() {
+		  
+			@Override
+			public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+				CorsConfiguration corsF=new CorsConfiguration();
+				corsF.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+				corsF.setAllowedMethods(Arrays.asList("GET","POST","DELETE","PUT"));
+>>>>>>> jpdWeb6/master
 				corsF.setAllowCredentials(true);
 				corsF.setAllowedHeaders(Collections.singletonList("*"));
 				corsF.setMaxAge(3600L);
 				return corsF;
 			}
+<<<<<<< HEAD
 		}));
 
 		http.formLogin(AbstractHttpConfigurer::disable);
@@ -82,4 +102,34 @@ public class JaenConfig {
 		return new InMemoryHttpExchangeRepository();
 	}
 
+=======
+	})				
+		  );
+		 
+		  http.formLogin(AbstractHttpConfigurer::disable);
+		  JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+		  jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new JwtRoleConverted());
+		  http.authorizeHttpRequests(auth -> auth
+				      
+				  //.requestMatchers("/actuator","/actuator/health","/actuator/health/**" ,"/actuator/error","/actuator/health","/actuator/info","/actuator/beans").permitAll()
+				  .requestMatchers("/actuator/**").hasRole("ADMIN")   
+				  .requestMatchers("/homepage/**","/api/**").permitAll() // Public course listing
+		            .requestMatchers( "/course/**", "/account/**","/upDirect/**").hasRole("USER")
+		            .requestMatchers("/webhook/**").permitAll().
+		            requestMatchers("/swagger-ui/**",
+		                    "/swagger-ui.html",
+		                    "/v3/api-docs/**",
+		                    "/v3/api-docs.yaml",
+		                    "/actuator/**").permitAll()
+		            .anyRequest().authenticated()
+		        );
+		  http.oauth2ResourceServer(rsc->rsc.jwt(JwtConfigurer->JwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+		return http.build();
+	}
+	 @Bean
+	    public InMemoryHttpExchangeRepository httpExchangeRepository() {
+	        return new InMemoryHttpExchangeRepository();
+	    }
+	
+>>>>>>> jpdWeb6/master
 }

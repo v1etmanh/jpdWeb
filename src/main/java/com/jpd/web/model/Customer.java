@@ -8,6 +8,10 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Date;
 import java.time.LocalDate;
+<<<<<<< HEAD
+=======
+import java.time.LocalDateTime;
+>>>>>>> jpdWeb6/master
 import java.util.List;
 
 
@@ -26,7 +30,11 @@ public class Customer {
     private long customerId;
     @Column(name = "create_date")
     @CreationTimestamp
+<<<<<<< HEAD
     private Date createDate;
+=======
+    private LocalDateTime createDate;
+>>>>>>> jpdWeb6/master
     private String email;
     @Column(name = "family_name")
     private String familyName;
@@ -55,8 +63,11 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonManagedReference("customer-enrollment")
     private List<Enrollment> enrollments;
+<<<<<<< HEAD
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference("customer-report")
     private List<Report>reports;
 
+=======
+>>>>>>> jpdWeb6/master
 }

@@ -1,6 +1,10 @@
 package com.jpd.web.dto;
 
 import java.time.LocalDate;
+<<<<<<< HEAD
+=======
+import java.time.LocalDateTime;
+>>>>>>> jpdWeb6/master
 import java.util.List;
 
 import com.jpd.web.model.Chapter;
@@ -24,8 +28,13 @@ public class CourseDescriptionDto {
     private Language teachingLanguage;
     private double price;
     private String urlImg;
+<<<<<<< HEAD
     private LocalDate createdAt;
     private LocalDate lastUpdate;
+=======
+    private LocalDateTime createdAt;
+    private LocalDateTime lastUpdate;
+>>>>>>> jpdWeb6/master
     private boolean isPublic;
     private boolean isBan;
     private String accessMode;

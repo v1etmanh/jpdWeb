@@ -41,6 +41,10 @@ public class Withdraw {
     //link to Creator
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "creator_id")
+<<<<<<< HEAD
+=======
+    @JsonBackReference
+>>>>>>> jpdWeb6/master
     private Creator creator;
 
 

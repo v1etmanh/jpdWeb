@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/customer/evaluate")
 @Slf4j
 public class AIEvaluateController {
+<<<<<<< HEAD
 @Autowired
 private AiEvaluateService aiEvaluateService;
 @Autowired
@@ -60,3 +61,39 @@ public ResponseEntity<?> evaluateWritingText(@RequestBody WritingTextEvaluateFor
 	return ResponseEntity.ok(score);
 }
 }
+=======
+    @Autowired
+    private AiEvaluateService aiEvaluateService;
+    @Autowired
+    private AIService aiService;
+
+    @PostMapping("/evaluate")
+    public ResponseEntity<SemanticResult> evaluateAnswer(
+            @RequestParam("audio") MultipartFile file,
+            @RequestParam("sentence") String expectedAnswer,
+            @RequestParam(value = "language", required = false) String language, @AuthenticationPrincipal Jwt jwt) {
+        String email = jwt.getClaimAsString("email");
+
+
+        try {
+
+            SemanticResult result = aiEvaluateService.evaluateSpeaking(file, expectedAnswer, language);
+
+
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            log.error("Lỗi khi xử lý audio: ", e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/evaluateWriting")
+    public ResponseEntity<?> evaluateWritingText(@RequestBody WritingTextEvaluateForm form) {
+        System.out.print(form.getWritingText());
+        WritingScores score = this.aiService.evaluateWritingSimple(form.getWritingText(), form.getLanguage());
+        System.out.print(score);
+        return ResponseEntity.ok(score);
+    }
+}
+>>>>>>> jpdWeb6/master

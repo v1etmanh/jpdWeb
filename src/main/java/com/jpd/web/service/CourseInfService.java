@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.jpd.web.dto.*;
 import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.jpd.web.dto.CourseDescriptionDto;
-import com.jpd.web.dto.CourseInfDto;
-import com.jpd.web.dto.CourseLearningCardDto;
-import com.jpd.web.dto.CreatorSimpleDto;
-import com.jpd.web.dto.CustomerSimpleDto;
-import com.jpd.web.dto.FeedbackSimpleDto;
 import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.model.Chapter;
 import com.jpd.web.model.Course;
@@ -120,6 +117,16 @@ public class CourseInfService {
 		}
 		return result;
 	}
+
+    // tìm kiếm theo name + language+ creatorName+description and paging
+    public Page<CourseSearchDto> searchAndPagination(String searchKey, Pageable pageable) {
+        if (searchKey.trim() == null)
+            return null;
+
+        Page<CourseSearchDto> coursePage = courseRepository.searchAndCalculate(searchKey, pageable);
+
+        return coursePage;
+    }
 
 	@Transactional()
 	public CourseDescriptionDto getCourseDescription(long courseId) {

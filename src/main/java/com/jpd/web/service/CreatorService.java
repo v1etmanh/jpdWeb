@@ -157,8 +157,8 @@ public class CreatorService {
 	    if (amount <= 0 || amount > creator.getBalance()) {
 	        return false;
 	    }
-	    
-	    return true;
+
+       return true;
 	}
    public CreatorDashboardDTO retrieveStatictisInfo(long creatorId) {
 	   Creator c=validationResources.validateCreatorExists(creatorId);

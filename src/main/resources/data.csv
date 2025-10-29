@@ -1,0 +1,11 @@
+testName,mcId1,mcId2,mcId3,expectedInsertCount,expectedDeleteCount
+Insert_NewContents_Only,null,null,null,3,0
+Update_ExistingContents_Only,201,202,203,3,3
+Mixed_NewAndExisting,null,301,null,3,1
+Single_NewContent,null,,,1,0
+Single_ExistingContent,401,,,1,1
+Empty_ContentList,,,,,0,0
+Negative_IDs_AsNew,-1,-2,,2,0
+Two_New_One_Existing,null,null,501,3,1
+All_Existing_Contents,601,602,603,3,3
+One_New_Two_Existing,null,701,702,3,2

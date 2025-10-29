@@ -97,6 +97,11 @@ public ResponseEntity<List<Withdraw>> HistoryTransaction(HttpServletRequest requ
 	List<Withdraw> ls=this.creatorService.historyTransaction(creatorId);
 	return ResponseEntity.ok(ls);
 }
+@GetMapping("/getBalance")
+public ResponseEntity<Double> getBalance(HttpServletRequest request){
+	long creatorId= RequestAttributeExtractor.extractCreatorId(request);
 
-
+	double balance=this.creatorService.getblance(creatorId);
+	return ResponseEntity.ok(balance);
+}
 }

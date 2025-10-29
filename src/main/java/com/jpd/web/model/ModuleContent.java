@@ -54,12 +54,9 @@ public abstract class ModuleContent {
     protected TypeOfContent typeOfContent;
 
     //link to Module
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "module_id", nullable = false)
    // @JsonBackReference("module_modulecontent")
     @JsonIgnore
     protected Module module;
     
-
 
 }

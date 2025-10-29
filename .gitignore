@@ -31,9 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
-
- # Firebase credentials
-   firebase-service-account.json
-   src/main/resources/firebase-service-account.json
 # Firebase secret key
 src/main/resources/firebase-service-account.json

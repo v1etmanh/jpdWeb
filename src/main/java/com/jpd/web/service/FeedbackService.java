@@ -49,17 +49,18 @@ public void addFeedback(String email,long courseId,String detail,int rate) {
 
     public void deleteFeedback(String email, long courseId) {
         Customer c=this.validationResources.validateCustomerExist(email);
-        Feedback feedback=validationResources.validateFeedbackBelongCustomer(courseId, c.getCustomerId());
-        this.feedbackRepository.delete(feedback);
-        return;
+        Optional<Feedback> feedback=validationResources.validateFeedbackBelongCustomer(courseId, c.getCustomerId());
+       if(feedback.isEmpty()||feedback.isPresent())throw new UnauthorizedException("you dont own this feedback");
+        this.feedbackRepository.delete(feedback.get());
     }
     public FeedbackSimpleDto updateFeedback(String email, long courseId, String detail, int rate) {
         Customer c=this.validationResources.validateCustomerExist(email);
-        Feedback feedback=validationResources.validateFeedbackBelongCustomer(courseId, c.getCustomerId());
+        Optional<Feedback> feedback=validationResources.validateFeedbackBelongCustomer(courseId, c.getCustomerId());
         if(commentFilterService.isToxic(detail))throw new FeedBackIligalException(detail);
-        feedback.setContent(detail);
-        feedback.setRate(rate);
-         this.feedbackRepository.save(feedback);
-        return FeedbackTransform.tofeedbackDto(feedback);
+        if(feedback.isEmpty())throw new UnauthorizedException("you dont own this feedback");
+        feedback.get().setContent(detail);
+        feedback.get().setRate(rate);
+         this.feedbackRepository.save(feedback.get());
+        return FeedbackTransform.tofeedbackDto(feedback.get());
 }
 }

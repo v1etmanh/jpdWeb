@@ -168,12 +168,12 @@ public class ValidationResources {
 		    log.debug("Complete ownership chain validated successfully");
 		    return module;
 		}
-        public Feedback validateFeedbackBelongCustomer(long courseId, long customerId) {
+        public Optional<Feedback> validateFeedbackBelongCustomer(long courseId, long customerId) {
             log.debug("Validating feedback belongs to customer {} for course {}", customerId, courseId);
             Enrollment enrollment = enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(courseId, customerId)
                     .orElseThrow(() -> new UnauthorizedException("You are not enrolled in this course"));
-            Optional<Feedback> feedback = feedbackRepository.findFeedbackByEnrollmentId(enrollment.getEnrollId()).orElseThrow(()->new UnauthorizedException("Feedback not found for this enrollment"));
+            Optional<Feedback> feedback = feedbackRepository.findFeedbackByEnrollmentId(enrollment.getEnrollId());
             log.debug("Feedback validated successfully for customer {} and course {}", customerId, courseId);
-            return feedback.get();
+            return feedback;
         }
 }

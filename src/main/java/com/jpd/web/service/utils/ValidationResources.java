@@ -2,6 +2,8 @@ package com.jpd.web.service.utils;
 
 import java.util.Optional;
 
+import com.jpd.web.model.*;
+import com.jpd.web.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,20 +16,6 @@ import com.jpd.web.exception.KahootNotFoundException;
 import com.jpd.web.exception.ModuleNotBelongsToChapterException;
 import com.jpd.web.exception.ModuleNotFoundException;
 import com.jpd.web.exception.UnauthorizedException;
-import com.jpd.web.model.Chapter;
-import com.jpd.web.model.Course;
-import com.jpd.web.model.Creator;
-import com.jpd.web.model.Customer;
-import com.jpd.web.model.Enrollment;
-import com.jpd.web.model.KahootListFunction;
-import com.jpd.web.model.ModuleContent;
-import com.jpd.web.repository.ChapterRepository;
-import com.jpd.web.repository.CourseRepository;
-import com.jpd.web.repository.CreatorRepository;
-import com.jpd.web.repository.CustomerRepository;
-import com.jpd.web.repository.EnrollmentRepository;
-import com.jpd.web.repository.KahootRepository;
-import com.jpd.web.repository.ModuleRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +30,7 @@ public class ValidationResources {
 	    private final EnrollmentRepository enrollmentRepository;
 	    private final CustomerRepository customerRepository;
 	    private final KahootRepository kahootRepository;
+        private final FeedbackRepository feedbackRepository;
 	    public  KahootListFunction validateKahootOwnership(Long kahootId, Long creatorId) {
 	        log.debug("Validating course {} ownership for creator {}", kahootId, creatorId);
 	        
@@ -179,4 +168,12 @@ public class ValidationResources {
 		    log.debug("Complete ownership chain validated successfully");
 		    return module;
 		}
+        public Feedback validateFeedbackBelongCustomer(long courseId, long customerId) {
+            log.debug("Validating feedback belongs to customer {} for course {}", customerId, courseId);
+            Enrollment enrollment = enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(courseId, customerId)
+                    .orElseThrow(() -> new UnauthorizedException("You are not enrolled in this course"));
+            Optional<Feedback> feedback = feedbackRepository.findFeedbackByEnrollmentId(enrollment.getEnrollId()).orElseThrow(()->new UnauthorizedException("Feedback not found for this enrollment"));
+            log.debug("Feedback validated successfully for customer {} and course {}", customerId, courseId);
+            return feedback.get();
+        }
 }

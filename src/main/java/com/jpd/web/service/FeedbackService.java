@@ -1,16 +1,15 @@
 package com.jpd.web.service;
 
-import java.util.List;
 import java.util.Optional;
 
+import com.jpd.web.dto.FeedbackSimpleDto;
+import com.jpd.web.transform.FeedbackTransform;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jpd.web.exception.BusinessException;
 import com.jpd.web.exception.ExceedLimitRequestException;
 import com.jpd.web.exception.FeedBackIligalException;
 import com.jpd.web.exception.UnauthorizedException;
-import com.jpd.web.model.Course;
 import com.jpd.web.model.Customer;
 import com.jpd.web.model.Enrollment;
 import com.jpd.web.model.Feedback;
@@ -46,5 +45,21 @@ public void addFeedback(String email,long courseId,String detail,int rate) {
 	this.feedbackRepository.save(f);
 	return ;
 		
+}
+
+    public void deleteFeedback(String email, long courseId) {
+        Customer c=this.validationResources.validateCustomerExist(email);
+        Feedback feedback=validationResources.validateFeedbackBelongCustomer(courseId, c.getCustomerId());
+        this.feedbackRepository.delete(feedback);
+        return;
+    }
+    public FeedbackSimpleDto updateFeedback(String email, long courseId, String detail, int rate) {
+        Customer c=this.validationResources.validateCustomerExist(email);
+        Feedback feedback=validationResources.validateFeedbackBelongCustomer(courseId, c.getCustomerId());
+        if(commentFilterService.isToxic(detail))throw new FeedBackIligalException(detail);
+        feedback.setContent(detail);
+        feedback.setRate(rate);
+         this.feedbackRepository.save(feedback);
+        return FeedbackTransform.tofeedbackDto(feedback);
 }
 }

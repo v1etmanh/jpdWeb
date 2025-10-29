@@ -8,6 +8,10 @@ import lombok.*;
 import org.hibernate.annotations.Check;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDate;
 
 @Entity
 @Check(constraints = "rate BETWEEN 1 AND 5")
@@ -26,7 +30,10 @@ public class Feedback {
     @Min(1)
     @Max(5)
     private int rate;
-
+    @CreationTimestamp
+    private LocalDate createDate;
+    @UpdateTimestamp
+    private LocalDate updateDate;
     //link to Enrollment
     @OneToOne
     @JoinColumn(name = "enrollment_id")

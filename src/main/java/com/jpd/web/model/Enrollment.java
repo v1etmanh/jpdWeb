@@ -46,7 +46,6 @@ public class Enrollment {
 
     //link to Transaction
     @OneToOne(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
-    
     private CustomerTransaction transaction;
     @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL)
     @JsonManagedReference("enrollment-customerContent")  // ← ĐỔI thành 

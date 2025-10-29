@@ -225,7 +225,25 @@ public class GlobalExceptionHandler {
 	                        .traceId(traceId)
 	                        .build());
 	    }
+	    @ExceptionHandler(FeedBackIligalException.class)
+	    public ResponseEntity<ErrorResponse> handleFeedBackIligalException(
+	    		FeedBackIligalException e,
+	            WebRequest request) {
 
+	        String traceId = getTraceId();
+
+
+	        return ResponseEntity
+	                .status(HttpStatus.BAD_REQUEST)
+	                .body(ErrorResponse.builder()
+	                        .code(e.getErrorCode())
+	                        .message(e.getMessage())
+	                        .userMessage("bình luận của bạn không hợp l")
+	                        .path(getPath(request))
+	                        .timestamp(LocalDateTime.now())
+	                        .traceId(traceId)
+	                        .build());
+	    }
 	    @ExceptionHandler(EmailSendingFailedException.class)
 	    public ResponseEntity<ErrorResponse> handleEmailSendingFailed(
 	            EmailSendingFailedException e,

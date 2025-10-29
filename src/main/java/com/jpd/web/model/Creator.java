@@ -21,7 +21,6 @@ import java.util.List;
 public class Creator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     @Column(name = "creator_id")
     private long creatorId;
     @Column(nullable = false)
@@ -58,12 +57,9 @@ public class Creator {
 
     //link to Course
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    @JsonManagedReference
     private List<Course> courses;
 
-    //link to Withdraw
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    @JsonManagedReference
     private List<Withdraw> withdrawList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
     private List<PayoutTracking>payoutTrackings ;

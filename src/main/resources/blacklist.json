@@ -1,0 +1,3447 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "language": "vi",
+    "total_words": 150,
+    "created_date": "2025-10-26",
+    "categories": [
+      "profanity",
+      "insult",
+      "sexual",
+      "violence",
+      "discrimination",
+      "teencode"
+    ]
+  },
+  "blacklist": [
+    {
+      "word": "địt mẹ",
+      "weight": 3.0,
+      "category": "profanity",
+      "variants": [
+        "đm",
+        "dmm",
+        "dm",
+        "d m m",
+        "đ m m",
+        "đ3m",
+        "địt m3",
+        "đ!t m3",
+        "địt m3y"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Địt mẹ thằng đó dám nói xấu tao!",
+        "Dmm sao mày lại làm sai?"
+      ]
+    },
+    {
+      "word": "cái lồn",
+      "weight": 3.0,
+      "category": "profanity",
+      "variants": [
+        "cl",
+        "cờ lờ",
+        "lồn",
+        "k lồn",
+        "lon",
+        "l0n",
+        "l*n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cái lồn gì đang xảy ra vậy?",
+        "Mày im đi, câm cái lồn lại."
+      ]
+    },
+    {
+      "word": "cứt",
+      "weight": 3.0,
+      "category": "profanity",
+      "variants": [
+        "c*t",
+        "kứt",
+        "ku't",
+        "cứk",
+        "c**t"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Thứ cứt rách, đừng có lảng vảng ở đây.",
+        "Cái gì mày vừa nói là một đống cứt!"
+      ]
+    },
+    {
+      "word": "chết đi",
+      "weight": 3.0,
+      "category": "violence",
+      "variants": [
+        "đi chết đi",
+        "cút đi",
+        "chết cmn đi",
+        "chết mẹ mày đi",
+        "chết mẹ nó đi"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày biến đi, đi chết đi cho khuất mắt.",
+        "Tao mong mày chết đi cho rảnh nợ."
+      ]
+    },
+    {
+      "word": "tự tử",
+      "weight": 3.0,
+      "category": "violence",
+      "variants": [
+        "tự sát",
+        "tự hủy",
+        "tao muốn chết"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày nên tự tử cho đỡ làm phiền người khác.",
+        "Tao nghĩ mày nên tự sát đi."
+      ]
+    },
+    {
+      "word": "hiếp dâm",
+      "weight": 3.0,
+      "category": "sexual",
+      "variants": [
+        "hãm hiếp",
+        "hiếp",
+        "đè ra hiếp",
+        "hịep dâm",
+        "rape"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao sẽ hiếp dâm con nhỏ đó nếu nó không nghe lời.",
+        "Thằng đó xứng đáng bị hãm hiếp."
+      ]
+    },
+    {
+      "word": "lồn mẹ",
+      "weight": 2.9,
+      "category": "profanity",
+      "variants": [
+        "lm",
+        "lờ mờ",
+        "l m",
+        "lồn m3"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Lồn mẹ, lại làm sai nữa rồi.",
+        "L m thằng ngu."
+      ]
+    },
+    {
+      "word": "cặc",
+      "weight": 2.9,
+      "category": "profanity",
+      "variants": [
+        "kặc",
+        "cu",
+        "cục cặc",
+        "c*c",
+        "k*k",
+        "c4c"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao đếch quan tâm cục cặc gì đâu.",
+        "Cái đó thì liên quan cặc gì đến tao?"
+      ]
+    },
+    {
+      "word": "buồi",
+      "weight": 2.9,
+      "category": "profanity",
+      "variants": [
+        "b`",
+        "bu`i",
+        "buồi",
+        "bùi",
+        "đầu buồi",
+        "dau buoi"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đầu buồi, sao mày không làm cho xong đi.",
+        "Tao thèm buồi quá."
+      ]
+    },
+    {
+      "word": "quay tay",
+      "weight": 2.9,
+      "category": "sexual",
+      "variants": [
+        "tự sướng",
+        "3x",
+        "sex",
+        "masturbate",
+        "q-tay"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng đó suốt ngày ở nhà quay tay.",
+        "Mày xem phim sex rồi quay tay à?"
+      ]
+    },
+    {
+      "word": "bóp vú",
+      "weight": 2.9,
+      "category": "sexual",
+      "variants": [
+        "bóp ngực",
+        "bóp bưởi",
+        "sờ vếu",
+        "bóp dzú"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao muốn bóp vú con nhỏ đó.",
+        "Thằng biến thái dám bóp ngực cô ấy."
+      ]
+    },
+    {
+      "word": "địt",
+      "weight": 2.8,
+      "category": "profanity",
+      "variants": [
+        "đit",
+        "dit",
+        "đ*t",
+        "đjt",
+        "đjch",
+        "djt"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Địt nhau không?",
+        "Tao địt thẳng vào mặt mày."
+      ]
+    },
+    {
+      "word": "phá thai",
+      "weight": 2.8,
+      "category": "sexual",
+      "variants": [
+        "bỏ thai",
+        "nạo thai"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Con đó chửa hoang rồi đi phá thai.",
+        "Mày nên đi phá thai đi."
+      ]
+    },
+    {
+      "word": "cắn chết",
+      "weight": 2.8,
+      "category": "violence",
+      "variants": [
+        "đấm chết",
+        "đánh chết",
+        "giết",
+        "gi*t",
+        "giệt"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ cắn chết mày nếu mày còn nói nữa.",
+        "Mày nên cẩn thận không tao đánh chết."
+      ]
+    },
+    {
+      "word": "óc chó",
+      "weight": 2.7,
+      "category": "insult",
+      "variants": [
+        "occho",
+        "óc ch* má",
+        "ngu chó"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày đúng là thằng óc chó.",
+        "Chỉ có thằng óc chó mới làm vậy."
+      ]
+    },
+    {
+      "word": "ngu lồn",
+      "weight": 2.7,
+      "category": "profanity",
+      "variants": [
+        "ngu lol",
+        "ngu l*n",
+        "ngu vl",
+        "ngu vcl"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Ngu lồn vậy mà cũng đòi làm.",
+        "Đừng có làm cái trò ngu lồn đó nữa."
+      ]
+    },
+    {
+      "word": "thủ dâm",
+      "weight": 2.7,
+      "category": "sexual",
+      "variants": [
+        "tự thỏa mãn",
+        "quay tay",
+        "bj"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thủ dâm nhiều quá thành nghiện rồi.",
+        "Thằng này suốt ngày thủ dâm."
+      ]
+    },
+    {
+      "word": "đánh",
+      "weight": 2.7,
+      "category": "violence",
+      "variants": [
+        "đấm",
+        "đá",
+        "táng",
+        "chém"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ đánh mày nếu mày không im.",
+        "Đấm chết mẹ nó đi."
+      ]
+    },
+    {
+      "word": "bán dâm",
+      "weight": 2.7,
+      "category": "sexual",
+      "variants": [
+        "gái điếm",
+        "làm đĩ",
+        "bán thân",
+        "phò"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Con đó làm nghề bán dâm.",
+        "Đồ gái điếm bẩn thỉu."
+      ]
+    },
+    {
+      "word": "gay",
+      "weight": 2.6,
+      "category": "discrimination",
+      "variants": [
+        "pede",
+        "đồng tính",
+        "bóng",
+        "bóng lộn"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng gay bệnh hoạn.",
+        "Cái lũ bóng lộn."
+      ]
+    },
+    {
+      "word": "thằng già",
+      "weight": 2.6,
+      "category": "insult",
+      "variants": [
+        "bà già",
+        "thằng chó",
+        "con đĩ"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng già ngu dốt.",
+        "Đồ bà già lắm mồm."
+      ]
+    },
+    {
+      "word": "đù má",
+      "weight": 2.6,
+      "category": "profanity",
+      "variants": [
+        "đuma",
+        "đm",
+        "duma",
+        "đù moá"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đù má, sao lại quên nữa rồi.",
+        "Đuma, tức điên người."
+      ]
+    },
+    {
+      "word": "đéo",
+      "weight": 2.6,
+      "category": "profanity",
+      "variants": [
+        "đ3o",
+        "deo",
+        "déo",
+        "đẽo",
+        "d*o"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao đéo cần mày giúp.",
+        "Mày nghĩ tao đéo biết à?"
+      ]
+    },
+    {
+      "word": "nứng lồn",
+      "weight": 2.6,
+      "category": "sexual",
+      "variants": [
+        "nứng cặc",
+        "nứng",
+        "thèm địt",
+        "n*ng l*n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Con đó nhìn mặt là biết nứng lồn rồi.",
+        "Tao đang nứng cặc quá."
+      ]
+    },
+    {
+      "word": "súc vật",
+      "weight": 2.5,
+      "category": "insult",
+      "variants": [
+        "súc sinh",
+        "đồ súc vật",
+        "súc v*t"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày là một lũ súc vật.",
+        "Thằng súc sinh khốn nạn."
+      ]
+    },
+    {
+      "word": "vãi lồn",
+      "weight": 2.5,
+      "category": "profanity",
+      "variants": [
+        "vl",
+        "v l",
+        "vcl",
+        "vãi cả lồn",
+        "vailon"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cái đó vãi lồn thật.",
+        "Vãi lồn, sao lại xảy ra chuyện này?"
+      ]
+    },
+    {
+      "word": "làm tình",
+      "weight": 2.5,
+      "category": "sexual",
+      "variants": [
+        "chịch",
+        "quan hệ",
+        "xoạc",
+        "đụ"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao muốn làm tình với mày.",
+        "Đêm qua tao đi chịch gái."
+      ]
+    },
+    {
+      "word": "người miền",
+      "weight": 2.5,
+      "category": "discrimination",
+      "variants": [
+        "thằng bắc kỳ",
+        "con nam kỳ",
+        "người bắc",
+        "người nam"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng bắc kỳ chó má.",
+        "Con nam kỳ ngu dốt."
+      ]
+    },
+    {
+      "word": "chó má",
+      "weight": 2.4,
+      "category": "profanity",
+      "variants": [
+        "chó m4",
+        "ch* má",
+        "cm"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Thằng chó má, dám lừa tao.",
+        "Chó má, mày làm cái quái gì vậy?"
+      ]
+    },
+    {
+      "word": "tuyệt chủng",
+      "weight": 2.4,
+      "category": "violence",
+      "variants": [
+        "xóa sổ",
+        "tàn sát",
+        "tận diệt"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mong cho cái lũ đó tuyệt chủng hết đi.",
+        "Phải xóa sổ tụi nó."
+      ]
+    },
+    {
+      "word": "câm họng",
+      "weight": 2.3,
+      "category": "insult",
+      "variants": [
+        "câm mồm",
+        "im đi",
+        "ngậm mồm"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Câm họng lại, đồ ngu.",
+        "Mày câm mồm đi."
+      ]
+    },
+    {
+      "word": "chửi thề",
+      "weight": 2.3,
+      "category": "profanity",
+      "variants": [
+        "nói tục",
+        "văng tục",
+        "chửi bậy"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày đừng có chửi thề nữa.",
+        "Nói tục là vô văn hóa."
+      ]
+    },
+    {
+      "word": "giao cấu",
+      "weight": 2.3,
+      "category": "sexual",
+      "variants": [
+        "lên giường",
+        "quan hệ tình dục"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mục đích của nó là giao cấu.",
+        "Họ đã lên giường với nhau."
+      ]
+    },
+    {
+      "word": "đồ khốn",
+      "weight": 2.2,
+      "category": "insult",
+      "variants": [
+        "khốn nạn",
+        "đồ tồi",
+        "đồ mất dạy"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày là đồ khốn nạn.",
+        "Thằng khốn, dám làm chuyện này."
+      ]
+    },
+    {
+      "word": "mày tao",
+      "weight": 2.2,
+      "category": "profanity",
+      "variants": [
+        "mày",
+        "tao",
+        "mày hả",
+        "t4o"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày là cái thá gì mà nói tao?",
+        "Mày phải nghe lời tao."
+      ]
+    },
+    {
+      "word": "tra tấn",
+      "weight": 2.2,
+      "category": "violence",
+      "variants": [
+        "hành hạ",
+        "hành xác",
+        "bạo hành"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ tra tấn mày đến chết.",
+        "Hành hạ súc vật là tội ác."
+      ]
+    },
+    {
+      "word": "ăn hiếp",
+      "weight": 2.1,
+      "category": "violence",
+      "variants": [
+        "bắt nạt",
+        "trấn áp",
+        "đàn áp"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng lớn ăn hiếp thằng bé.",
+        "Đừng có bắt nạt tao."
+      ]
+    },
+    {
+      "word": "phân biệt",
+      "weight": 2.1,
+      "category": "discrimination",
+      "variants": [
+        "kỳ thị",
+        "phân biệt đối xử"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đừng có phân biệt giới tính.",
+        "Kỳ thị là sai."
+      ]
+    },
+    {
+      "word": "vô học",
+      "weight": 2.0,
+      "category": "insult",
+      "variants": [
+        "mất dạy",
+        "thiếu văn hóa",
+        "m4t day"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đồ vô học, ăn nói không ra gì.",
+        "Thằng mất dạy."
+      ]
+    },
+    {
+      "word": "người da đen",
+      "weight": 2.0,
+      "category": "discrimination",
+      "variants": [
+        "da đen",
+        " mọi",
+        "chủng tộc"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Cái thằng mọi đen.",
+        "Đồ da đen bẩn thỉu."
+      ]
+    },
+    {
+      "word": "đần",
+      "weight": 1.8,
+      "category": "insult",
+      "variants": [
+        "đần độn",
+        "ngu ngốc",
+        "ngu si",
+        "nguu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày đần độn thế.",
+        "Đồ ngu si."
+      ]
+    },
+    {
+      "word": "ngu",
+      "weight": 1.5,
+      "category": "insult",
+      "variants": [
+        "ngốc",
+        "khờ",
+        "nguu",
+        "n.g.u"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày ngu quá đi.",
+        "Đồ ngốc."
+      ]
+    },
+    {
+      "word": "làm lồn",
+      "weight": 2.7,
+      "category": "profanity",
+      "variants": [
+        "lam lon",
+        "làm l*n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày đang làm lồn gì vậy?",
+        "Làm lồn gì mà lâu thế."
+      ]
+    },
+    {
+      "word": "ăn cứt",
+      "weight": 2.7,
+      "category": "profanity",
+      "variants": [
+        "ăn c*t",
+        "ăn cức",
+        "an cut"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cút đi đồ ăn cứt.",
+        "Mày đi ăn cứt đi."
+      ]
+    },
+    {
+      "word": "tinh trùng",
+      "weight": 2.7,
+      "category": "sexual",
+      "variants": [
+        "tinh dịch",
+        "cơm",
+        "nước bẩn"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày nuốt tinh trùng đi.",
+        "Tao phun tinh dịch vào mặt mày."
+      ]
+    },
+    {
+      "word": "thân tàn",
+      "weight": 2.7,
+      "category": "violence",
+      "variants": [
+        "ma chê quỷ hờn",
+        "sống không bằng chết"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ khiến mày thân tàn ma dại.",
+        "Mày sẽ sống không bằng chết."
+      ]
+    },
+    {
+      "word": "vợ chồng",
+      "weight": 2.6,
+      "category": "discrimination",
+      "variants": [
+        "chồng",
+        "vợ"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Chồng mày là thằng vô dụng.",
+        "Vợ mày là con đĩ."
+      ]
+    },
+    {
+      "word": "đụ",
+      "weight": 2.5,
+      "category": "profanity",
+      "variants": [
+        "đụ má",
+        "đụ mạ",
+        "đù",
+        "đụ me"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đụ má, làm gì vậy?",
+        "Đụ má thằng ngu."
+      ]
+    },
+    {
+      "word": "trần truồng",
+      "weight": 2.5,
+      "category": "sexual",
+      "variants": [
+        "khỏa thân",
+        "naked",
+        "ko quần áo"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày dám trần truồng trước mặt tao à?",
+        "Con đó khỏa thân ngoài đường."
+      ]
+    },
+    {
+      "word": "bạo dâm",
+      "weight": 2.5,
+      "category": "sexual",
+      "variants": [
+        "sado",
+        "masochism",
+        "bdsm"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng bạo dâm khốn nạn.",
+        "Tao thích bạo dâm."
+      ]
+    },
+    {
+      "word": "chó điên",
+      "weight": 2.4,
+      "category": "insult",
+      "variants": [
+        "chó",
+        "đồ chó",
+        "thằng chó"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ chó điên.",
+        "Mày là thằng chó."
+      ]
+    },
+    {
+      "word": "vô liêm sỉ",
+      "weight": 2.3,
+      "category": "insult",
+      "variants": [
+        "trơ trẽn",
+        "mặt dày"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày vô liêm sỉ quá.",
+        "Đồ trơ trẽn."
+      ]
+    },
+    {
+      "word": "thằng ngu",
+      "weight": 2.0,
+      "category": "insult",
+      "variants": [
+        "con ngu",
+        "thằng đần",
+        "thg ngu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng ngu này làm hư hết việc.",
+        "Con ngu, không làm được gì."
+      ]
+    },
+    {
+      "word": "kì thị",
+      "weight": 2.0,
+      "category": "discrimination",
+      "variants": [
+        "kỳ thị",
+        "phân biệt",
+        "khinh thường"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày đừng có kì thị người khác.",
+        "Kỳ thị vùng miền."
+      ]
+    },
+    {
+      "word": "đần thối",
+      "weight": 1.9,
+      "category": "insult",
+      "variants": [
+        "đần",
+        "đần độn",
+        "ngu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày đúng là đần thối.",
+        "Đồ đần độn."
+      ]
+    },
+    {
+      "word": "cờ hó",
+      "weight": 1.7,
+      "category": "insult",
+      "variants": [
+        "cờ h",
+        "chó",
+        "chó má"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đồ cờ hó.",
+        "Thằng cờ hó này."
+      ]
+    },
+    {
+      "word": "chảnh",
+      "weight": 1.5,
+      "category": "insult",
+      "variants": [
+        "chảnh chó",
+        "kiêu ngạo",
+        "chảnh cún"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Con nhỏ đó chảnh chó quá.",
+        "Mày đừng có chảnh."
+      ]
+    },
+    {
+      "word": "bệnh hoạn",
+      "weight": 2.8,
+      "category": "sexual",
+      "variants": [
+        "biến thái",
+        "quái thai",
+        "sick"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày là đồ bệnh hoạn.",
+        "Thằng biến thái."
+      ]
+    },
+    {
+      "word": "bóp cổ",
+      "weight": 2.8,
+      "category": "violence",
+      "variants": [
+        "bóp họng",
+        "siết cổ",
+        "giết"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ bóp cổ mày.",
+        "Siết cổ nó đi."
+      ]
+    },
+    {
+      "word": "tàn tật",
+      "weight": 2.5,
+      "category": "discrimination",
+      "variants": [
+        "thằng què",
+        "con đui",
+        "khuyết tật"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ tàn tật.",
+        "Thằng què vô dụng."
+      ]
+    },
+    {
+      "word": "đĩ",
+      "weight": 2.5,
+      "category": "sexual",
+      "variants": [
+        "con đĩ",
+        "làm đĩ",
+        "phò"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Con đĩ này.",
+        "Đồ làm đĩ."
+      ]
+    },
+    {
+      "word": "phá hoại",
+      "weight": 2.5,
+      "category": "violence",
+      "variants": [
+        "tàn phá",
+        "hủy hoại",
+        "phá",
+        "phá nhà"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày phá hoại hết rồi.",
+        "Tao sẽ hủy hoại mày."
+      ]
+    },
+    {
+      "word": "bà già",
+      "weight": 2.4,
+      "category": "insult",
+      "variants": [
+        "thằng cha",
+        "ông già",
+        "bà cô"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ bà già lắm chuyện.",
+        "Thằng cha này khó tính."
+      ]
+    },
+    {
+      "word": "đồ hèn",
+      "weight": 2.4,
+      "category": "insult",
+      "variants": [
+        "hèn nhát",
+        "đồ nhát gan"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày là đồ hèn.",
+        "Đồ hèn nhát."
+      ]
+    },
+    {
+      "word": "mày ngu",
+      "weight": 2.3,
+      "category": "insult",
+      "variants": [
+        "mài ngu",
+        "m ngu",
+        "mài đần"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày ngu quá đi.",
+        "Mày ngu như bò."
+      ]
+    },
+    {
+      "word": "tấn công",
+      "weight": 2.3,
+      "category": "violence",
+      "variants": [
+        "xông vào",
+        "đột nhập",
+        "đánh"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ tấn công mày.",
+        "Tấn công mạng."
+      ]
+    },
+    {
+      "word": "chịch",
+      "weight": 2.2,
+      "category": "sexual",
+      "variants": [
+        "xoạc",
+        "đụ",
+        "làm tình",
+        "ch1ch"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đi chịch không?",
+        "Tao muốn chịch mày."
+      ]
+    },
+    {
+      "word": "khinh bỉ",
+      "weight": 2.1,
+      "category": "insult",
+      "variants": [
+        "coi thường",
+        "ghét bỏ"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao khinh bỉ mày.",
+        "Mày bị coi thường."
+      ]
+    },
+    {
+      "word": "người nước ngoài",
+      "weight": 2.0,
+      "category": "discrimination",
+      "variants": [
+        "Tây",
+        "Tàu",
+        "phu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng tây lông.",
+        "Đồ tàu khựa."
+      ]
+    },
+    {
+      "word": "lợn",
+      "weight": 1.9,
+      "category": "insult",
+      "variants": [
+        "heo",
+        "con lợn",
+        "lợn rừng"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày ngu như lợn.",
+        "Đồ con lợn."
+      ]
+    },
+    {
+      "word": "kệch cỡm",
+      "weight": 1.7,
+      "category": "insult",
+      "variants": [
+        "lố bịch",
+        "buồn cười"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ kệch cỡm.",
+        "Mày lố bịch quá."
+      ]
+    },
+    {
+      "word": "đần mặt",
+      "weight": 1.6,
+      "category": "insult",
+      "variants": [
+        "ngu mặt",
+        "ngơ ngác"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Sao mày cứ đần mặt ra vậy?",
+        "Mặt mày đần thối."
+      ]
+    },
+    {
+      "word": "tịch thu",
+      "weight": 2.6,
+      "category": "violence",
+      "variants": [
+        "chiếm đoạt",
+        "cướp",
+        "ăn trộm"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ tịch thu tài sản của mày.",
+        "Thằng cướp."
+      ]
+    },
+    {
+      "word": "khốn",
+      "weight": 2.5,
+      "category": "profanity",
+      "variants": [
+        "khốn nạn",
+        "khốn kiếp",
+        "kh0n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đồ khốn nạn.",
+        "Khốn kiếp thật."
+      ]
+    },
+    {
+      "word": "kì lạ",
+      "weight": 1.8,
+      "category": "discrimination",
+      "variants": [
+        "khác biệt",
+        "dị hợm"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày kì lạ quá.",
+        "Đồ dị hợm."
+      ]
+    },
+    {
+      "word": "biến đi",
+      "weight": 1.5,
+      "category": "insult",
+      "variants": [
+        "cút",
+        "cút xéo",
+        "cut"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Biến đi cho tao nhờ.",
+        "Mày cút xéo đi."
+      ]
+    },
+    {
+      "word": "lol",
+      "weight": 3.0,
+      "category": "teencode",
+      "variants": [
+        "l*l",
+        "lon",
+        "lồn",
+        "l0n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "lol thằng ngu.",
+        "Mày lol quá."
+      ]
+    },
+    {
+      "word": "vcl",
+      "weight": 3.0,
+      "category": "teencode",
+      "variants": [
+        "vãi cả lồn",
+        "vailon",
+        "vl"
+      ],
+      "context_safe": false,
+      "examples": [
+        "vcl, sao lại thế?",
+        "Cái này vcl thật."
+      ]
+    },
+    {
+      "word": "đm",
+      "weight": 3.0,
+      "category": "teencode",
+      "variants": [
+        "dm",
+        "dmm",
+        "đmm",
+        "d.m"
+      ],
+      "context_safe": false,
+      "examples": [
+        "đm mày làm sai rồi.",
+        "Dm, tức quá."
+      ]
+    },
+    {
+      "word": "đéo",
+      "weight": 2.8,
+      "category": "teencode",
+      "variants": [
+        "deo",
+        "đ3o",
+        "d*o"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao đéo biết đâu.",
+        "Mày đéo phải lo."
+      ]
+    },
+    {
+      "word": "óc chó",
+      "weight": 2.7,
+      "category": "teencode",
+      "variants": [
+        "occho",
+        "occh0",
+        "óc ch* má"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Thằng đó occho quá.",
+        "óc chó thế."
+      ]
+    },
+    {
+      "word": "cc",
+      "weight": 2.6,
+      "category": "teencode",
+      "variants": [
+        "cặc",
+        "con cặc",
+        "k.k"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cc gì thế?",
+        "Tao không quan tâm cc đâu."
+      ]
+    },
+    {
+      "word": "clgt",
+      "weight": 2.5,
+      "category": "teencode",
+      "variants": [
+        "cái lồn gì thế",
+        "clg v"
+      ],
+      "context_safe": false,
+      "examples": [
+        "clgt, mày làm gì vậy?",
+        "Clgt?"
+      ]
+    },
+    {
+      "word": "ngu",
+      "weight": 1.9,
+      "category": "teencode",
+      "variants": [
+        "ngu vcl",
+        "ngu si",
+        "ngok"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Ngu quá đi.",
+        "Mày ngu vcl."
+      ]
+    },
+    {
+      "word": "tl",
+      "weight": 1.7,
+      "category": "teencode",
+      "variants": [
+        "trả lời",
+        "thật là"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày tl đi.",
+        "Tl quá."
+      ]
+    },
+    {
+      "word": "ck",
+      "weight": 1.6,
+      "category": "teencode",
+      "variants": [
+        "chồng",
+        "cục cưng"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Ck iu.",
+        "Ck của e."
+      ]
+    },
+    {
+      "word": "vk",
+      "weight": 1.6,
+      "category": "teencode",
+      "variants": [
+        "vợ",
+        "vợ iu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Vk của a.",
+        "Vk ơi."
+      ]
+    },
+    {
+      "word": "ib",
+      "weight": 1.5,
+      "category": "teencode",
+      "variants": [
+        "inbox",
+        "nhắn tin"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Ib riêng nha.",
+        "Ib cho tao."
+      ]
+    },
+    {
+      "word": "ad",
+      "weight": 1.0,
+      "category": "teencode",
+      "variants": [
+        "admin",
+        "quản trị viên"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Ad giải quyết đi.",
+        "Ad ơi."
+      ]
+    },
+    {
+      "word": "cmt",
+      "weight": 1.0,
+      "category": "teencode",
+      "variants": [
+        "comment",
+        "bình luận"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Cmt gì vậy?",
+        "Cmt đi."
+      ]
+    },
+    {
+      "word": "rep",
+      "weight": 1.0,
+      "category": "teencode",
+      "variants": [
+        "reply",
+        "trả lời"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Rep lẹ đi.",
+        "Rep tin nhắn."
+      ]
+    },
+    {
+      "word": "địt mẹ",
+      "weight": 3.0,
+      "category": "profanity",
+      "variants": [
+        "đm",
+        "dmm",
+        "dm",
+        "d m m",
+        "đ m m",
+        "đ3m",
+        "địt m3",
+        "đ!t m3",
+        "địt m3y"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Địt mẹ thằng đó dám nói xấu tao!",
+        "Dmm sao mày lại làm sai?"
+      ]
+    },
+    {
+      "word": "cái lồn",
+      "weight": 3.0,
+      "category": "profanity",
+      "variants": [
+        "cl",
+        "cờ lờ",
+        "lồn",
+        "k lồn",
+        "lon",
+        "l0n",
+        "l*n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cái lồn gì đang xảy ra vậy?",
+        "Mày im đi, câm cái lồn lại."
+      ]
+    },
+    {
+      "word": "cứt",
+      "weight": 3.0,
+      "category": "profanity",
+      "variants": [
+        "c*t",
+        "kứt",
+        "ku't",
+        "cứk",
+        "c**t"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Thứ cứt rách, đừng có lảng vảng ở đây.",
+        "Cái gì mày vừa nói là một đống cứt!"
+      ]
+    },
+    {
+      "word": "chết đi",
+      "weight": 3.0,
+      "category": "violence",
+      "variants": [
+        "đi chết đi",
+        "cút đi",
+        "chết cmn đi",
+        "chết mẹ mày đi",
+        "chết mẹ nó đi"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày biến đi, đi chết đi cho khuất mắt.",
+        "Tao mong mày chết đi cho rảnh nợ."
+      ]
+    },
+    {
+      "word": "tự tử",
+      "weight": 3.0,
+      "category": "violence",
+      "variants": [
+        "tự sát",
+        "tự hủy",
+        "tao muốn chết"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày nên tự tử cho đỡ làm phiền người khác.",
+        "Tao nghĩ mày nên tự sát đi."
+      ]
+    },
+    {
+      "word": "hiếp dâm",
+      "weight": 3.0,
+      "category": "sexual",
+      "variants": [
+        "hãm hiếp",
+        "hiếp",
+        "đè ra hiếp",
+        "hịep dâm",
+        "rape"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao sẽ hiếp dâm con nhỏ đó nếu nó không nghe lời.",
+        "Thằng đó xứng đáng bị hãm hiếp."
+      ]
+    },
+    {
+      "word": "lol",
+      "weight": 3.0,
+      "category": "teencode",
+      "variants": [
+        "l*l",
+        "lon",
+        "lồn",
+        "l0n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "lol thằng ngu.",
+        "Mày lol quá."
+      ]
+    },
+    {
+      "word": "vcl",
+      "weight": 3.0,
+      "category": "teencode",
+      "variants": [
+        "vãi cả lồn",
+        "vailon",
+        "vl"
+      ],
+      "context_safe": false,
+      "examples": [
+        "vcl, sao lại thế?",
+        "Cái này vcl thật."
+      ]
+    },
+    {
+      "word": "đm",
+      "weight": 3.0,
+      "category": "teencode",
+      "variants": [
+        "dm",
+        "dmm",
+        "đmm",
+        "d.m"
+      ],
+      "context_safe": false,
+      "examples": [
+        "đm mày làm sai rồi.",
+        "Dm, tức quá."
+      ]
+    },
+    {
+      "word": "lồn mẹ",
+      "weight": 2.9,
+      "category": "profanity",
+      "variants": [
+        "lm",
+        "lờ mờ",
+        "l m",
+        "lồn m3"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Lồn mẹ, lại làm sai nữa rồi.",
+        "L m thằng ngu."
+      ]
+    },
+    {
+      "word": "cặc",
+      "weight": 2.9,
+      "category": "profanity",
+      "variants": [
+        "kặc",
+        "cu",
+        "cục cặc",
+        "c*c",
+        "k*k",
+        "c4c"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao đếch quan tâm cục cặc gì đâu.",
+        "Cái đó thì liên quan cặc gì đến tao?"
+      ]
+    },
+    {
+      "word": "buồi",
+      "weight": 2.9,
+      "category": "profanity",
+      "variants": [
+        "b`",
+        "bu`i",
+        "buồi",
+        "bùi",
+        "đầu buồi",
+        "dau buoi"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đầu buồi, sao mày không làm cho xong đi.",
+        "Tao thèm buồi quá."
+      ]
+    },
+    {
+      "word": "quay tay",
+      "weight": 2.9,
+      "category": "sexual",
+      "variants": [
+        "tự sướng",
+        "3x",
+        "sex",
+        "masturbate",
+        "q-tay"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng đó suốt ngày ở nhà quay tay.",
+        "Mày xem phim sex rồi quay tay à?"
+      ]
+    },
+    {
+      "word": "bóp vú",
+      "weight": 2.9,
+      "category": "sexual",
+      "variants": [
+        "bóp ngực",
+        "bóp bưởi",
+        "sờ vếu",
+        "bóp dzú"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao muốn bóp vú con nhỏ đó.",
+        "Thằng biến thái dám bóp ngực cô ấy."
+      ]
+    },
+    {
+      "word": "phun máu",
+      "weight": 2.9,
+      "category": "violence",
+      "variants": [
+        "máu",
+        "chảy máu",
+        "mất máu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao đánh cho mày phun máu mồm.",
+        "Phun máu mà chết."
+      ]
+    },
+    {
+      "word": "dizz",
+      "weight": 2.9,
+      "category": "teencode",
+      "variants": [
+        "chửi",
+        "rap battle"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao dizz chết mày.",
+        "Thằng này hay dizz người khác."
+      ]
+    },
+    {
+      "word": "địt",
+      "weight": 2.8,
+      "category": "profanity",
+      "variants": [
+        "đit",
+        "dit",
+        "đ*t",
+        "đjt",
+        "đjch",
+        "djt"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Địt nhau không?",
+        "Tao địt thẳng vào mặt mày."
+      ]
+    },
+    {
+      "word": "phá thai",
+      "weight": 2.8,
+      "category": "sexual",
+      "variants": [
+        "bỏ thai",
+        "nạo thai"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Con đó chửa hoang rồi đi phá thai.",
+        "Mày nên đi phá thai đi."
+      ]
+    },
+    {
+      "word": "cắn chết",
+      "weight": 2.8,
+      "category": "violence",
+      "variants": [
+        "đấm chết",
+        "đánh chết",
+        "giết",
+        "gi*t",
+        "giệt"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ cắn chết mày nếu mày còn nói nữa.",
+        "Mày nên cẩn thận không tao đánh chết."
+      ]
+    },
+    {
+      "word": "bệnh hoạn",
+      "weight": 2.8,
+      "category": "sexual",
+      "variants": [
+        "biến thái",
+        "quái thai",
+        "sick"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày là đồ bệnh hoạn.",
+        "Thằng biến thái."
+      ]
+    },
+    {
+      "word": "đéo",
+      "weight": 2.8,
+      "category": "teencode",
+      "variants": [
+        "deo",
+        "đ3o",
+        "d*o"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao đéo biết đâu.",
+        "Mày đéo phải lo."
+      ]
+    },
+    {
+      "word": "óc chó",
+      "weight": 2.7,
+      "category": "insult",
+      "variants": [
+        "occho",
+        "óc ch* má",
+        "ngu chó"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày đúng là thằng óc chó.",
+        "Chỉ có thằng óc chó mới làm vậy."
+      ]
+    },
+    {
+      "word": "ngu lồn",
+      "weight": 2.7,
+      "category": "profanity",
+      "variants": [
+        "ngu lol",
+        "ngu l*n",
+        "ngu vl",
+        "ngu vcl"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Ngu lồn vậy mà cũng đòi làm.",
+        "Đừng có làm cái trò ngu lồn đó nữa."
+      ]
+    },
+    {
+      "word": "thủ dâm",
+      "weight": 2.7,
+      "category": "sexual",
+      "variants": [
+        "tự thỏa mãn",
+        "quay tay",
+        "bj"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thủ dâm nhiều quá thành nghiện rồi.",
+        "Thằng này suốt ngày thủ dâm."
+      ]
+    },
+    {
+      "word": "đánh",
+      "weight": 2.7,
+      "category": "violence",
+      "variants": [
+        "đấm",
+        "đá",
+        "táng",
+        "chém"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ đánh mày nếu mày không im.",
+        "Đấm chết mẹ nó đi."
+      ]
+    },
+    {
+      "word": "bán dâm",
+      "weight": 2.7,
+      "category": "sexual",
+      "variants": [
+        "gái điếm",
+        "làm đĩ",
+        "bán thân",
+        "phò"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Con đó làm nghề bán dâm.",
+        "Đồ gái điếm bẩn thỉu."
+      ]
+    },
+    {
+      "word": "làm lồn",
+      "weight": 2.7,
+      "category": "profanity",
+      "variants": [
+        "lam lon",
+        "làm l*n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày đang làm lồn gì vậy?",
+        "Làm lồn gì mà lâu thế."
+      ]
+    },
+    {
+      "word": "ăn cứt",
+      "weight": 2.7,
+      "category": "profanity",
+      "variants": [
+        "ăn c*t",
+        "ăn cức",
+        "an cut"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cút đi đồ ăn cứt.",
+        "Mày đi ăn cứt đi."
+      ]
+    },
+    {
+      "word": "tinh trùng",
+      "weight": 2.7,
+      "category": "sexual",
+      "variants": [
+        "tinh dịch",
+        "cơm",
+        "nước bẩn"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày nuốt tinh trùng đi.",
+        "Tao phun tinh dịch vào mặt mày."
+      ]
+    },
+    {
+      "word": "thân tàn",
+      "weight": 2.7,
+      "category": "violence",
+      "variants": [
+        "ma chê quỷ hờn",
+        "sống không bằng chết"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ khiến mày thân tàn ma dại.",
+        "Mày sẽ sống không bằng chết."
+      ]
+    },
+    {
+      "word": "óc chó",
+      "weight": 2.7,
+      "category": "teencode",
+      "variants": [
+        "occho",
+        "occh0",
+        "óc ch* má"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Thằng đó occho quá.",
+        "óc chó thế."
+      ]
+    },
+    {
+      "word": "bóng chó",
+      "weight": 2.7,
+      "category": "discrimination",
+      "variants": [
+        "bóng",
+        "pê đê",
+        "đồng tính",
+        "bóng lộn"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cái lũ bóng chó.",
+        "Thằng bóng này cút đi."
+      ]
+    },
+    {
+      "word": "ngu như lợn",
+      "weight": 2.6,
+      "category": "insult",
+      "variants": [
+        "ngu như bò",
+        "ngu",
+        "lợn",
+        "ngu vl"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày ngu như lợn vậy.",
+        "Đồ ngu như bò."
+      ]
+    },
+    {
+      "word": "gay",
+      "weight": 2.6,
+      "category": "discrimination",
+      "variants": [
+        "pede",
+        "đồng tính",
+        "bóng",
+        "bóng lộn"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng gay bệnh hoạn.",
+        "Cái lũ bóng lộn."
+      ]
+    },
+    {
+      "word": "thằng già",
+      "weight": 2.6,
+      "category": "insult",
+      "variants": [
+        "bà già",
+        "thằng chó",
+        "con đĩ"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng già ngu dốt.",
+        "Đồ bà già lắm mồm."
+      ]
+    },
+    {
+      "word": "đù má",
+      "weight": 2.6,
+      "category": "profanity",
+      "variants": [
+        "đuma",
+        "đm",
+        "duma",
+        "đù moá"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đù má, sao lại quên nữa rồi.",
+        "Đuma, tức điên người."
+      ]
+    },
+    {
+      "word": "đéo",
+      "weight": 2.6,
+      "category": "profanity",
+      "variants": [
+        "đ3o",
+        "deo",
+        "déo",
+        "đẽo",
+        "d*o"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao đéo cần mày giúp.",
+        "Mày nghĩ tao đéo biết à?"
+      ]
+    },
+    {
+      "word": "nứng lồn",
+      "weight": 2.6,
+      "category": "sexual",
+      "variants": [
+        "nứng cặc",
+        "nứng",
+        "thèm địt",
+        "n*ng l*n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Con đó nhìn mặt là biết nứng lồn rồi.",
+        "Tao đang nứng cặc quá."
+      ]
+    },
+    {
+      "word": "tịch thu",
+      "weight": 2.6,
+      "category": "violence",
+      "variants": [
+        "chiếm đoạt",
+        "cướp",
+        "ăn trộm"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ tịch thu tài sản của mày.",
+        "Thằng cướp."
+      ]
+    },
+    {
+      "word": "vợ chồng",
+      "weight": 2.6,
+      "category": "discrimination",
+      "variants": [
+        "chồng",
+        "vợ"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Chồng mày là thằng vô dụng.",
+        "Vợ mày là con đĩ."
+      ]
+    },
+    {
+      "word": "cc",
+      "weight": 2.6,
+      "category": "teencode",
+      "variants": [
+        "cặc",
+        "con cặc",
+        "k.k"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cc gì thế?",
+        "Tao không quan tâm cc đâu."
+      ]
+    },
+    {
+      "word": "đồ thần kinh",
+      "weight": 2.6,
+      "category": "insult",
+      "variants": [
+        "thần kinh",
+        "khùng",
+        "điên"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày là đồ thần kinh.",
+        "Thằng khùng."
+      ]
+    },
+    {
+      "word": "súc vật",
+      "weight": 2.5,
+      "category": "insult",
+      "variants": [
+        "súc sinh",
+        "đồ súc vật",
+        "súc v*t"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày là một lũ súc vật.",
+        "Thằng súc sinh khốn nạn."
+      ]
+    },
+    {
+      "word": "vãi lồn",
+      "weight": 2.5,
+      "category": "profanity",
+      "variants": [
+        "vl",
+        "v l",
+        "vcl",
+        "vãi cả lồn",
+        "vailon"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cái đó vãi lồn thật.",
+        "Vãi lồn, sao lại xảy ra chuyện này?"
+      ]
+    },
+    {
+      "word": "làm tình",
+      "weight": 2.5,
+      "category": "sexual",
+      "variants": [
+        "chịch",
+        "quan hệ",
+        "xoạc",
+        "đụ"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao muốn làm tình với mày.",
+        "Đêm qua tao đi chịch gái."
+      ]
+    },
+    {
+      "word": "người miền",
+      "weight": 2.5,
+      "category": "discrimination",
+      "variants": [
+        "thằng bắc kỳ",
+        "con nam kỳ",
+        "người bắc",
+        "người nam"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng bắc kỳ chó má.",
+        "Con nam kỳ ngu dốt."
+      ]
+    },
+    {
+      "word": "đĩ",
+      "weight": 2.5,
+      "category": "sexual",
+      "variants": [
+        "con đĩ",
+        "làm đĩ",
+        "phò"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Con đĩ này.",
+        "Đồ làm đĩ."
+      ]
+    },
+    {
+      "word": "tàn tật",
+      "weight": 2.5,
+      "category": "discrimination",
+      "variants": [
+        "thằng què",
+        "con đui",
+        "khuyết tật"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ tàn tật.",
+        "Thằng què vô dụng."
+      ]
+    },
+    {
+      "word": "phá hoại",
+      "weight": 2.5,
+      "category": "violence",
+      "variants": [
+        "tàn phá",
+        "hủy hoại",
+        "phá",
+        "phá nhà"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày phá hoại hết rồi.",
+        "Tao sẽ hủy hoại mày."
+      ]
+    },
+    {
+      "word": "đụ",
+      "weight": 2.5,
+      "category": "profanity",
+      "variants": [
+        "đụ má",
+        "đụ mạ",
+        "đù",
+        "đụ me"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đụ má, làm gì vậy?",
+        "Đụ má thằng ngu."
+      ]
+    },
+    {
+      "word": "trần truồng",
+      "weight": 2.5,
+      "category": "sexual",
+      "variants": [
+        "khỏa thân",
+        "naked",
+        "ko quần áo"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày dám trần truồng trước mặt tao à?",
+        "Con đó khỏa thân ngoài đường."
+      ]
+    },
+    {
+      "word": "bạo dâm",
+      "weight": 2.5,
+      "category": "sexual",
+      "variants": [
+        "sado",
+        "masochism",
+        "bdsm"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng bạo dâm khốn nạn.",
+        "Tao thích bạo dâm."
+      ]
+    },
+    {
+      "word": "khốn",
+      "weight": 2.5,
+      "category": "profanity",
+      "variants": [
+        "khốn nạn",
+        "khốn kiếp",
+        "kh0n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đồ khốn nạn.",
+        "Khốn kiếp thật."
+      ]
+    },
+    {
+      "word": "clgt",
+      "weight": 2.5,
+      "category": "teencode",
+      "variants": [
+        "cái lồn gì thế",
+        "clg v"
+      ],
+      "context_safe": false,
+      "examples": [
+        "clgt, mày làm gì vậy?",
+        "Clgt?"
+      ]
+    },
+    {
+      "word": "chó má",
+      "weight": 2.4,
+      "category": "profanity",
+      "variants": [
+        "chó m4",
+        "ch* má",
+        "cm"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Thằng chó má, dám lừa tao.",
+        "Chó má, mày làm cái quái gì vậy?"
+      ]
+    },
+    {
+      "word": "tuyệt chủng",
+      "weight": 2.4,
+      "category": "violence",
+      "variants": [
+        "xóa sổ",
+        "tàn sát",
+        "tận diệt"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mong cho cái lũ đó tuyệt chủng hết đi.",
+        "Phải xóa sổ tụi nó."
+      ]
+    },
+    {
+      "word": "chó điên",
+      "weight": 2.4,
+      "category": "insult",
+      "variants": [
+        "chó",
+        "đồ chó",
+        "thằng chó"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ chó điên.",
+        "Mày là thằng chó."
+      ]
+    },
+    {
+      "word": "bà già",
+      "weight": 2.4,
+      "category": "insult",
+      "variants": [
+        "thằng cha",
+        "ông già",
+        "bà cô"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ bà già lắm chuyện.",
+        "Thằng cha này khó tính."
+      ]
+    },
+    {
+      "word": "đồ hèn",
+      "weight": 2.4,
+      "category": "insult",
+      "variants": [
+        "hèn nhát",
+        "đồ nhát gan"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày là đồ hèn.",
+        "Đồ hèn nhát."
+      ]
+    },
+    {
+      "word": "đụ mẹ",
+      "weight": 2.4,
+      "category": "profanity",
+      "variants": [
+        "đume",
+        "dm",
+        "đụ moá"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đụ mẹ mày, cút đi.",
+        "Đụ mẹ, lộn rồi."
+      ]
+    },
+    {
+      "word": "âm hộ",
+      "weight": 2.4,
+      "category": "sexual",
+      "variants": [
+        "lồn",
+        "cái lồn",
+        "bướm",
+        "cô bé"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Âm hộ con đó đẹp ghê.",
+        "Tao muốn xem âm hộ của mày."
+      ]
+    },
+    {
+      "word": "câm họng",
+      "weight": 2.3,
+      "category": "insult",
+      "variants": [
+        "câm mồm",
+        "im đi",
+        "ngậm mồm"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Câm họng lại, đồ ngu.",
+        "Mày câm mồm đi."
+      ]
+    },
+    {
+      "word": "vô liêm sỉ",
+      "weight": 2.3,
+      "category": "insult",
+      "variants": [
+        "trơ trẽn",
+        "mặt dày"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày vô liêm sỉ quá.",
+        "Đồ trơ trẽn."
+      ]
+    },
+    {
+      "word": "chửi thề",
+      "weight": 2.3,
+      "category": "profanity",
+      "variants": [
+        "nói tục",
+        "văng tục",
+        "chửi bậy"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày đừng có chửi thề nữa.",
+        "Nói tục là vô văn hóa."
+      ]
+    },
+    {
+      "word": "giao cấu",
+      "weight": 2.3,
+      "category": "sexual",
+      "variants": [
+        "lên giường",
+        "quan hệ tình dục"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mục đích của nó là giao cấu.",
+        "Họ đã lên giường với nhau."
+      ]
+    },
+    {
+      "word": "mày ngu",
+      "weight": 2.3,
+      "category": "insult",
+      "variants": [
+        "mài ngu",
+        "m ngu",
+        "mài đần"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày ngu quá đi.",
+        "Mày ngu như bò."
+      ]
+    },
+    {
+      "word": "tấn công",
+      "weight": 2.3,
+      "category": "violence",
+      "variants": [
+        "xông vào",
+        "đột nhập",
+        "đánh"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ tấn công mày.",
+        "Tấn công mạng."
+      ]
+    },
+    {
+      "word": "chết tiệt",
+      "weight": 2.3,
+      "category": "profanity",
+      "variants": [
+        "chết bầm",
+        "chết mịa",
+        "ch*t tiet"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cái đồ chết tiệt này.",
+        "Chết tiệt, lại hỏng nữa rồi."
+      ]
+    },
+    {
+      "word": "đồ khốn",
+      "weight": 2.2,
+      "category": "insult",
+      "variants": [
+        "khốn nạn",
+        "đồ tồi",
+        "đồ mất dạy"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày là đồ khốn nạn.",
+        "Thằng khốn, dám làm chuyện này."
+      ]
+    },
+    {
+      "word": "mày tao",
+      "weight": 2.2,
+      "category": "profanity",
+      "variants": [
+        "mày",
+        "tao",
+        "mày hả",
+        "t4o"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày là cái thá gì mà nói tao?",
+        "Mày phải nghe lời tao."
+      ]
+    },
+    {
+      "word": "tra tấn",
+      "weight": 2.2,
+      "category": "violence",
+      "variants": [
+        "hành hạ",
+        "hành xác",
+        "bạo hành"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ tra tấn mày đến chết.",
+        "Hành hạ súc vật là tội ác."
+      ]
+    },
+    {
+      "word": "chịch",
+      "weight": 2.2,
+      "category": "sexual",
+      "variants": [
+        "xoạc",
+        "đụ",
+        "làm tình",
+        "ch1ch"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đi chịch không?",
+        "Tao muốn chịch mày."
+      ]
+    },
+    {
+      "word": "thằng chó",
+      "weight": 2.2,
+      "category": "insult",
+      "variants": [
+        "con chó",
+        "đồ chó",
+        "thg chó"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Thằng chó này, dám lừa tao.",
+        "Đồ con chó."
+      ]
+    },
+    {
+      "word": "dizz",
+      "weight": 2.2,
+      "category": "profanity",
+      "variants": [
+        "diss",
+        "chửi",
+        "sỉ vả"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao dizz mày chết.",
+        "Đừng có dizz tao."
+      ]
+    },
+    {
+      "word": "buồi mẹ",
+      "weight": 2.2,
+      "category": "profanity",
+      "variants": [
+        "buồi má",
+        "đầu buồi mẹ"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Buồi mẹ, mày làm gì vậy?",
+        "Buồi má thằng ngu."
+      ]
+    },
+    {
+      "word": "ăn hiếp",
+      "weight": 2.1,
+      "category": "violence",
+      "variants": [
+        "bắt nạt",
+        "trấn áp",
+        "đàn áp"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng lớn ăn hiếp thằng bé.",
+        "Đừng có bắt nạt tao."
+      ]
+    },
+    {
+      "word": "phân biệt",
+      "weight": 2.1,
+      "category": "discrimination",
+      "variants": [
+        "kỳ thị",
+        "phân biệt đối xử"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đừng có phân biệt giới tính.",
+        "Kỳ thị là sai."
+      ]
+    },
+    {
+      "word": "khinh bỉ",
+      "weight": 2.1,
+      "category": "insult",
+      "variants": [
+        "coi thường",
+        "ghét bỏ"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao khinh bỉ mày.",
+        "Mày bị coi thường."
+      ]
+    },
+    {
+      "word": "vô học",
+      "weight": 2.0,
+      "category": "insult",
+      "variants": [
+        "mất dạy",
+        "thiếu văn hóa",
+        "m4t day"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đồ vô học, ăn nói không ra gì.",
+        "Thằng mất dạy."
+      ]
+    },
+    {
+      "word": "người da đen",
+      "weight": 2.0,
+      "category": "discrimination",
+      "variants": [
+        "da đen",
+        " mọi",
+        "chủng tộc"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Cái thằng mọi đen.",
+        "Đồ da đen bẩn thỉu."
+      ]
+    },
+    {
+      "word": "thằng ngu",
+      "weight": 2.0,
+      "category": "insult",
+      "variants": [
+        "con ngu",
+        "thằng đần",
+        "thg ngu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng ngu này làm hư hết việc.",
+        "Con ngu, không làm được gì."
+      ]
+    },
+    {
+      "word": "kì thị",
+      "weight": 2.0,
+      "category": "discrimination",
+      "variants": [
+        "kỳ thị",
+        "phân biệt",
+        "khinh thường"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày đừng có kì thị người khác.",
+        "Kỳ thị vùng miền."
+      ]
+    },
+    {
+      "word": "người nước ngoài",
+      "weight": 2.0,
+      "category": "discrimination",
+      "variants": [
+        "Tây",
+        "Tàu",
+        "phu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng tây lông.",
+        "Đồ tàu khựa."
+      ]
+    },
+    {
+      "word": "người trung quốc",
+      "weight": 2.0,
+      "category": "discrimination",
+      "variants": [
+        "tàu khựa",
+        "tàu",
+        "khựa"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ tàu khựa bẩn thỉu.",
+        "Lũ người Trung Quốc."
+      ]
+    },
+    {
+      "word": "bệnh dại",
+      "weight": 2.0,
+      "category": "insult",
+      "variants": [
+        "bệnh",
+        "dại"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày bị bệnh dại à?",
+        "Đồ bệnh dại."
+      ]
+    },
+    {
+      "word": "đần",
+      "weight": 1.8,
+      "category": "insult",
+      "variants": [
+        "đần độn",
+        "ngu ngốc",
+        "ngu si",
+        "nguu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày đần độn thế.",
+        "Đồ ngu si."
+      ]
+    },
+    {
+      "word": "đần thối",
+      "weight": 1.9,
+      "category": "insult",
+      "variants": [
+        "đần",
+        "đần độn",
+        "ngu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày đúng là đần thối.",
+        "Đồ đần độn."
+      ]
+    },
+    {
+      "word": "lợn",
+      "weight": 1.9,
+      "category": "insult",
+      "variants": [
+        "heo",
+        "con lợn",
+        "lợn rừng"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày ngu như lợn.",
+        "Đồ con lợn."
+      ]
+    },
+    {
+      "word": "cờ hó",
+      "weight": 1.7,
+      "category": "insult",
+      "variants": [
+        "cờ h",
+        "chó",
+        "chó má"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đồ cờ hó.",
+        "Thằng cờ hó này."
+      ]
+    },
+    {
+      "word": "kệch cỡm",
+      "weight": 1.7,
+      "category": "insult",
+      "variants": [
+        "lố bịch",
+        "buồn cười"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ kệch cỡm.",
+        "Mày lố bịch quá."
+      ]
+    },
+    {
+      "word": "đần mặt",
+      "weight": 1.6,
+      "category": "insult",
+      "variants": [
+        "ngu mặt",
+        "ngơ ngác"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Sao mày cứ đần mặt ra vậy?",
+        "Mặt mày đần thối."
+      ]
+    },
+    {
+      "word": "ngu",
+      "weight": 1.5,
+      "category": "insult",
+      "variants": [
+        "ngốc",
+        "khờ",
+        "nguu",
+        "n.g.u"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày ngu quá đi.",
+        "Đồ ngốc."
+      ]
+    },
+    {
+      "word": "chảnh",
+      "weight": 1.5,
+      "category": "insult",
+      "variants": [
+        "chảnh chó",
+        "kiêu ngạo",
+        "chảnh cún"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Con nhỏ đó chảnh chó quá.",
+        "Mày đừng có chảnh."
+      ]
+    },
+    {
+      "word": "biến đi",
+      "weight": 1.5,
+      "category": "insult",
+      "variants": [
+        "cút",
+        "cút xéo",
+        "cut"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Biến đi cho tao nhờ.",
+        "Mày cút xéo đi."
+      ]
+    },
+    {
+      "word": "buồi",
+      "weight": 2.9,
+      "category": "sexual",
+      "variants": [
+        "dương vật",
+        "cặc",
+        "cu"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Thằng buồi to.",
+        "Tao muốn sờ buồi mày."
+      ]
+    },
+    {
+      "word": "tuyệt vọng",
+      "weight": 2.8,
+      "category": "violence",
+      "variants": [
+        "chán sống",
+        "không thiết sống"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày khiến tao tuyệt vọng.",
+        "Tao chán sống rồi."
+      ]
+    },
+    {
+      "word": "giết người",
+      "weight": 3.0,
+      "category": "violence",
+      "variants": [
+        "giết",
+        "sát hại",
+        "thủ tiêu"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Tao sẽ giết người đó.",
+        "Giết người là tội ác."
+      ]
+    },
+    {
+      "word": "thằng ngu học",
+      "weight": 2.4,
+      "category": "insult",
+      "variants": [
+        "ngu học",
+        "ngu dốt",
+        "thiếu hiểu biết"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đồ thằng ngu học.",
+        "Mày đúng là ngu học."
+      ]
+    },
+    {
+      "word": "cái đéo",
+      "weight": 2.4,
+      "category": "profanity",
+      "variants": [
+        "cai deo",
+        "đéo",
+        "cái đ3o"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cái đéo gì vậy?",
+        "Mày nói cái đéo gì."
+      ]
+    },
+    {
+      "word": "tình dục",
+      "weight": 2.4,
+      "category": "sexual",
+      "variants": [
+        "sex",
+        "làm tình",
+        "qnhtd"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Nói về tình dục là ghê tởm.",
+        "Tình dục bẩn thỉu."
+      ]
+    },
+    {
+      "word": "tàn độc",
+      "weight": 2.2,
+      "category": "violence",
+      "variants": [
+        "độc ác",
+        "ác độc",
+        "thâm hiểm"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng tàn độc.",
+        "Quá ác độc."
+      ]
+    },
+    {
+      "word": "chết cha",
+      "weight": 2.1,
+      "category": "profanity",
+      "variants": [
+        "chết tiệt",
+        "chết băm"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Chết cha mày đi.",
+        "Chết cha cái đồ này."
+      ]
+    },
+    {
+      "word": "miệt thị",
+      "weight": 2.0,
+      "category": "discrimination",
+      "variants": [
+        "xúc phạm",
+        "lăng mạ",
+        "chê bai"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Miệt thị ngoại hình.",
+        "Đừng miệt thị người nghèo."
+      ]
+    },
+    {
+      "word": "óc heo",
+      "weight": 1.7,
+      "category": "insult",
+      "variants": [
+        "óc lợn",
+        "ngu heo",
+        "ó heo"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Đồ óc heo.",
+        "Thằng óc heo này."
+      ]
+    },
+    {
+      "word": "dizz",
+      "weight": 2.9,
+      "category": "teencode",
+      "variants": [
+        "chửi",
+        "rap battle"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao dizz chết mày.",
+        "Thằng này hay dizz người khác."
+      ]
+    },
+    {
+      "word": "đ!t",
+      "weight": 2.8,
+      "category": "teencode",
+      "variants": [
+        "địt",
+        "djt",
+        "d*t"
+      ],
+      "context_safe": false,
+      "examples": [
+        "đ!t mẹ thằng đó.",
+        "Đ!t nhau không?"
+      ]
+    },
+    {
+      "word": "l0n",
+      "weight": 2.7,
+      "category": "teencode",
+      "variants": [
+        "lồn",
+        "lon",
+        "l*n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "cái l0n gì vậy.",
+        "Đồ l0n."
+      ]
+    },
+    {
+      "word": "c*c",
+      "weight": 2.7,
+      "category": "teencode",
+      "variants": [
+        "cặc",
+        "kặc",
+        "cu"
+      ],
+      "context_safe": false,
+      "examples": [
+        "c*c gì đâu.",
+        "Tao không quan tâm c*c."
+      ]
+    },
+    {
+      "word": "thg",
+      "weight": 2.4,
+      "category": "teencode",
+      "variants": [
+        "thằng",
+        "thăg"
+      ],
+      "context_safe": true,
+      "examples": [
+        "thg ngu.",
+        "Thg chó."
+      ]
+    },
+    {
+      "word": "con k",
+      "weight": 2.4,
+      "category": "teencode",
+      "variants": [
+        "con khốn",
+        "con chó",
+        "ck"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Con k này.",
+        "Con k mất dạy."
+      ]
+    },
+    {
+      "word": "cl",
+      "weight": 2.3,
+      "category": "teencode",
+      "variants": [
+        "cái lồn",
+        "clj"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Cl gì vậy.",
+        "Cl mày."
+      ]
+    },
+    {
+      "word": "vlon",
+      "weight": 2.3,
+      "category": "teencode",
+      "variants": [
+        "vãi lồn",
+        "vl",
+        "v l"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Vlon thật.",
+        "Cái này vlon."
+      ]
+    },
+    {
+      "word": "dcm",
+      "weight": 2.2,
+      "category": "teencode",
+      "variants": [
+        "đcm",
+        "địt con mẹ",
+        "dm"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Dcm mày.",
+        "Dcm thằng đó."
+      ]
+    },
+    {
+      "word": "vô dụng",
+      "weight": 1.7,
+      "category": "insult",
+      "variants": [
+        "phế vật",
+        "ăn hại"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày là đồ vô dụng.",
+        "Thằng phế vật."
+      ]
+    },
+    {
+      "word": "ngu như",
+      "weight": 1.6,
+      "category": "insult",
+      "variants": [
+        "ngu như bò",
+        "ngu như chó"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Mày ngu như bò.",
+        "Ngu như chó."
+      ]
+    },
+    {
+      "word": "hãm",
+      "weight": 1.5,
+      "category": "insult",
+      "variants": [
+        "hãm lồn",
+        "hãm tài"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày hãm quá.",
+        "Thằng hãm lồn."
+      ]
+    },
+    {
+      "word": "đồ điên",
+      "weight": 1.5,
+      "category": "insult",
+      "variants": [
+        "khùng",
+        "ngáo",
+        "đồ ngu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày là đồ điên.",
+        "Đồ khùng."
+      ]
+    },
+    {
+      "word": "đập",
+      "weight": 2.9,
+      "category": "violence",
+      "variants": [
+        "đánh",
+        "đấm",
+        "đập chết"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao sẽ đập mày.",
+        "Đập chết mẹ nó."
+      ]
+    },
+    {
+      "word": "còng",
+      "weight": 2.9,
+      "category": "sexual",
+      "variants": [
+        "chích",
+        "đụ",
+        "xoạc"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đi còng không?",
+        "Tao còng mày."
+      ]
+    },
+    {
+      "word": "bóp",
+      "weight": 2.8,
+      "category": "sexual",
+      "variants": [
+        "sờ",
+        "vuốt ve",
+        "nắn bóp"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao muốn bóp vú mày.",
+        "Bóp đít."
+      ]
+    },
+    {
+      "word": "xâm phạm",
+      "weight": 2.7,
+      "category": "violence",
+      "variants": [
+        "xâm hại",
+        "vi phạm",
+        "động chạm"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Xâm phạm thân thể.",
+        "Xâm hại người khác."
+      ]
+    },
+    {
+      "word": "khinh thường",
+      "weight": 2.4,
+      "category": "insult",
+      "variants": [
+        "coi thường",
+        "xem nhẹ"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tao khinh thường mày.",
+        "Đồ đáng khinh."
+      ]
+    },
+    {
+      "word": "người miền nam",
+      "weight": 2.3,
+      "category": "discrimination",
+      "variants": [
+        "miền nam",
+        "nam kỳ",
+        "nam kì"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ nam kỳ.",
+        "Người miền nam."
+      ]
+    },
+    {
+      "word": "người miền bắc",
+      "weight": 2.3,
+      "category": "discrimination",
+      "variants": [
+        "miền bắc",
+        "bắc kỳ",
+        "bắc kì"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng bắc kỳ.",
+        "Người miền bắc."
+      ]
+    },
+    {
+      "word": "thần kinh",
+      "weight": 2.0,
+      "category": "insult",
+      "variants": [
+        "thần kinh",
+        "tâm thần",
+        "bị điên"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày bị thần kinh à.",
+        "Thằng tâm thần."
+      ]
+    },
+    {
+      "word": "ngu lồn",
+      "weight": 2.8,
+      "category": "teencode",
+      "variants": [
+        "ngu lol",
+        "ngu l*n"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Ngu lồn vậy.",
+        "Thằng ngu lồn."
+      ]
+    },
+    {
+      "word": "kệch",
+      "weight": 1.7,
+      "category": "teencode",
+      "variants": [
+        "kệch cỡm",
+        "kệch cởm"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Kệch quá.",
+        "Đồ kệch cỡm."
+      ]
+    },
+    {
+      "word": "phế",
+      "weight": 1.7,
+      "category": "teencode",
+      "variants": [
+        "phế vật",
+        "vô dụng"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày phế quá.",
+        "Thằng phế vật."
+      ]
+    },
+    {
+      "word": "chó",
+      "weight": 1.6,
+      "category": "teencode",
+      "variants": [
+        "cờ hó",
+        "chó má"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ chó.",
+        "Chó điên."
+      ]
+    },
+    {
+      "word": "mày",
+      "weight": 1.5,
+      "category": "teencode",
+      "variants": [
+        "m",
+        "mài",
+        "mày hả"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Mày đi đâu.",
+        "Mày là ai."
+      ]
+    },
+    {
+      "word": "đĩ",
+      "weight": 2.7,
+      "category": "teencode",
+      "variants": [
+        "di",
+        "con di",
+        "đĩ điếm"
+      ],
+      "context_safe": false,
+      "examples": [
+        "Con đĩ này.",
+        "Đĩ điếm."
+      ]
+    },
+    {
+      "word": "tuyệt",
+      "weight": 2.4,
+      "category": "teencode",
+      "variants": [
+        "tuyệt vời",
+        "tuyệt chủng"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Tuyệt vời quá.",
+        "Tuyệt chủng hết đi."
+      ]
+    },
+    {
+      "word": "đần",
+      "weight": 1.9,
+      "category": "teencode",
+      "variants": [
+        "dần",
+        "đần độn"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Đồ đần.",
+        "Đần quá."
+      ]
+    },
+    {
+      "word": "thằng đần",
+      "weight": 1.7,
+      "category": "teencode",
+      "variants": [
+        "thg đần",
+        "thằng ngu"
+      ],
+      "context_safe": true,
+      "examples": [
+        "Thằng đần này.",
+        "Đồ thằng đần."
+      ]
+    }
+  ]
+}

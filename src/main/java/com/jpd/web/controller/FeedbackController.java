@@ -1,6 +1,5 @@
 package com.jpd.web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -12,18 +11,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jpd.web.service.FeedbackService;
 
-import jakarta.websocket.server.PathParam;
-
 @RestController
 @RequestMapping("/api/customer/feedback")
 public class FeedbackController {
-@Autowired
-private FeedbackService feedbackService;
-@PostMapping("/{courseId}")
-public ResponseEntity<?>addFeedback(@PathVariable("courseId") long courseId, @RequestParam("detail")String detail,
-		@AuthenticationPrincipal Jwt jwt){
-	String email=jwt.getClaimAsString("email");
-	this.feedbackService.addFeedback(email, courseId, detail);
-	return ResponseEntity.noContent().build();
-}
+
+    private final FeedbackService feedbackService;
+
+    // Constructor injection thay vì field injection
+    public FeedbackController(FeedbackService feedbackService) {
+        this.feedbackService = feedbackService;
+    }
+
+    @PostMapping("/{courseId}")
+    public ResponseEntity<?> addFeedback(
+            @PathVariable("courseId") long courseId,
+            @RequestParam("rate") int rate,
+            @RequestParam("detail") String detail,
+            @AuthenticationPrincipal Jwt jwt) {
+        String email = jwt.getClaimAsString("email");
+        this.feedbackService.addFeedback(email, courseId, detail, rate);
+        return ResponseEntity.noContent().build();
+    }
 }

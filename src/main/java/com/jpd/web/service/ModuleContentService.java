@@ -154,7 +154,7 @@ public class ModuleContentService {
 		for(ModuleContent md:mds) {
 			
 		Optional<ModuleContent> m=	this.moduleContentRepository.findById(md.getMcId());
-		System.out.print(m.get());
+
 		if(m.isPresent())
 		 res.add(m.get());
 		}

@@ -27,14 +27,14 @@ public class CustomerTransaction {
     @JoinColumn(name = "enroll_id")
     private Enrollment enrollment;
 
-   
+
 
     @Column(name = "content", length = 255)
     private String content;
     private String status; // CREATED, PENDING, COMPLETED, FAILED
     private Double amount;
     private String currency;
-   
+
     private Date createdAt;
     private Date updatedAt;
 
@@ -43,5 +43,5 @@ public class CustomerTransaction {
 
     @Column(name = "creator_get", nullable = false)
     private double creatorGet;
-    private String  paymentId;
+    private String paymentId;
 }

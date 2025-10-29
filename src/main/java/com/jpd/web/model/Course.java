@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -40,7 +41,7 @@ public class Course {
     private boolean isPublic;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     @UpdateTimestamp
     @Column(name = "last_update")
     private LocalDate lastUpdate;
@@ -88,5 +89,4 @@ public class Course {
     //link to Wishlist
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     private List<Wishlist> wishlists;
-
 }

@@ -1,8 +1,7 @@
 package com.jpd.web.dto;
 
 import java.sql.Date;
-
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.time.LocalDateTime;
 
 import com.google.auto.value.AutoValue.Builder;
 
@@ -19,7 +18,7 @@ private String userName;
 private String familyName;
 private String Role;
 private String givenName;
-private Date createDate;
+private LocalDateTime createDate;
 private String email;
 private boolean isCreator;
 

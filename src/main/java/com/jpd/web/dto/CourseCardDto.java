@@ -1,6 +1,7 @@
 package com.jpd.web.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.jpd.web.model.AccessMode;
 
@@ -22,7 +23,7 @@ public class CourseCardDto {
       rating: 4.5,*/
 	private long id ;
 	private String name;
-	private LocalDate createdDate;
+	private LocalDateTime createdDate;
 	private int studentCount;
 	private double reviewCount;
 	private double totalRevenue;

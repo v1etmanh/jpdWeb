@@ -152,16 +152,30 @@ public class CourseInfService {
 		// Feedbacks
 		List<FeedbackSimpleDto> feedbacksDto = getFeedbacksForCourse(course);
 
-		return CourseDescriptionDto.builder().courseId(course.getCourseId()).name(course.getName())
-				.description(course.getDescription()).language(course.getLanguage())
-				.teachingLanguage(course.getTeachingLanguage()).price(course.getPrice()).urlImg(course.getUrlImg())
-				.createdAt(course.getCreatedAt()).lastUpdate(course.getLastUpdate()).isPublic(course.isPublic())
-				.isBan(course.isBan()).accessMode(course.getAccessMode() != null ? course.getAccessMode().name() : null)
-				.learningObject(course.getLearningObject()).requirements(course.getRequirements())
-				.targetAudience(course.getTargetAudience()).creator(creatorDto).chapters(chaptersDto)
-				.totalStudents(totalStudents).totalFeedbacks(totalFeedbacks)
-				.averageRating(avgRating != null ? Math.round(avgRating * 10.0) / 10.0 : 0.0).totalModules(totalModules)
-				.feedbacks(feedbacksDto).build();
+        return CourseDescriptionDto.builder()
+                .courseId(course.getCourseId())
+                .name(course.getName())
+                .description(course.getDescription())
+                .language(course.getLanguage())
+                .teachingLanguage(course.getTeachingLanguage())
+                .price(course.getPrice())
+                .urlImg(course.getUrlImg())
+                .createdAt(course.getCreatedAt())
+                .lastUpdate(course.getLastUpdate().atStartOfDay())  
+                .isPublic(course.isPublic())
+                .isBan(course.isBan())
+                .accessMode(course.getAccessMode() != null ? course.getAccessMode().name() : null)
+                .learningObject(course.getLearningObject())
+                .requirements(course.getRequirements())
+                .targetAudience(course.getTargetAudience())
+                .creator(creatorDto)
+                .chapters(chaptersDto)
+                .totalStudents(totalStudents)
+                .totalFeedbacks(totalFeedbacks)
+                .averageRating(avgRating != null ? Math.round(avgRating * 10.0) / 10.0 : 0.0)
+                .totalModules(totalModules)
+                .feedbacks(feedbacksDto)
+                .build();
 	}
 
 	private CreatorSimpleDto mapCreatorToDto(Creator creator) {
@@ -186,8 +200,9 @@ public class CourseInfService {
 			Customer customer = enrollment.getCustomer();
 
 			return FeedbackSimpleDto.builder().feedbackId(feedback.getFeedbackId()).content(feedback.getContent())
-					.rate(feedback.getRate()).createDate(enrollment.getCreateDate().toLocalDate())
-					.customer(CustomerSimpleDto.builder().customerId(customer.getCustomerId())
+					.rate(feedback.getRate()).createDate(enrollment.getCreateDate())
+
+                    .customer(CustomerSimpleDto.builder().customerId(customer.getCustomerId())
 							.fullName(customer.getGivenName())
 
 							.build())

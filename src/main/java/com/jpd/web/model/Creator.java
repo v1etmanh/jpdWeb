@@ -5,17 +5,18 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "creator")
-@Data // Bao gồm @Getter, @Setter, @ToString, @EqualsAndHashCode,
-      // @RequiredArgsConstructor
+@Data //Bao gồm @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -43,47 +44,51 @@ public class Creator {
     @Column(name = "title_self")
     private String titleSelf;
     @ElementCollection
-    @CollectionTable(name = "creator_certificates", joinColumns = @JoinColumn(name = "creator_id"))
+    @CollectionTable(
+            name = "creator_certificates",
+            joinColumns = @JoinColumn(name = "creator_id")
+    )
     @Column(name = "certificate_url")
-    private List<String> certificateUrl = new ArrayList<>();
+    private  List<String> certificateUrl= new ArrayList<>();
     @Column(name = "status")
     private Status status;
 
-    @Column(name = "reputation_score")
-    @Builder.Default
-    private Integer reputationScore = 100;
+    //link to Customer
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "customer_id")
+    @JsonIgnore
+    private Customer customer;
 
-    @Column(name = "is_banned")
-    @Builder.Default
-    private Boolean isBanned = false;
+    //link to Course
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference("creator-course")
+    private List<Course> courses;
 
-    @Column(name = "banned_until")
-    private Date bannedUntil;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference("creator-kahoot")
+    private List<KahootListFunction> kahootListFunctions;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference("creator-withdraw")
+    private List<Withdraw> withdrawList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
+    @JsonManagedReference("creator-payout")
+    private List<PayoutTracking> payoutTrackings;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator",fetch = FetchType.LAZY)
+    @JsonManagedReference("creator-monthlyBalance")
+    private List<MonthlyCreatorBalance> monthlyBalances;
+private boolean ban;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator",fetch = FetchType.LAZY)
+    @JsonManagedReference("creator-warning")
+    private List<CreatorWarning> warnings;
     @Column(name = "warning_count")
     @Builder.Default
     private Integer warningCount = 0;
-
-    // link to Customer
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
-
-    // link to Course
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    @JsonManagedReference
-    private List<Course> courses;
-
-    // link to Withdraw
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    @JsonManagedReference
-    private List<Withdraw> withdrawList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    private List<PayoutTracking> payoutTrackings;
-
-    // link to CreatorWarning
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
-    @JsonManagedReference
-    private List<CreatorWarning> warnings;
-
+    @Column(name = "banned_until")
+    private Date bannedUntil;
+    @Column(name = "reputation_score")
+    @Builder.Default
+    private Integer reputationScore = 100;
 }

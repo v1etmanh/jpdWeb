@@ -66,62 +66,102 @@ public class AdminTransactionService {
          * Get revenue report for a specific period
          */
         public RevenueReportDto getRevenueReport(String periodType, LocalDateTime startDate, LocalDateTime endDate) {
-                // Calculate revenue statistics
-                Double totalRevenue = transactionRepository.getTotalRevenue(startDate, endDate);
-                Double adminRevenue = transactionRepository.getAdminRevenue(startDate, endDate);
-                Double creatorRevenue = transactionRepository.getCreatorRevenue(startDate, endDate);
+            log.info("=== REVENUE REPORT DEBUG ===");
+            log.info("Period: {}, Start: {}, End: {}", periodType, startDate, endDate);
+            
+            // CRITICAL: Check if dates are correct
+            if (startDate.isAfter(endDate)) {
+                log.error("Start date is after end date!");
+                throw new IllegalArgumentException("Start date must be before end date");
+            }
+            
+            // Debug: Check total data in DB
+            long totalInDb = transactionRepository.count();
+            log.info("Total transactions in database: {}", totalInDb);
+            
+            // Debug: Check data in date range
+            List<CustomerTransaction> allInRange = transactionRepository
+                    .findAllInDateRange(startDate, endDate);
+            log.info("Transactions in date range: {}", allInRange.size());
+            
+            // Debug: Print first 3 transactions
+            allInRange.stream().limit(3).forEach(t -> {
+                log.info("Sample - ID: {}, Status: {}, Amount: {}, Created: {}", 
+                        t.getTransactionID(), t.getStatus(), t.getAmount(), t.getCreatedAt());
+            });
+            
+            // Calculate revenue statistics (SUCCESS only)
+            Double totalRevenue = transactionRepository.getTotalRevenue(startDate, endDate);
+            Double adminRevenue = transactionRepository.getAdminRevenue(startDate, endDate);
+            Double creatorRevenue = transactionRepository.getCreatorRevenue(startDate, endDate);
+            
+            log.info("Revenue - Total: {}, Admin: {}, Creator: {}", 
+                    totalRevenue, adminRevenue, creatorRevenue);
+            
+            // Count transactions by status
+            Long successful = transactionRepository.countByStatusAndDateRange("SUCCESS", startDate, endDate);
+            Long failed = transactionRepository.countByStatusAndDateRange("FAILED", startDate, endDate);
+            Long pending = transactionRepository.countByStatusAndDateRange("PENDING", startDate, endDate);
+            Long total = successful + failed + pending;
+            
+            log.info("Transactions - Success: {}, Failed: {}, Pending: {}, Total: {}", 
+                    successful, failed, pending, total);
+            
+            // Check if no data found
+            if (total == 0) {
+                log.warn("No transactions found in the specified date range!");
+                log.warn("Check if: 1) Data exists, 2) Date range is correct, 3) Timezone issues");
+            }
+            
+            // Calculate metrics
+            Double avgValue = total > 0 ? (totalRevenue / total) : 0.0;
+            Double successRate = total > 0 ? (successful.doubleValue() / total * 100) : 0.0;
+            
+            // Get top courses and creators
+            Page<CourseRevenueProjection> topCoursesPage = transactionRepository
+                    .getTopCoursesByRevenue(startDate, endDate, PageRequest.of(0, 10));
+            
+            Page<CreatorRevenueProjection> topCreatorsPage = transactionRepository
+                    .getTopCreatorsByRevenue(startDate, endDate, PageRequest.of(0, 10));
+            
+            log.info("Top courses found: {}", topCoursesPage.getTotalElements());
+            log.info("Top creators found: {}", topCreatorsPage.getTotalElements());
+            
+            List<RevenueReportDto.CourseRevenueSummary> topCourses = topCoursesPage.getContent().stream()
+                    .map(p -> RevenueReportDto.CourseRevenueSummary.builder()
+                            .courseId(p.getCourseId())
+                            .courseName(p.getCourseName())
+                            .imageUrl(p.getImageUrl())
+                            .totalRevenue(p.getTotalRevenue())
+                            .enrollmentCount(p.getEnrollmentCount())
+                            .build())
+                    .collect(Collectors.toList());
 
-                // Count transactions by status
-                Long successful = transactionRepository.countByStatusAndDateRange("SUCCESS", startDate, endDate);
-                Long failed = transactionRepository.countByStatusAndDateRange("FAILED", startDate, endDate);
-                Long pending = transactionRepository.countByStatusAndDateRange("PENDING", startDate, endDate);
-                Long total = successful + failed + pending;
+            List<RevenueReportDto.CreatorRevenueSummary> topCreators = topCreatorsPage.getContent().stream()
+                    .map(p -> RevenueReportDto.CreatorRevenueSummary.builder()
+                            .creatorId(p.getCreatorId())
+                            .creatorName(p.getCreatorName())
+                            .totalRevenue(p.getTotalRevenue())
+                            .courseCount(p.getCourseCount())
+                            .build())
+                    .collect(Collectors.toList());
 
-                // Calculate metrics
-                Double avgValue = total > 0 ? (totalRevenue != null ? totalRevenue / total : 0.0) : 0.0;
-                Double successRate = total > 0 ? (successful.doubleValue() / total * 100) : 0.0;
-
-                // Get top courses and creators for the specified period
-                Page<CourseRevenueProjection> topCoursesPage = transactionRepository.getTopCoursesByRevenue(
-                                startDate, endDate, PageRequest.of(0, 10));
-                Page<CreatorRevenueProjection> topCreatorsPage = transactionRepository.getTopCreatorsByRevenue(
-                                startDate, endDate, PageRequest.of(0, 10));
-
-                List<RevenueReportDto.CourseRevenueSummary> topCourses = topCoursesPage.getContent().stream()
-                                .map(p -> RevenueReportDto.CourseRevenueSummary.builder()
-                                                .courseId(p.getCourseId())
-                                                .courseName(p.getCourseName())
-                                                .imageUrl(p.getImageUrl())
-                                                .totalRevenue(p.getTotalRevenue())
-                                                .enrollmentCount(p.getEnrollmentCount())
-                                                .build())
-                                .collect(Collectors.toList());
-
-                List<RevenueReportDto.CreatorRevenueSummary> topCreators = topCreatorsPage.getContent().stream()
-                                .map(p -> RevenueReportDto.CreatorRevenueSummary.builder()
-                                                .creatorId(p.getCreatorId())
-                                                .creatorName(p.getCreatorName())
-                                                .totalRevenue(p.getTotalRevenue())
-                                                .courseCount(p.getCourseCount())
-                                                .build())
-                                .collect(Collectors.toList());
-
-                return RevenueReportDto.builder()
-                                .periodType(periodType)
-                                .startDate(startDate)
-                                .endDate(endDate)
-                                .totalRevenue(totalRevenue != null ? totalRevenue : 0.0)
-                                .adminRevenue(adminRevenue != null ? adminRevenue : 0.0)
-                                .creatorRevenue(creatorRevenue != null ? creatorRevenue : 0.0)
-                                .totalTransactions(total)
-                                .successfulTransactions(successful)
-                                .failedTransactions(failed)
-                                .pendingTransactions(pending)
-                                .averageTransactionValue(avgValue)
-                                .successRate(successRate)
-                                .topCourses(topCourses)
-                                .topCreators(topCreators)
-                                .build();
+            return RevenueReportDto.builder()
+                    .periodType(periodType)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .totalRevenue(totalRevenue)
+                    .adminRevenue(adminRevenue)
+                    .creatorRevenue(creatorRevenue)
+                    .totalTransactions(total)
+                    .successfulTransactions(successful)
+                    .failedTransactions(failed)
+                    .pendingTransactions(pending)
+                    .averageTransactionValue(avgValue)
+                    .successRate(successRate)
+                    .topCourses(topCourses)
+                    .topCreators(topCreators)
+                    .build();
         }
 
         /**
@@ -142,7 +182,7 @@ public class AdminTransactionService {
         public void freezeCreatorRevenue(Long creatorId, String reason, String adminEmail) {
                 Creator creator = validationResources.validateCreatorExists(creatorId);
 
-                creator.setIsBanned(true);
+                creator.setBan(true);
                 creator.setStatus(Status.UNDER_REVIEW);
                 creatorRepository.save(creator);
 
@@ -162,7 +202,7 @@ public class AdminTransactionService {
         public void unfreezeCreatorRevenue(Long creatorId, String adminEmail) {
                 Creator creator = validationResources.validateCreatorExists(creatorId);
 
-                creator.setIsBanned(false);
+                creator.setBan(false);
                 creator.setStatus(Status.SUCCESS);
                 creatorRepository.save(creator);
 
@@ -246,7 +286,7 @@ public class AdminTransactionService {
                                                 .name(creator.getFullName())
                                                 .email(creator.getCustomer() != null ? creator.getCustomer().getEmail()
                                                                 : null)
-                                                .isFrozen(creator.getIsBanned())
+                                                .isFrozen(creator.isBan())
                                                 .build())
                                 .enrollmentId(enrollment.getEnrollId())
                                 .enrollmentDate(enrollment.getCreateDate())

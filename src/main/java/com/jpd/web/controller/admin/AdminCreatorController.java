@@ -54,10 +54,10 @@ public class AdminCreatorController {
     @PostMapping("/{creatorId}/approve-certificate")
     public ResponseEntity<Map<String, String>> approveCertificate(
             @PathVariable Long creatorId,
-            @RequestBody(required = false) Map<String, String> request,
+            @RequestParam("adminNote")String adminNote,
             @AuthenticationPrincipal Jwt jwt) {
         String adminEmail = jwt.getClaimAsString("email");
-        String adminNote = request != null ? request.get("adminNote") : null;
+
 
         adminCreatorService.approveCertificate(creatorId, adminEmail, adminNote);
 
@@ -86,10 +86,10 @@ public class AdminCreatorController {
     @PostMapping("/{creatorId}/warn")
     public ResponseEntity<Map<String, String>> warnCreator(
             @PathVariable Long creatorId,
-            @RequestBody Map<String, String> request,
+            @RequestParam("reason") String reason,
             @AuthenticationPrincipal Jwt jwt) {
         String adminEmail = jwt.getClaimAsString("email");
-        String reason = request.get("reason");
+
 
         adminCreatorService.warnCreator(creatorId, reason, adminEmail);
 

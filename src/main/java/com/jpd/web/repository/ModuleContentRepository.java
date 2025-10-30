@@ -21,4 +21,7 @@ void deleteByModuleId(@Param("moduleId") Long moduleId);
 void deleteByTypeOfContentAndModule(TypeOfContent typeOfContent, Module module);
 List<ModuleContent> findByTypeOfContentAndModule(TypeOfContent typeOfContent, Module module);
 ModuleContent  deleteByMcId(Long mcId);
+    @Modifying
+    @Query("DELETE FROM ModuleContent mc WHERE mc.kahootListFunction.kahootId = :kahootId")
+    void deleteByKahootId(@Param("kahootId") Long kahootId);
 }

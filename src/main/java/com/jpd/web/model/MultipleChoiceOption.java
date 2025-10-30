@@ -23,7 +23,7 @@ public class MultipleChoiceOption {
     private String optionText;
     @Column(nullable = false)
     private boolean isCorrect;
-
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mc_id", nullable = false)
     @JsonBackReference
     @ToString.Exclude  

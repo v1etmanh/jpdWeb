@@ -80,18 +80,23 @@ public class AdminTransactionController {
 
             range = switch (period.toUpperCase()) {
                 case "MONTH" -> {
+                	    System.out.print("m");
                     int m = month != null ? month : LocalDateTime.now().getMonthValue();
                     yield TimeRangeCalculator.getMonthRange(m, currentYear);
                 }
                 case "QUARTER" -> {
+                	System.out.print("m1");
                     int q = quarter != null ? quarter : ((LocalDateTime.now().getMonthValue() - 1) / 3 + 1);
                     yield TimeRangeCalculator.getQuarterRange(q, currentYear);
                 }
-                case "YEAR" -> TimeRangeCalculator.getYearRange(currentYear);
+                case "YEAR" -> {
+                System.out.print("m3");
+                yield TimeRangeCalculator.getYearRange(currentYear);
+                }
                 default -> throw new IllegalArgumentException("Invalid period type: " + period);
             };
         }
-
+     System.out.print(range);
         RevenueReportDto data = transactionService.getRevenueReport(
                 period,
                 range.getStart(),

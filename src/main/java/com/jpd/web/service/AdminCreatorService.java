@@ -155,7 +155,7 @@ public class AdminCreatorService {
     public void banCreator(Long creatorId, String reason, Integer durationDays, String adminEmail) {
         Creator creator = validationResources.validateCreatorExists(creatorId);
 
-        creator.setIsBanned(true);
+        creator.setBan(true);
 
         if (durationDays != null && durationDays > 0) {
             // Temporary ban
@@ -190,7 +190,7 @@ public class AdminCreatorService {
     public void unbanCreator(Long creatorId, String reason, String adminEmail) {
         Creator creator = validationResources.validateCreatorExists(creatorId);
 
-        creator.setIsBanned(false);
+        creator.setBan(false);
         creator.setBannedUntil(null);
         creator.setStatus(Status.SUCCESS);
 
@@ -281,7 +281,7 @@ public class AdminCreatorService {
                 .avgRating(avgRating != null ? avgRating : 0.0)
                 .warningCount(creator.getWarningCount() != null ? creator.getWarningCount() : 0)
                 .reputationScore(creator.getReputationScore())
-                .isBanned(creator.getIsBanned())
+                .isBanned(creator.isBan())
                 .bannedUntil(creator.getBannedUntil())
                 .recentReports(reportDtos)
                 .recentCourses(recentCourses)

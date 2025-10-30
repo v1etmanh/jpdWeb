@@ -76,6 +76,7 @@ public class ModuleContentController {
     public ResponseEntity<?> updateModuleContents(
             @Valid @RequestBody ModuleContentDto moduleContentDto,
             HttpServletRequest request) {
+		System.out.print("hello");
         Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
         List<ModuleContent> contents = moduleContentService.updateCourseMaterial(moduleContentDto, creatorId);
         return ResponseEntity.ok(contents);

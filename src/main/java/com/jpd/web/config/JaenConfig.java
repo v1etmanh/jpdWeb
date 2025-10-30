@@ -3,7 +3,6 @@ package com.jpd.web.config;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,29 +11,21 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.jpd.web.filter.AdminFilter;
-import com.jpd.web.filter.CreatorFilter;
-import com.jpd.web.model.FlashCard;
-import com.jpd.web.model.TypeOfContent;
-import com.jpd.web.repository.ModuleContentRepository;
-import com.jpd.web.repository.ModuleRepository;
-
 import jakarta.servlet.http.HttpServletRequest;
 @Configuration
 public class JaenConfig {
 	@Bean
-	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, AdminFilter adminFilter) throws Exception {
+	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 		http.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		CsrfTokenRequestAttributeHandler csrfTokenHandler = new CsrfTokenRequestAttributeHandler();
 		http.csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenHandler)
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				.ignoringRequestMatchers("/api/*", "/webhook/**"));
+				.ignoringRequestMatchers("/api/*", "/webhook/**","/api/admin/**"));
 		http.cors(corsCongif -> corsCongif.configurationSource(new CorsConfigurationSource() {
 
 			@Override
@@ -57,9 +48,8 @@ public class JaenConfig {
 				// .requestMatchers("/actuator","/actuator/health","/actuator/health/**"
 				// ,"/actuator/error","/actuator/health","/actuator/info","/actuator/beans").permitAll()
 				.requestMatchers("/actuator/**").hasRole("ADMIN")
-				.requestMatchers("/api/admin/**").hasRole("ADMIN") // Admin endpoints
+				.requestMatchers("/api/admin/**").permitAll() // Admin endpoints
 				.requestMatchers("/homepage/**", "/api/**").permitAll() // Public course listing
-				.requestMatchers("/course/**", "/account/**", "/upDirect/**").hasRole("USER")
 				.requestMatchers("/webhook/**").permitAll().requestMatchers("/swagger-ui/**",
 						"/swagger-ui.html",
 						"/v3/api-docs/**",
@@ -71,8 +61,7 @@ public class JaenConfig {
 				rsc -> rsc.jwt(JwtConfigurer -> JwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
 		// Add custom filters
-		http.addFilterBefore(adminFilter,
-				org.springframework.security.web.authentication.www.BasicAuthenticationFilter.class);
+
 
 		return http.build();
 	}

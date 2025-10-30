@@ -1,5 +1,6 @@
 package com.jpd.web.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.data.convert.ReadingConverter;
 
 import jakarta.annotation.Generated;
@@ -27,10 +28,12 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
+    @JsonBackReference("course-report")
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
+    @JsonBackReference("customer-report")
     private Customer customer;
 
     @Column(name = "status")

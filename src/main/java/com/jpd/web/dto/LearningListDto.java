@@ -14,6 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 public class LearningListDto {
-private List<CourseLearningCardDto>cardDtos;
-private List<WishlistDto>wishlistDtos;
+    private List<CourseLearningCardDto> cardDtos;
+    private List<WishlistDto> wishlistDtos;
 }

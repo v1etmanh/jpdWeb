@@ -54,8 +54,6 @@ public class CourseController {
 		long creatorId= RequestAttributeExtractor.extractCreatorId(request);
 			c = this.courseService.createCourse(entity, creatorId);
 			return ResponseEntity.status(HttpStatus.CREATED).body(CourseTransForm.transformToCourseCardDto(c));
-		
-
 	}
 
 	@GetMapping()

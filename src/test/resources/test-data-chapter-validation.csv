@@ -1,0 +1,4 @@
+testCase,chapterId,courseId,chapterCourseId,shouldSucceed,expectedErrorType,expectedErrorMessage
+valid_chapter,1,1,1,true,,
+chapter_not_found,999,1,1,false,ChapterNotFoundException,Chapter not found with id
+chapter_wrong_course,1,1,2,false,ChapterNotBelongsToCourseException,does not belong to course

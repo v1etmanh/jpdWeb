@@ -1,0 +1,3 @@
+email,courseId,type,detail
+nonexistent@foo.com,200,INAPPROPRIATE_CONTENT,Nội dung
+ghost@foo.com,200,SCAM_OR_FRAUD,abc

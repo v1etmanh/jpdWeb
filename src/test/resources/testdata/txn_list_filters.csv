@@ -1,0 +1,5 @@
+#caseId,sortBy,sortDirection,page,size,expectCount,expectSortDirValid
+HP1,createdAt,DESC,0,20,4,true
+EC1,createdAt,asc,0,2,2,true
+EC2,transactionID,DESC,0,1,1,true
+EX1,createdAt,SIDEWAYS,0,10,0,false

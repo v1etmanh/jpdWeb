@@ -1,0 +1,4 @@
+currentIndex,questionFound,expectException,expectedMsgSubstr
+-1,Y,NONE,
+-1,N,RUNTIME,not found
+1,Y,QUIZ_COMPLETED,

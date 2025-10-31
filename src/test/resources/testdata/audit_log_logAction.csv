@@ -1,0 +1,10 @@
+caseId,title,actionType,targetCreatorId,adminEmail,reason,expectException
+LA-S1,Valid action - all fields ok,SOMETHING_NEW,7,ops@jaen.io,Valid test,
+LA-S2,Another valid action,UPDATE_PROFILE,11,admin@jaen.io,Very long reason without commas so CSV stays simple,
+LA-E1,Null creator ID should fail,SYSTEM_MAINTENANCE,null,sys@jaen.io,nightly job,IllegalArgumentException
+LA-E2,Blank admin email should fail,UNBAN_CREATOR,55,,appeal accepted,IllegalArgumentException
+LA-X1,Database constraint violation,BAN_CREATOR,1001,admin@jaen.io,too long for db,DataIntegrityViolationException
+
+
+
+

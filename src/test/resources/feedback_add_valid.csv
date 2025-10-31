@@ -1,0 +1,7 @@
+email,courseId,content,rate
+test@gmail.com,1,Very helpful,4
+test@gmail.com,1,ok,0
+test@gmail.com,1,Nice!,2147483647
+test@gmail.com,99,Great,5
+test@gmail.com,1,"",1
+test@gmail.com,1,"",3

@@ -1,0 +1,5 @@
+testCase,creatorId,adminEmail,expectedLogCount,shouldSucceed,expectedError
+get_by_creator_found,1,,3,true,
+get_by_creator_empty,999,,0,true,
+get_by_admin_found,,admin@test.com,5,true,
+get_by_admin_empty,,unknown@test.com,0,true,

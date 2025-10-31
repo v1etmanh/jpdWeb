@@ -1,4 +1,4 @@
-package com.jpd.web.controller;
+package com.jpd.web.controller.customer;
 
 import java.io.File;
 
@@ -40,9 +40,9 @@ public ResponseEntity<SemanticResult> evaluateAnswer(
 
 
     
-	try {SemanticResult result=null;
+	try {
         
-        //SemanticResult result = aiEvaluateService.evaluateSpeaking(file, expectedAnswer, language);
+        SemanticResult result = aiEvaluateService.evaluateSpeaking(file, expectedAnswer, language);
         
         
         return ResponseEntity.ok(result);

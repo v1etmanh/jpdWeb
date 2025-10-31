@@ -1,4 +1,4 @@
-package com.jpd.web.controller;
+package com.jpd.web.controller.customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

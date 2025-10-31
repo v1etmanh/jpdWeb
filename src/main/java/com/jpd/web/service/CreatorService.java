@@ -4,12 +4,14 @@ package com.jpd.web.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.jpd.web.exception.WithdrawException;
 import com.jpd.web.model.*;
 import com.jpd.web.repository.CourseRepository;
 import com.jpd.web.repository.CreatorRepository;
+import com.jpd.web.repository.Creator_code_changePRepository;
 import com.jpd.web.repository.WithdrawRepository;
 
 import org.apache.hc.client5.http.entity.mime.MultipartPart;
@@ -21,11 +23,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.jpd.web.dto.CreatorDashboardDTO;
 import com.jpd.web.dto.CreatorDto;
+import com.jpd.web.dto.NoticeForm;
 import com.jpd.web.dto.PopularCourseDTO;
+import com.jpd.web.exception.Creator_code_changePNotFoundException;
 import com.jpd.web.exception.PaymentEmailAlreadyExistsException;
 import com.jpd.web.exception.PayoutLimitExceededException;
 import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.service.utils.CodeGenerator;
+import com.jpd.web.service.utils.SendNoticeService;
 import com.jpd.web.service.utils.ValidationResources;
 import com.jpd.web.transform.CreatorTransform;
 
@@ -40,6 +45,8 @@ Dashboard
 @Service
 @Slf4j
 public class CreatorService {
+	@Autowired
+	private Creator_code_changePRepository changePRepository;
 	@Autowired
 	 private  MonthlyBalanceService monthlyBalanceService;
 	@Autowired
@@ -61,6 +68,8 @@ public class CreatorService {
     private CourseRepository courseRepository;
     @Autowired
     private CreatorRepository creatorRepository;
+    @Autowired
+    private SendNoticeService sendNoticeService;
 	@Transactional()
 	public CreatorDto getAccount(Long creatorId) {
 		log.info("Retrieving account information for creator {}", creatorId);
@@ -81,9 +90,7 @@ public class CreatorService {
 	public void sendMoneyToVerify(long creatorId, String paypalEmail) {
 		Creator creator = validationResources.validateCreatorExists(creatorId);
 
-		if (creator.getPaymentEmail() != null) {
-			throw new PaymentEmailAlreadyExistsException("Creator already has a payment email");
-		}
+		
 
 		// Kiểm tra số lượng gửi trong hôm nay
 		if (palPayoutServiceV2.isMax(creator)) {
@@ -162,10 +169,7 @@ public class CreatorService {
 	}
    public CreatorDashboardDTO retrieveStatictisInfo(long creatorId) {
 	   Creator c=validationResources.validateCreatorExists(creatorId);
-	   if(c.getStatus()!=Status.SUCCESS) {
-		   System.out.print(c.getStatus());
-		   throw new UnauthorizedException("error to fget");
-}
+	 
 
 	   MonthlyCreatorBalance currentMonthBalance =
 	            monthlyBalanceService.getCurrentMonthDashboard(creatorId);
@@ -199,5 +203,32 @@ public class CreatorService {
 	   return this.withdrawRepository.findByCreator(c);
 	   else 
 		   throw new UnauthorizedException("you dont have role to do this task");
+   }
+   public  void  createCodeToEmail(long creatorID)
+   {
+	   Creator c=validationResources.validateCreatorExists(creatorID);
+	   String code=codeGenerator.generate6DigitCode();
+	   NoticeForm n=NoticeForm.builder()
+			   .createdAt(LocalDateTime.now())
+			   .message("this is code , enter this code into blank :"+code)
+			   .build();
+	   Creator_code_changeP p=Creator_code_changeP.builder()
+			   .code(code)
+			   .creatorId(creatorID)
+			   .build();
+	   this.changePRepository.save(p);
+	   this.sendNoticeService.sendNotice(n, c.getCustomer().getEmail());
+   }
+   public void changePaypalEmail(long creatorId ,String code,String paypalEmail) {
+	  
+	Optional<Creator_code_changeP>p=   this.changePRepository.findFirstByCreatorIdOrderByCreaTimeDesc(creatorId);
+	if(p.isEmpty())throw new Creator_code_changePNotFoundException("creator chưa tạo code");
+	Creator_code_changeP p1=p.get();
+	if(p1.getCode().equals(code)) {
+		sendMoneyToVerify(creatorId, paypalEmail);
+	}
+	else {
+		throw new UnauthorizedException("code khong  chính xác");
+	}
    }
 }

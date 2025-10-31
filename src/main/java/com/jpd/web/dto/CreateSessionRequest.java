@@ -1,4 +1,4 @@
-package com.jpd.web.model;
+package com.jpd.web.dto;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

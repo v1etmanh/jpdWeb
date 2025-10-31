@@ -1,4 +1,4 @@
-package com.jpd.web.controller;
+package com.jpd.web.controller.customer;
 
 import com.jpd.web.exception.ResourceNotFoundException;
 import com.jpd.web.repository.CustomerRepository;

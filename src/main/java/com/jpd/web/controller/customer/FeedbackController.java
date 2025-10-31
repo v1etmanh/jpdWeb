@@ -1,4 +1,4 @@
-package com.jpd.web.controller;
+package com.jpd.web.controller.customer;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

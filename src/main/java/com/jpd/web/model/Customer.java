@@ -1,6 +1,7 @@
 package com.jpd.web.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,6 +38,8 @@ public class Customer {
 
     //link to Creator
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude    // ⚠️ tránh vòng lặp
+    @JsonIgnore
     private Creator creator;
 
     //link to Remember_word

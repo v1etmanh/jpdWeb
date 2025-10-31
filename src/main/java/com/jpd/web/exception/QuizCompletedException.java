@@ -1,7 +1,8 @@
 package com.jpd.web.exception;
 
-import com.jpd.web.model.ParticipantInfo;
 import java.util.List;
+
+import com.jpd.web.dto.ParticipantInfo;
 
 public class QuizCompletedException extends RuntimeException {
     

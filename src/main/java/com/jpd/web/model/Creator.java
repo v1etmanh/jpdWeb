@@ -57,6 +57,7 @@ public class Creator {
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "customer_id")
     @JsonIgnore
+    @ToString.Exclude 
     private Customer customer;
 
     //link to Course

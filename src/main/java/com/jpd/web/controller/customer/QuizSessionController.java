@@ -1,9 +1,6 @@
-package com.jpd.web.controller;
+package com.jpd.web.controller.customer;
 import com.jpd.web.dto.*;
-import com.jpd.web.model.CreateSessionRequest;
-import com.jpd.web.model.CreateSessionResponse;
 import com.jpd.web.model.JoinSessionRequest;
-import com.jpd.web.model.ParticipantInfo;
 import com.jpd.web.model.SessionInfo;
 import com.jpd.web.service.SessionService;
 import com.jpd.web.service.utils.RequestAttributeExtractor;

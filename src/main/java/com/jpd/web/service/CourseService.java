@@ -28,6 +28,7 @@ import com.jpd.web.model.Chapter;
 import com.jpd.web.model.Course;
 import com.jpd.web.model.Creator;
 import com.jpd.web.model.Customer;
+import com.jpd.web.model.Enrollment;
 import com.jpd.web.model.Module;
 import com.jpd.web.model.ModuleContent;
 import com.jpd.web.model.PendingImage;
@@ -37,7 +38,7 @@ import com.jpd.web.model.TypeOfFile;
 import com.jpd.web.repository.ChapterRepository;
 import com.jpd.web.repository.CourseRepository;
 import com.jpd.web.repository.CreatorRepository;
-
+import com.jpd.web.repository.EnrollmentRepository;
 import com.jpd.web.repository.ModuleContentRepository;
 
 import com.jpd.web.service.utils.CodeGenerator;
@@ -53,7 +54,8 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseService {
 	@Autowired
 	private FireBaseService fireBaseService;
-	
+	@Autowired
+	private EnrollmentRepository enrollmentRepository;
 
 	@Autowired
 	private CourseRepository courseRepository;
@@ -122,8 +124,13 @@ public class CourseService {
 		
 			course.setJoinKey(codeGenerator.generate6DigitCode());
 		
-
+       
 		Course savedCourse = courseRepository.save(course);
+		Enrollment e=Enrollment.builder()
+				.course(savedCourse)
+				.customer(creator.getCustomer())
+				.build();
+		this.enrollmentRepository.save(e);
 		log.info("Successfully created course {} for creator {}", savedCourse.getCourseId(), creatorId);
 
 		return savedCourse;

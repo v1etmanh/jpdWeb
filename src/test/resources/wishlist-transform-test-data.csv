@@ -1,0 +1,6 @@
+courseId,courseName,urlImg,price
+1,Java Programming Masterclass,https://example.com/java-course.jpg,99.99
+2,Spring Boot Complete Guide,https://example.com/spring-boot.jpg,149.50
+3,Microservices Architecture,https://example.com/microservices.jpg,199.00
+4,Docker and Kubernetes,https://example.com/docker-k8s.jpg,89.99
+5,AWS Cloud Practitioner,https://example.com/aws-course.jpg,129.00

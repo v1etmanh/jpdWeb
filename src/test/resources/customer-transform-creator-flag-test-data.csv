@@ -1,0 +1,7 @@
+username,email,familyName,givenName,role,createDateStr,isCreator
+creator_true,creator.true@test.com,Test,Creator,CREATOR,2024-01-01,true
+creator_false,creator.false@test.com,Test,NotCreator,CREATOR,2024-02-01,false
+user_true,user.true@test.com,User,IsCreator,USER,2024-03-01,true
+user_false,user.false@test.com,User,NotCreator,USER,2024-04-01,false
+admin_true,admin.true@test.com,Admin,Creator,ADMIN,2024-05-01,true
+admin_false,admin.false@test.com,Admin,NotCreator,ADMIN,2024-06-01,false

@@ -1,0 +1,11 @@
+username,email,familyName,givenName,role,createDateStr,isCreator
+john_doe,john.doe@example.com,Doe,John,USER,2024-01-15,false
+jane_smith,jane.smith@example.com,Smith,Jane,CREATOR,2024-02-20,true
+admin_user,admin@example.com,Admin,System,ADMIN,2024-03-10,false
+content_creator,creator@example.com,Brown,Michael,CREATOR,2024-04-05,true
+student_01,student01@example.com,Johnson,Emily,USER,2024-05-12,false
+instructor_01,instructor@example.com,Williams,David,CREATOR,2024-06-18,true
+premium_user,premium@example.com,Garcia,Maria,USER,2024-07-22,false
+test_creator,test.creator@example.com,Martinez,Carlos,CREATOR,2024-08-30,true
+regular_user,regular@example.com,Rodriguez,Ana,USER,2024-09-14,false
+pro_creator,pro.creator@example.com,Lopez,Juan,CREATOR,2024-10-25,true

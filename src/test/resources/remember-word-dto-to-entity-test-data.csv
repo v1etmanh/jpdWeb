@@ -1,0 +1,4 @@
+word,description,meaning
+authentication,The process of verifying the identity of a user,Xác thực
+authorization,The process of giving permission to access resources,Phân quyền
+encryption,The process of encoding information to prevent unauthorized access,Mã hóa

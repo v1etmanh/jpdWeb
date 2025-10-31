@@ -1,0 +1,7 @@
+id,word,description,meaning
+0,,,
+9999999999,supercalifragilisticexpialidocious,A very long word that represents something extraordinarily good,Một từ cực kỳ dài biểu thị điều gì đó tuyệt vời
+-1,test,,,
+1,word-with-special-chars-!@#,Description with special characters: <>&"',Nghĩa có ký tự đặc biệt
+2,emptyDescription,,
+3,emptyMeaning,This word has no meaning,

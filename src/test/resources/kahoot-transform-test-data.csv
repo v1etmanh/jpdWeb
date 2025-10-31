@@ -1,0 +1,11 @@
+kahootId,title,createDateStr,moduleContentSize
+1,Java Fundamentals Quiz,2024-01-15 10:30:00,5
+2,Spring Boot Basics,2024-02-20 14:45:00,10
+3,Database Design Questions,2024-03-10 09:15:00,8
+4,Microservices Architecture,2024-04-05 16:20:00,12
+5,REST API Best Practices,2024-05-12 11:00:00,7
+6,JUnit Testing Essentials,2024-06-18 13:30:00,15
+7,Docker and Kubernetes,2024-07-22 08:45:00,20
+8,Git Version Control,2024-08-30 10:00:00,6
+9,Design Patterns in Java,2024-09-14 15:15:00,18
+10,SOLID Principles,2024-10-25 12:30:00,9

@@ -1,0 +1,7 @@
+username,email,familyName,givenName,role,createDateStr,isCreator
+a,a@a.com,A,A,USER,2024-01-01,false
+very_long_username_that_tests_maximum_boundaries,very.long.email.address.for.testing@example.com,VeryLongFamilyName,VeryLongGivenName,CREATOR,2024-12-31,true
+user_special_!@#,special.chars@test.com,O'Brien,José,USER,2024-06-15,false
+,empty.username@test.com,Empty,Username,USER,2024-03-20,true
+test_user,,,Null,USER,2024-07-10,false
+unicode_user,unicode@test.com,李,明,CREATOR,2024-09-05,true

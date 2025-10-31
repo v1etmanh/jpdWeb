@@ -1,0 +1,5 @@
+courseId,courseName,urlImg,price
+0,Empty Course Name Test,,0.0
+9999999,Very Long Course Name That Tests Maximum Length Boundaries in Database Schema,https://example.com/very-long-url-path/that/tests/maximum/length.jpg,999999.99
+1,Course with Special Characters !@#$%,https://example.com/special-chars.jpg,0.01
+-1,Negative ID Test,https://example.com/negative.jpg,-50.00

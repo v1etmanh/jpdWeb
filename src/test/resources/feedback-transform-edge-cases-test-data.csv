@@ -1,0 +1,6 @@
+feedbackId,content,rate,updateDateStr
+1000,"",1,2024-01-01
+999,Very long content that spans multiple lines and contains lots of details about the course experience and recommendations,5,2024-12-31
+500,Short review,3,2023-06-15
+1,Single word,1,2025-01-01
+2147483647,Maximum feedback ID with special characters: @#$%^&*()!,5,2024-07-20

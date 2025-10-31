@@ -42,111 +42,113 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class CustomerService {
-	@Autowired
-	private CustomerRepository customerRepository;
-	@Autowired
-	private CreatorRepository creatorRepository;
-	@Autowired
-	private FireBaseService fireBaseService;
-   @Autowired
-  private CourseInfService courseInfService;
-   @Autowired
-   private WishlistService wishlistService;
-   @Autowired
-   private SendNoticeService sendNoticeService;
-	private Customer createNewCustomer(Jwt jwt) {
-		String email = jwt.getClaimAsString("email");
-		String name = jwt.getClaimAsString("name");
-		String givenName = jwt.getClaimAsString("given_name");
-		String familyName = jwt.getClaimAsString("family_name");
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private CreatorRepository creatorRepository;
+    @Autowired
+    private FireBaseService fireBaseService;
+    @Autowired
+    private CourseInfService courseInfService;
+    @Autowired
+    private WishlistService wishlistService;
+    @Autowired
+    private SendNoticeService sendNoticeService;
 
-		log.info("Creating new customer account for email: {}", email);
+    private Customer createNewCustomer(Jwt jwt) {
+        String email = jwt.getClaimAsString("email");
+        String name = jwt.getClaimAsString("name");
+        String givenName = jwt.getClaimAsString("given_name");
+        String familyName = jwt.getClaimAsString("family_name");
 
-		Customer customer = Customer.builder().email(email).username(name != null ? name : email).givenName(givenName)
-				.familyName(familyName).role("USER").build();
+        log.info("Creating new customer account for email: {}", email);
 
-		Customer savedCustomer = this.customerRepository.save(customer);
+        Customer customer = Customer.builder().email(email).username(name != null ? name : email).givenName(givenName)
+                .familyName(familyName).role("USER").build();
 
-		log.info("New customer created with ID: {}", savedCustomer.getCustomerId());
+        Customer savedCustomer = this.customerRepository.save(customer);
 
-		return savedCustomer;
-	}
+        log.info("New customer created with ID: {}", savedCustomer.getCustomerId());
 
-	@Transactional
-	public UserInfoDto getOrCreateAccount(Jwt jwt) {
-		String email = jwt.getClaimAsString("email");
+        return savedCustomer;
+    }
 
-		log.info("Getting or creating account for email: {}", email);
+    @Transactional
+    public UserInfoDto getOrCreateAccount(Jwt jwt) {
+        String email = jwt.getClaimAsString("email");
 
-		// Find or create customer
-		Customer customer = this.customerRepository.findByEmail(email).orElseGet(() -> createNewCustomer(jwt));
+        log.info("Getting or creating account for email: {}", email);
 
-		// Check if customer is a creator
-		boolean isCreator = this.creatorRepository.findByCustomer(customer).isPresent();
+        // Find or create customer
+        Customer customer = this.customerRepository.findByEmail(email).orElseGet(() -> createNewCustomer(jwt));
 
-		log.info("Account retrieved for email: {}, isCreator: {}", email, isCreator);
+        // Check if customer is a creator
+        boolean isCreator = this.creatorRepository.findByCustomer(customer).isPresent();
 
-		return CustomerTransform.transToUserInfor(customer, isCreator);
-	}
+        log.info("Account retrieved for email: {}, isCreator: {}", email, isCreator);
 
-	private String uploadProfileImage(CreatorProfileDto profileDto, String email) {
-		try {
-			log.debug("Uploading profile image for email: {}", email);
+        return CustomerTransform.transToUserInfor(customer, isCreator);
+    }
 
-			String imageUrl = fireBaseService.uploadFile(profileDto.getProfileImage(), TypeOfFile.IMG);
+    private String uploadProfileImage(CreatorProfileDto profileDto, String email) {
+        try {
+            log.debug("Uploading profile image for email: {}", email);
 
-			if (imageUrl == null || imageUrl.trim().isEmpty()) {
-				throw new FileUploadException("Failed to upload profile image");
-			}
+            String imageUrl = fireBaseService.uploadFile(profileDto.getProfileImage(), TypeOfFile.IMG);
 
-			log.debug("Profile image uploaded successfully for email: {}", email);
+            if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                throw new FileUploadException("Failed to upload profile image");
+            }
 
-			return imageUrl;
+            log.debug("Profile image uploaded successfully for email: {}", email);
 
-		} catch (IOException e) {
-			log.error("Error uploading profile image for email: {}", email, e);
-			throw new ApiException("Failed to upload profile image: " + e.getMessage());
-		}
-	}
+            return imageUrl;
 
-	public CreatorDto uploadProfile(String email, CreatorProfileDto profileDto) {
-		Customer customer = this.customerRepository.findByEmail(email)
-				.orElseThrow(() -> new CustomerNotFoundException("Customer not found with email: " + email));
-		Optional<Creator> existingCreator = this.creatorRepository.findByCustomer(customer);
-		NoticeForm n=NoticeForm.builder()
-				.createdAt(LocalDateTime.now())
-				.message("customer with given name "+customer.getGivenName()+"vs email " +customer.getEmail()+" đăng kí để thành creator => status thành công")
-				.build();
-		this.sendNoticeService.sendNotice(n, email);
-		if (existingCreator.isPresent()) {
-			log.warn("Creator profile already exists for email: {}", email);
-			throw new CreatorAlreadyExistsException("You already have a creator profile");
-		}
+        } catch (IOException e) {
+            log.error("Error uploading profile image for email: {}", email, e);
+            throw new ApiException("Failed to upload profile image: " + e.getMessage());
+        }
+    }
 
-		// 3. Tạo mới Creator
-		Creator creator = CreatorTransform.transformFromCreatorDto(profileDto);
-		creator.setCustomer(customer);
-		creator.setStatus(Status.PENDING);
-		// 4. Upload ảnh nếu có
-		if (profileDto.getProfileImage() != null && !profileDto.getProfileImage().isEmpty()) {
-			String imageUrl = uploadProfileImage(profileDto, email);
-			creator.setImageUrl(imageUrl);
-		}
+    public CreatorDto uploadProfile(String email, CreatorProfileDto profileDto) {
+        Customer customer = this.customerRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with email: " + email));
+        Optional<Creator> existingCreator = this.creatorRepository.findByCustomer(customer);
+        NoticeForm n = NoticeForm.builder()
+                .createdAt(LocalDateTime.now())
+                .message("customer with given name " + customer.getGivenName() + "vs email " + customer.getEmail() + " đăng kí để thành creator => status thành công")
+                .build();
+        this.sendNoticeService.sendNotice(n, email);
+        if (existingCreator.isPresent()) {
+            log.warn("Creator profile already exists for email: {}", email);
+            throw new CreatorAlreadyExistsException("You already have a creator profile");
+        }
 
-		// 5. Gán customer cho creator
+        // 3. Tạo mới Creator
+        Creator creator = CreatorTransform.transformFromCreatorDto(profileDto);
+        creator.setCustomer(customer);
+        creator.setStatus(Status.PENDING);
+        // 4. Upload ảnh nếu có
+        if (profileDto.getProfileImage() != null && !profileDto.getProfileImage().isEmpty()) {
+            String imageUrl = uploadProfileImage(profileDto, email);
+            creator.setImageUrl(imageUrl);
+        }
 
-		// 6. Lưu vào database
-		Creator cr1= this.creatorRepository.save(creator);
-		return CreatorTransform.transToCreatorDto(cr1);
-	}
-public LearningListDto retrieveLearningList(String email) {
-	List<CourseLearningCardDto> clr=this.courseInfService.retrieveYourCourse(email);
-	List<WishlistDto>wld=this.wishlistService.retrieveYourWishlist(email);
-	LearningListDto l=LearningListDto.builder()
-			.cardDtos(clr)
-			.wishlistDtos(wld)
-			.build();
-	return l;
-}
- 
+        // 5. Gán customer cho creator
+
+        // 6. Lưu vào database
+        Creator cr1 = this.creatorRepository.save(creator);
+        return CreatorTransform.transToCreatorDto(cr1);
+    }
+
+    public LearningListDto retrieveLearningList(String email) {
+        List<CourseLearningCardDto> clr = this.courseInfService.retrieveYourCourse(email);
+        List<WishlistDto> wld = this.wishlistService.retrieveYourWishlist(email);
+        LearningListDto l = LearningListDto.builder()
+                .cardDtos(clr)
+                .wishlistDtos(wld)
+                .build();
+        return l;
+    }
+
 }

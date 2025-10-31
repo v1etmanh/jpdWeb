@@ -1,9 +1,0 @@
-testCase,creatorId,creatorStatus,courseName,courseDescription,accessMode,price,expectedJoinKey,expectedImgUrl,shouldSucceed,expectedErrorMessage
-create_free_course_success,1,SUCCESS,Test Free Course,This is a free course description,PUBLIC,0.0,ABC123,https://firebase.storage/test-image.jpg,true,
-create_paid_course_success,1,SUCCESS,Test Paid Course,Premium course content,PAID,99.99,XYZ789,https://firebase.storage/paid-course.jpg,true,
-paid_course_unverified_creator,1,PENDING,Unauthorized Course,Should fail,PAID,99.99,,,false,verify your payment information
-paid_course_zero_price,1,SUCCESS,Invalid Price Course,Should fail,PAID,0.0,,,false,Price must be greater than 0 for paid courses
-paid_course_negative_price,1,SUCCESS,Negative Price Course,Should fail,PAID,-50.0,,,false,Price must be greater than 0 for paid courses
-creator_not_found,999,SUCCESS,Non-existent Creator,Should fail,PUBLIC,0.0,,,false,Creator not found with id
-image_upload_fails,1,SUCCESS,Upload Fail Course,Should fail,PUBLIC,0.0,,null,false,Failed to upload course image
-image_upload_exception,1,SUCCESS,Upload Error Course,Should fail,PUBLIC,0.0,,EXCEPTION,false,Failed to upload course image

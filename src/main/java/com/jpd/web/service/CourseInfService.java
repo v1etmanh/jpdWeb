@@ -1,5 +1,7 @@
 package com.jpd.web.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ import com.jpd.web.model.Module;
 import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -117,11 +120,8 @@ public class CourseInfService {
 
     // tìm kiếm theo name + language+ creatorName+description and paging
     public Page<CourseSearchDto> searchAndPagination(String searchKey, Pageable pageable) {
-        if (searchKey.trim() == null)
-            return null;
-
-        Page<CourseSearchDto> coursePage = courseRepository.searchAndCalculate(searchKey, pageable);
-
+        if (searchKey == null || searchKey.trim().isEmpty()) return null;
+        Page<CourseSearchDto> coursePage = courseRepository.searchAndCalculate(searchKey.trim(), pageable);
         return coursePage;
     }
 
@@ -189,8 +189,11 @@ public class CourseInfService {
             Feedback feedback = enrollment.getFeedback();
             Customer customer = enrollment.getCustomer();
 
+            LocalDateTime ldt = enrollment.getCreateDate();
+            LocalDate time = ldt != null ? enrollment.getCreateDate().toLocalDate() : LocalDate.now();
+
             return FeedbackSimpleDto.builder().feedbackId(feedback.getFeedbackId()).content(feedback.getContent())
-                    .rate(feedback.getRate()).createDate(enrollment.getCreateDate().toLocalDate())
+                    .rate(feedback.getRate()).createDate(time)
                     .customer(CustomerSimpleDto.builder().customerId(customer.getCustomerId())
                             .fullName(customer.getGivenName())
 
@@ -210,7 +213,6 @@ public class CourseInfService {
 //		});
 //		return res;
 //	}
-
 
 
     /**

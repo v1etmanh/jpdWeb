@@ -1,4 +1,0 @@
-testCase,moduleId,chapterId,moduleChapterId,shouldSucceed,expectedErrorType,expectedErrorMessage
-valid_module,1,1,1,true,,
-module_not_found,999,1,1,false,ModuleNotFoundException,Module not found with id
-module_wrong_chapter,1,1,2,false,ModuleNotBelongsToChapterException,does not belong to chapter

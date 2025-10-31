@@ -27,30 +27,32 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("api/customer")
 public class CustomerController {
-@Autowired
-private CustomerService customerSer;
-@GetMapping("/account_infor")
-public ResponseEntity<UserInfoDto> getCustomerAccountInf(@AuthenticationPrincipal Jwt jwt){
-	UserInfoDto c=this.customerSer.getOrCreateAccount(jwt);
-	System.out.print("recieve");
-	return ResponseEntity.status(HttpStatus.OK).body(c);
-}
-@PostMapping(value="/upload_profile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<CreatorDto> updateProfile( @Valid @ModelAttribute CreatorProfileDto creatorProfileDto,@AuthenticationPrincipal Jwt jwt) {
-    //TODO: process POST request
-	String email=jwt.getClaimAsString("email");
- CreatorDto crdto=   this.customerSer.uploadProfile(email, creatorProfileDto);
-  return ResponseEntity.status(HttpStatus.CREATED).body(crdto);
- 
-    
-    
-}
-@GetMapping("/learning_course_list")
-public ResponseEntity<LearningListDto> retrieveYourCourses(@AuthenticationPrincipal
-		Jwt jwt){
-	String email=jwt.getClaimAsString("email");
-	LearningListDto res=this.customerSer.retrieveLearningList(email);
-	return ResponseEntity.status(HttpStatus.OK).body(res);
-}
+    @Autowired
+    private CustomerService customerSer;
+
+    @GetMapping("/account_infor")
+    public ResponseEntity<UserInfoDto> getCustomerAccountInf(@AuthenticationPrincipal Jwt jwt) {
+        UserInfoDto c = this.customerSer.getOrCreateAccount(jwt);
+        System.out.print("recieve");
+        return ResponseEntity.status(HttpStatus.OK).body(c);
+    }
+
+    @PostMapping(value = "/upload_profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CreatorDto> updateProfile(@Valid @ModelAttribute CreatorProfileDto creatorProfileDto, @AuthenticationPrincipal Jwt jwt) {
+        //TODO: process POST request
+        String email = jwt.getClaimAsString("email");
+        CreatorDto crdto = this.customerSer.uploadProfile(email, creatorProfileDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(crdto);
+
+
+    }
+
+    @GetMapping("/learning_course_list")
+    public ResponseEntity<LearningListDto> retrieveYourCourses(@AuthenticationPrincipal
+                                                               Jwt jwt) {
+        String email = jwt.getClaimAsString("email");
+        LearningListDto res = this.customerSer.retrieveLearningList(email);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
 
 }

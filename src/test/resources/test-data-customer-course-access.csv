@@ -1,6 +1,0 @@
-testCase,customerEmail,courseId,isCreator,isEnrolled,shouldSucceed,expectedErrorType,expectedErrorMessage
-creator_access,creator@test.com,1,true,false,true,,
-enrolled_student,student@test.com,1,false,true,true,,
-course_not_found,test@test.com,999,false,false,false,CourseNotFoundException,Course not found with id
-customer_not_found,notfound@test.com,1,false,false,false,CustomerNotFoundException,notfound@test.com
-not_enrolled,unenrolled@test.com,1,false,false,false,UnauthorizedException,you must enroll after learning

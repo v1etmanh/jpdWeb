@@ -1,0 +1,3 @@
+shouldThrow,expectedMsgSubstr
+N,
+Y,Failed to save session

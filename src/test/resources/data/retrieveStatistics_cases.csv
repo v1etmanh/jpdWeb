@@ -1,0 +1,6 @@
+testCase,creatorId,exists,status,expectedError
+"Creator SUCCESS",1,true,SUCCESS,""
+"Creator PENDING",2,true,PENDING,"UnauthorizedException"
+"Creator FAILED",3,true,FAILED,"UnauthorizedException"
+"Creator không tồn tại",999,false,SUCCESS,"CreatorNotFoundException"
+"Creator SUCCESS integration",4,true,SUCCESS,""

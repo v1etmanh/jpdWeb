@@ -1,0 +1,2 @@
+email,courseId,type,detail,expectedMsg
+foo@bar.com,200,INAPPROPRIATE_CONTENT,abc,DB down

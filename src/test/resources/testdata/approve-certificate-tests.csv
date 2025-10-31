@@ -1,0 +1,9 @@
+testCase,creatorId,creatorStatus,adminEmail,adminNote,shouldSucceed,expectedNewStatus,expectedErrorMessage,shouldLogAudit,shouldSaveCreator
+approve_pending_with_note,1,PENDING,admin@test.com,Good credentials,true,SUCCESS,,true,true
+approve_pending_without_note,2,PENDING,admin@test.com,,true,SUCCESS,,true,true
+approve_pending_empty_note,3,PENDING,admin@test.com,"",true,SUCCESS,,true,true
+reject_already_success,4,SUCCESS,admin@test.com,Test note,false,,Creator certificate is not pending approval,false,false
+reject_already_rejected,5,REJECTED,admin@test.com,Test note,false,,Creator certificate is not pending approval,false,false
+reject_banned_creator,6,BANNED,admin@test.com,Test note,false,,Creator certificate is not pending approval,false,false
+reject_suspended_creator,7,SUSPENDED,admin@test.com,Test note,false,,Creator certificate is not pending approval,false,false
+creator_not_found,999,PENDING,admin@test.com,Test note,false,,Creator not found,false,false

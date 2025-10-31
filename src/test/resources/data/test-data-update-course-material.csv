@@ -1,0 +1,8 @@
+testCase,moduleId,chapterId,courseId,creatorId,contentCount,hasExistingContent,shouldSucceed,expectedErrorType,expectedErrorMessage
+Valid update with new content,1,1,1,1,2,false,true,,
+Valid update with mixed existing and new,1,1,1,1,4,true,true,,
+Invalid creator (unauthorized),1,1,1,99,2,false,false,UnauthorizedException,Unauthorized access
+Invalid module ownership,2,1,1,1,2,false,false,ModuleNotBelongsToChapterException,module not belongs to chapter
+Invalid chapter ownership,1,2,1,1,2,false,false,ChapterNotBelongsToCourseException,chapter not belongs to course
+Module not found,99,1,1,1,2,false,false,ModuleNotFoundException,Module not found
+Course not found,1,1,99,1,2,false,false,CourseNotFoundException,Course not found

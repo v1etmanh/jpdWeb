@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.jpd.web.dto.CourseSearchDto;
+import com.jpd.web.dto.CourseSearchDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,27 +27,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/course")
-@Slf4j
-public class CourseInfController {
-    @Autowired
-    private CourseInfService courseInfService;
-
-    @GetMapping("/recommend_courses")
-    public ResponseEntity<List<CourseInfDto>> getMethodName() {
-        return ResponseEntity.ok(courseInfService.getRecommendCourses());
-    }
-
+public class CourseInfController 
+{
+	@Autowired
+	private CourseInfService courseInfService;
+@GetMapping("/recommend_courses")
+public ResponseEntity<List<CourseInfDto>> getMethodName() {
+    return ResponseEntity.ok(courseInfService.getRecommendCourses());
+}
     @GetMapping("/search")
     public ResponseEntity<?> etMethodName(@RequestParam String name, Pageable pageable) {
         Page<CourseSearchDto> coursePage = courseInfService.searchAndPagination(name, pageable);
         return ResponseEntity.ok(coursePage);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> retrieveCourseDetail(@PathVariable("id") long id) {
-
-        return ResponseEntity.ok(this.courseInfService.getCourseDescription(id));
-    }
+@GetMapping("/{id}")
+public ResponseEntity<?>retrieveCourseDetail(@PathVariable("id") long id){
+	
+	return ResponseEntity.ok( this.courseInfService.getCourseDescription(id));
+}
 
 
 }

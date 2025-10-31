@@ -1,0 +1,6 @@
+question,answer,expectedContains
+"Xin chào","Xin chào","đúng"
+"Tôi ăn cơm","Tôi đi học","sai"
+"Anh ấy đẹp trai","Anh ấy đẹp trai","đúng"
+"Cô ấy ăn táo","Cô ấy ăn cam","sai"
+"\"Chào\" bạn","Hello","sai"

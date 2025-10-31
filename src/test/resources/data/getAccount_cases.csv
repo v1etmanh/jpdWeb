@@ -1,0 +1,6 @@
+testCase,creatorId,exists,fullName,expectedError
+"Creator tồn tại",1,true,"Nguyen Van A",""
+"Creator không tồn tại",999,false,"","CreatorNotFoundException"
+"CreatorId null",,false,"","CreatorNotFoundException"
+"Repository exception",2,false,"","RuntimeException"
+"Creator tồn tại nhưng thiếu tên",3,true,"",""

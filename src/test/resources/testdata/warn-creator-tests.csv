@@ -1,0 +1,5 @@
+testCase,creatorId,creatorStatus,initialWarningCount,recentWarningsCount,adminEmail,reason,shouldAutoSuspend,expectedWarningCount,expectedStatus,shouldSucceed,expectedError
+first_warning_success,1,SUCCESS,0,1,admin@test.com,Policy warning,false,1,SUCCESS,true,
+second_warning_success,2,SUCCESS,1,2,admin@test.com,Repeated issue,false,2,SUCCESS,true,
+warning_null_initial_count,3,SUCCESS,null,1,admin@test.com,First warning,false,1,SUCCESS,true,
+creator_not_found,999,SUCCESS,0,1,admin@test.com,Does not matter,false,, ,false,Creator not found

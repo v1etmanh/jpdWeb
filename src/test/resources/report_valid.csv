@@ -1,0 +1,5 @@
+email,courseId,type,detail
+foo@bar.com,200,INAPPROPRIATE_CONTENT,Nội dung không phù hợp
+foo@bar.com,200,SCAM_OR_FRAUD,__NULL__
+foo@bar.com,200,OTHER,
+foo@bar.com,200,INAPPROPRIATE_CONTENT,__LONG_A_1000__

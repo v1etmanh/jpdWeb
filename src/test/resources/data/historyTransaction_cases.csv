@@ -1,0 +1,6 @@
+testCase,creatorId,exists,status,withdrawCount,expectedError
+"Creator SUCCESS có 2 giao dịch",1,true,SUCCESS,2,""
+"Creator SUCCESS không có giao dịch",2,true,SUCCESS,0,""
+"Creator PENDING không được phép",3,true,PENDING,1,"UnauthorizedException"
+"Creator không tồn tại",999,false,SUCCESS,0,"CreatorNotFoundException"
+"Creator FAILED không được phép",4,true,FAILED,1,"UnauthorizedException"

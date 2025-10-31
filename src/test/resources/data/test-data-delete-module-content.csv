@@ -1,0 +1,6 @@
+testCase,contentId,moduleId,chapterId,courseId,creatorId,contentBelongsToModule,shouldSucceed,expectedErrorType,expectedErrorMessage
+Valid delete existing content,10,1,1,1,1,true,true,,
+Content not found,999,1,1,1,1,true,false,ModuleContentNotFoundException,Content not found
+Content belongs to another module,20,1,1,1,1,false,false,UnauthorizedException,Content does not belong to module
+Unauthorized creator,10,1,1,1,99,true,false,UnauthorizedException,Unauthorized access
+Invalid module ownership,10,99,1,1,1,true,false,ModuleNotBelongsToChapterException,module not belongs to chapter

@@ -48,29 +48,26 @@ public class CourseLearningService {
         this.courseController = courseController;
     }
 	@Transactional
-	
-	public CourseContentDto getCourseById(long courseId, String email )  {
 
-		log.info("Retrieving course {} for creator {}", courseId, email);
+    public CourseContentDto getCourseById(long courseId, String email) {
 
-		
-		Enrollment e = validationResources.validateCustomerWithCourseGetE(email,courseId);
-		Course course=e.getCourse();
-      if(course.isPublic()==false) throw new UnauthorizedException("this course is not exist");
-		course.getChapters().forEach(chapter -> {
-			chapter.getModules()
-			.forEach(module -> {
-				List<CustomerModuleContent> filteredContents = module.getCustomerModuleContents().stream()
-	                    .filter(content -> content.getEnrollment().getEnrollId() == e.getEnrollId())
-	                    .collect(Collectors.toList());
+        log.info("Retrieving course {} for creator {}", courseId, email);
 
-	            module.setCustomerModuleContents(filteredContents);
-				
-			});
-		});
-		CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
-		return cdto;
-	}
+
+        Course course = validationResources.validateCustomerWithCourse(email, courseId);
+        if (course.isPublic() == false) throw new UnauthorizedException("this course is not exist");
+        course.getChapters().forEach(chapter -> {
+            chapter.getModules();
+			/*.forEach(module -> {
+
+				List<ModuleContent> contents = this.moduleContentRepository.findByModule(module);
+
+				module.setModuleContent(contents);
+			});*/
+        });
+        CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
+        return cdto;
+    }
 	@Transactional
 	public List<ModuleContent>getModuleContentsByTypeAndModuleId( TypeOfContent type, Long moduleId, Long chapterId, Long courseId, String email){
 		Module module = validationResources.validateModuleContentOwnerShip(moduleId, chapterId, courseId, email);

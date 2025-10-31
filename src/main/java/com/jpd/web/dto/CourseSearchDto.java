@@ -14,7 +14,7 @@ public class CourseSearchDto {
     private long id;
     private String name;
     private String img;
-    private long numberStudent;
+    private long numberStudent; // 📍 SỬA TỪ 'int' THÀNH 'long'
     private double rating;
     private String instructor;
     private double price;

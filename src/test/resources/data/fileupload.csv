@@ -1,0 +1,5 @@
+creatorId,imgName,imgContent,type,expectedResult
+1,test1.png,abc,IMG,https://firebase.com/img1
+2,test2.png,def,PDF,https://firebase.com/pdf2
+3,test3.png,ghi,CERTIFICATE,https://firebase.com/cert3
+4,test4.png,jkl,IMG,EXCEPTION

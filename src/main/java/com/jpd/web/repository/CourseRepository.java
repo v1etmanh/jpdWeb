@@ -64,46 +64,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Double getAverageRatingByCourseId(@Param("courseId") Long courseId);
 
 
-    /**
-     * Truy vấn tùy chỉnh để tìm kiếm Course, đồng thời tính toán rating và số học viên.
-     * Các alias 'rating' và 'numberStudent' khớp với tham số 'sort' từ frontend.
-     */
-    @Query("""
-    SELECT new com.jpd.web.dto.CourseSearchDto(
-        c.courseId,
-        c.name,
-        c.urlImg,
-        COUNT(DISTINCT e.customer) as numberStudent,
-        COALESCE(AVG(f.rate), 0.0) as rating,
-        creator.fullName,
-        c.price,
-        c.language
-    )
-    FROM Course c
-    LEFT JOIN c.creator creator
-    LEFT JOIN c.enrollments e
-    LEFT JOIN e.feedback f
-    WHERE
-        c.isPublic = true
-        AND c.isBan = false
-        AND (
-            LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-            OR LOWER(creator.fullName) LIKE LOWER(CONCAT('%', :keyword, '%'))
-            OR LOWER(FUNCTION('str', c.language)) LIKE LOWER(CONCAT('%', :keyword, '%'))
-        )
-    GROUP BY
-        c.courseId,
-        c.name,
-        c.urlImg,
-        creator.fullName,
-        c.price,
-        c.language
-""")
-    Page<CourseSearchDto> searchAndCalculate(
-            @Param("keyword") String keyword,
-            Pageable pageable
-    );
-
     @Query(value = """
             SELECT c.* FROM course c
             LEFT JOIN creator cr ON c.creator_id = cr.creator_id
@@ -116,30 +76,41 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
             )
             """, nativeQuery = true)
     List<Course> searchByKey(@Param("searchKey") String searchKey);
-    /**
-     * Truy vấn tùy chỉnh để tìm kiếm Course, đồng thời tính toán rating và số học viên.
-     * Các alias 'rating' và 'numberStudent' khớp với tham số 'sort' từ frontend.
-     */
-    @Query("SELECT new com.jpd.web.dto.CourseSearchDto(" +
-            "c.courseId, " +                  // 1. id (long)
-            "c.name, " +                      // 2. name (String)
-            "c.urlImg, " +                    // 3. img (String)
-            "COUNT(DISTINCT e.customer) as numberStudent, " + // 4. numberStudent (long)
-            "COALESCE(AVG(f.rate), 0.0) as rating, " +      // 5. rating (double)
-            "creator.fullName, " +                // 6. instructor (String) - 📍 3. Giả sử Creator có trường 'name'
-            "c.price, " +                     // 7. price (double)
-            "c.language" +                    // 8. language (Language)
-            ") " +
-            "FROM Course c " +
-            "LEFT JOIN c.creator creator " + // Join để lấy tên creator (instructor)
-            "LEFT JOIN c.enrollments e " + // Join để đếm học viên
-            "LEFT JOIN e.feedback f " + // Join để tính rating
-            "WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "AND c.isPublic = true AND c.isBan = false " + // Chỉ tìm khóa học public
-            "GROUP BY c.courseId, c.name, c.urlImg, creator.fullName, c.price, c.language")
-    // 📍 4. Sửa lại GROUP BY
+
+    @Query("""
+                SELECT new com.jpd.web.dto.CourseSearchDto(
+                    c.courseId,
+                    c.name,
+                    c.urlImg,
+                    COUNT(DISTINCT e.customer) as numberStudent,
+                    COALESCE(AVG(f.rate), 0.0) as rating,
+                    creator.fullName,
+                    c.price,
+                    c.language
+                )
+                FROM Course c
+                LEFT JOIN c.creator creator
+                LEFT JOIN c.enrollments e
+                LEFT JOIN e.feedback f
+                WHERE
+                    c.isPublic = true
+                    AND c.isBan = false
+                    AND (
+                        LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                        OR LOWER(creator.fullName) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                        OR LOWER(FUNCTION('str', c.language)) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                    )
+                GROUP BY
+                    c.courseId,
+                    c.name,
+                    c.urlImg,
+                    creator.fullName,
+                    c.price,
+                    c.language
+            """)
     Page<CourseSearchDto> searchAndCalculate(
-            @Param("name") String name,
+            @Param("keyword") String keyword,
             Pageable pageable
     );
+
 }

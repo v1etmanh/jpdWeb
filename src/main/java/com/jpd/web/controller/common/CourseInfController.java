@@ -27,25 +27,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/course")
-public class CourseInfController 
-{
-	@Autowired
-	private CourseInfService courseInfService;
-@GetMapping("/recommend_courses")
-public ResponseEntity<List<CourseInfDto>> getMethodName() {
-    return ResponseEntity.ok(courseInfService.getRecommendCourses());
-}
+public class CourseInfController {
+    @Autowired
+    private CourseInfService courseInfService;
+
+    @GetMapping("/recommend_courses")
+    public ResponseEntity<List<CourseInfDto>> getMethodName() {
+        return ResponseEntity.ok(courseInfService.getRecommendCourses());
+    }
+
     @GetMapping("/search")
     public ResponseEntity<?> etMethodName(@RequestParam String name, Pageable pageable) {
         Page<CourseSearchDto> coursePage = courseInfService.searchAndPagination(name, pageable);
         return ResponseEntity.ok(coursePage);
     }
 
-@GetMapping("/{id}")
-public ResponseEntity<?>retrieveCourseDetail(@PathVariable("id") long id){
-	
-	return ResponseEntity.ok( this.courseInfService.getCourseDescription(id));
-}
+    @GetMapping("/{id}")
+    public ResponseEntity<?> retrieveCourseDetail(@PathVariable("id") long id) {
+
+        return ResponseEntity.ok(this.courseInfService.getCourseDescription(id));
+    }
 
 
 }

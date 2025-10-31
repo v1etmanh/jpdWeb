@@ -1,0 +1,4 @@
+id,typeToken,exists,expectedBehavior
+11,MC,Y,hide_mc_correct
+22,GF,Y,hide_gf_answers
+404,MC,N,throw_not_found

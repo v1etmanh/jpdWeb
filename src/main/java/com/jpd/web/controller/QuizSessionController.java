@@ -20,10 +20,10 @@ import java.util.Map;
 @RequestMapping("/api/quiz")
 @CrossOrigin(origins = "*")
 public class QuizSessionController {
-    
+
     @Autowired
     private SessionService sessionService;
-    
+
     /**
      * Tạo session mới
      */
@@ -32,7 +32,7 @@ public class QuizSessionController {
     		HttpServletRequest request2) {
         try {
         	long creatorId= RequestAttributeExtractor.extractCreatorId(request2);
-    		
+
             CreateSessionResponse response = sessionService.createSession(request,creatorId);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -40,7 +40,7 @@ public class QuizSessionController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-    
+
     /**
      * Join session (REST endpoint - dùng để validate trước khi connect WebSocket)
      */
@@ -55,7 +55,7 @@ public class QuizSessionController {
                     "message", "Session not found"
                 ));
             }
-            
+
             // Validate session status
             if (session.getStatus() == com.jpd.web.model.SessionStatus.FINISHED) {
                 return ResponseEntity.badRequest().body(Map.of(
@@ -63,23 +63,23 @@ public class QuizSessionController {
                     "message", "Quiz has already finished"
                 ));
             }
-            
+
             if (session.getStatus() == com.jpd.web.model.SessionStatus.ACTIVE) {
                 return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
                     "message", "Quiz already started"
                 ));
             }
-            
+
             // Join session
             ParticipantInfo participant = sessionService.joinSession(request);
-            
+
             return ResponseEntity.ok(Map.of(
                 "success", true,
                 "participant", participant,
                 "session", session
             ));
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(Map.of(
@@ -88,7 +88,7 @@ public class QuizSessionController {
             ));
         }
     }
-    
+
     /**
      * Get session info
      */
@@ -105,7 +105,7 @@ public class QuizSessionController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-    
+
     /**
      * Get all participants
      */
@@ -119,7 +119,7 @@ public class QuizSessionController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-    
+
     /**
      * Delete session
      */
@@ -143,7 +143,7 @@ public class QuizSessionController {
     public ResponseEntity<SubmitAnswerResponse> submitAnswer(@RequestBody SubmitAnswerRequest request) {
         return ResponseEntity.ok(sessionService.submitAnswer(request));
     }
-    
+
     @PostMapping("/end-question/{sessionCode}")
     public ResponseEntity<QuestionResultResponse> endQuestion(@PathVariable String sessionCode) {
         return ResponseEntity.ok(sessionService.endQuestion(sessionCode));

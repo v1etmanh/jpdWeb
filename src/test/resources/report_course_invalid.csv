@@ -1,0 +1,3 @@
+email,courseId,type,detail,expectedMsg
+foo@bar.com,-1,INAPPROPRIATE_CONTENT,abc,Invalid course
+foo@bar.com,0,SCAM_OR_FRAUD,xyz,Invalid courseId

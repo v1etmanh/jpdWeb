@@ -1,0 +1,13 @@
+testCase,status,searchKeyword,page,size,mockCreatorCount,expectedResultCount,shouldSucceed,notes
+no_filters_all_creators,,,0,10,8,8,true,Không filter → trả tất cả creators
+filter_by_success_status,SUCCESS,,0,10,5,5,true,Lọc theo status=SUCCESS
+filter_by_pending_status,PENDING,,0,10,2,2,true,Lọc theo status=PENDING
+filter_by_suspended_status,SUSPENDED,,0,10,3,3,true,Lọc theo status=SUSPENDED
+search_by_name_john,,John,0,10,5,2,true,Tìm theo fullName contains 'John' (case-insensitive)
+search_by_name_nguyen,,Nguyen,0,10,7,3,true,Tìm theo 'Nguyen'
+combine_success_and_tran,SUCCESS,Tran,0,10,4,1,true,Kết hợp filter SUCCESS + search 'Tran'
+empty_result_no_match,,ZZZ_NoMatch,0,10,5,0,true,Không có kết quả phù hợp
+pagination_first_page,,,0,5,12,5,true,Trang đầu tiên (page=0,size=5)
+pagination_second_page,,,1,5,12,5,true,Trang thứ hai (page=1,size=5)
+null_fullname_handling,,Test,0,10,1,0,true,Trong mock có 1 creator fullName=null → search trả 0
+large_page_size,,,0,100,37,37,true,size lớn hơn tổng số → trả hết

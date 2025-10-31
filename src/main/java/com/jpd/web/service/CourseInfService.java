@@ -109,7 +109,7 @@ public class CourseInfService {
 
     // tìm kiếm theo name + language+ creatorName+description and paging
     public Page<CourseSearchDto> searchAndPagination(String searchKey, Pageable pageable) {
-        if (searchKey == null || searchKey.trim().isEmpty()) return null;
+        if (searchKey == null) return null;
         Page<CourseSearchDto> coursePage = courseRepository.searchAndCalculate(searchKey.trim(), pageable);
         return coursePage;
     }

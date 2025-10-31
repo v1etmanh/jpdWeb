@@ -1,8 +1,10 @@
 package com.jpd.web.controller.common;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -30,8 +32,22 @@ public ResponseEntity<List<CourseInfDto>> getMethodName() {
     return ResponseEntity.ok(courseInfService.getRecommendCourses());
 }
 @GetMapping("/search")
-public ResponseEntity<?>etMethodName(@RequestParam String name) {
-    return ResponseEntity.ok(this.courseInfService.searchByKey(name));
+public ResponseEntity<?> searchCourses(
+        @RequestParam String name,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+) {
+    Page<CourseInfDto> result = this.courseInfService.searchByKey(name, page, size);
+
+    return ResponseEntity.ok(Map.of(
+        "content", result.getContent(),
+        "currentPage", result.getNumber(),
+        "totalPages", result.getTotalPages(),
+        "totalElements", result.getTotalElements(),
+        "size", result.getSize(),
+        "hasNext", result.hasNext(),
+        "hasPrevious", result.hasPrevious()
+    ));
 }
 
 @GetMapping("/{id}")

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
 
@@ -53,16 +54,19 @@ public class CourseLearningService {
 		log.info("Retrieving course {} for creator {}", courseId, email);
 
 		
-		Course course = validationResources.validateCustomerWithCourse(email,courseId);
+		Enrollment e = validationResources.validateCustomerWithCourseGetE(email,courseId);
+		Course course=e.getCourse();
       if(course.isPublic()==false) throw new UnauthorizedException("this course is not exist");
 		course.getChapters().forEach(chapter -> {
-			chapter.getModules();
-			/*.forEach(module -> {
+			chapter.getModules()
+			.forEach(module -> {
+				List<CustomerModuleContent> filteredContents = module.getCustomerModuleContents().stream()
+	                    .filter(content -> content.getEnrollment().getEnrollId() == e.getEnrollId())
+	                    .collect(Collectors.toList());
 
-				List<ModuleContent> contents = this.moduleContentRepository.findByModule(module);
-
-				module.setModuleContent(contents);
-			});*/
+	            module.setCustomerModuleContents(filteredContents);
+				
+			});
 		});
 		CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
 		return cdto;

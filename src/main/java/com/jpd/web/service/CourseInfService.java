@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.jpd.web.dto.CourseDescriptionDto;
@@ -29,7 +32,8 @@ import com.jpd.web.repository.CustomerRepository;
 import com.jpd.web.repository.EnrollmentRepository;
 import com.jpd.web.service.utils.ValidationResources;
 import com.jpd.web.transform.CourseTransForm;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -109,16 +113,23 @@ public class CourseInfService {
 	}
 
 	// tìm kiếm theo name + language+ creatorName+description
-	public List<CourseInfDto> searchByKey(String searchKey) {
-		if (searchKey.trim() == null)
-			return null;
-		List<Course> courses = this.courseRepository.searchByKey(searchKey.trim());
-		List<CourseInfDto> result = new ArrayList<>();
-		for (Course c : courses) {
-			RatingInfo info = calculateAvtRatingAndNumberStudent(c);
-			result.add(CourseTransForm.transformToCourseInfDto(c, info.numStudent(), info.avgRating()));
-		}
-		return result;
+	public Page<CourseInfDto> searchByKey(String searchKey, int page, int size) {
+	    if (searchKey == null || searchKey.trim().isEmpty()) {
+	        return Page.empty();
+	    }
+
+	    Pageable pageable = PageRequest.of(page, size); // ❌ Không sort nữa
+
+	    Page<Course> coursesPage = this.courseRepository.searchByKey(searchKey.trim(), pageable);
+
+	    List<CourseInfDto> dtoList = coursesPage.getContent().stream()
+	        .map(course -> {
+	            RatingInfo info = calculateAvtRatingAndNumberStudent(course);
+	            return CourseTransForm.transformToCourseInfDto(course, info.numStudent(), info.avgRating());
+	        })
+	        .collect(Collectors.toList());
+
+	    return new PageImpl<>(dtoList, pageable, coursesPage.getTotalElements());
 	}
 
 	@Transactional()
@@ -202,7 +213,7 @@ public class CourseInfService {
 		enrs.forEach(e -> {
 
 			Course ce = e.getCourse();
-			long finish = this.contentRepository.countByEnrollment(e);
+			long finish = e.getCustomerModuleContents().size();
 			res.add(CourseTransForm.transformToCourseLearningCardDto(ce, finish));
 		});
 		return res;

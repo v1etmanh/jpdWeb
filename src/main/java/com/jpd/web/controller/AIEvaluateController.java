@@ -40,9 +40,9 @@ public ResponseEntity<SemanticResult> evaluateAnswer(
 
 
     
-	try {
+	try {SemanticResult result=null;
         
-        SemanticResult result = aiEvaluateService.evaluateSpeaking(file, expectedAnswer, language);
+        //SemanticResult result = aiEvaluateService.evaluateSpeaking(file, expectedAnswer, language);
         
         
         return ResponseEntity.ok(result);

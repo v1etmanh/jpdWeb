@@ -6,6 +6,10 @@ import com.jpd.web.model.JoinSessionRequest;
 import com.jpd.web.model.ParticipantInfo;
 import com.jpd.web.model.SessionInfo;
 import com.jpd.web.service.SessionService;
+import com.jpd.web.service.utils.RequestAttributeExtractor;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +28,12 @@ public class QuizSessionController {
      * Tạo session mới
      */
     @PostMapping("/create")
-    public ResponseEntity<CreateSessionResponse> createSession(@RequestBody CreateSessionRequest request) {
+    public ResponseEntity<CreateSessionResponse> createSession(@RequestBody CreateSessionRequest request,
+    		HttpServletRequest request2) {
         try {
-            CreateSessionResponse response = sessionService.createSession(request);
+        	long creatorId= RequestAttributeExtractor.extractCreatorId(request2);
+    		
+            CreateSessionResponse response = sessionService.createSession(request,creatorId);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();

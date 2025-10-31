@@ -2,9 +2,11 @@ package com.jpd.web.service;
 import com.jpd.web.model.*;
 import com.jpd.web.repository.KahootRepository;
 import com.jpd.web.repository.ModuleContentRepository;
+import com.jpd.web.service.utils.ValidationResources;
 import com.jpd.web.dto.*;
 import com.jpd.web.exception.ModuleContentNotFoundException;
 import com.jpd.web.exception.QuizCompletedException;
+import com.jpd.web.exception.UnauthorizedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,7 +24,8 @@ public class SessionService {
     
     @Autowired
     private KahootRepository kahootRepository;
-    
+    @Autowired
+    private ValidationResources validationResources;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     
@@ -33,11 +36,13 @@ public class SessionService {
     /**
      * Tạo session mới
      */
-    public CreateSessionResponse createSession(CreateSessionRequest request) {
-        // 1. Lấy Kahoot từ database
+    public CreateSessionResponse createSession(CreateSessionRequest request, long creatorId) {
+        // 1. Lấy Kahoot từ database,long 
         KahootListFunction kahoot = kahootRepository.findById(request.getKahootId())
             .orElseThrow(() -> new RuntimeException("Kahoot not found with id: " + request.getKahootId()));
-        
+        Creator c=this.validationResources.validateCreatorExists(creatorId);
+        if(kahoot.getCreator().getCreatorId()!=creatorId)
+        	throw new UnauthorizedException("tài nguyên không thuộc về mày");
         // 2. Lọc chỉ lấy câu hỏi Multiple Choice và GapFill
         List<Long> questionIds = kahoot.getModuleContent().stream()
             .filter(mc -> mc.getTypeOfContent() == TypeOfContent.MULTIPLE_CHOICE 
@@ -61,7 +66,7 @@ public class SessionService {
             .title(kahoot.getTitle())
             .questionIds(questionIds)
             .totalQuestions(questionIds.size())
-            .teacherId(request.getTeacherId())
+            .teacherId(creatorId)
             .teacherName(request.getTeacherName())
             .status(SessionStatus.WAITING)
             .currentQuestionIndex(-1)
@@ -92,7 +97,7 @@ public class SessionService {
         }
         
         // 6. Generate QR code URL (dùng API public)
-        String joinUrl = "http://localhost:3000/join/" + sessionCode; // Thay bằng domain thật
+        String joinUrl = "http://localhost:3000/creator/class/kahoot/studentJoin/" + sessionCode; // Thay bằng domain thật
         String qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + joinUrl;
         
         // 7. Return response

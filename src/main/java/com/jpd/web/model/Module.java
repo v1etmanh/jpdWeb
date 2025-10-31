@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="module_id")
+    @Column(name = "module_id")
     private long moduleId;
 
     @Column(name = "title_of_module")
@@ -37,15 +37,16 @@ public class Module {
     @JoinColumn(name = "chapter_id", nullable = false)
     @JsonBackReference
     private Chapter chapter;
-@CreationTimestamp
-  private LocalDateTime createDate;
+    @CreationTimestamp
+    private LocalDateTime createDate;
     //link to ModuleContent
-    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-   //@JsonManagedReference("module_modulecontent")
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@JsonManagedReference("module_modulecontent")
     @JsonIgnore
     private List<ModuleContent> moduleContent;
     @Column(name = "order_in_chapter")
     private int orderInChapter;
+
     @Transient
     @JsonProperty("contentTypes")
     public Set<TypeOfContent> getContentTypes() {
@@ -57,10 +58,11 @@ public class Module {
                 .filter(type -> type != null)
                 .collect(Collectors.toSet());
     }
-    @OneToMany(mappedBy = "module",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
     @JsonManagedReference("module-cm")
-     
-     private List<CustomerModuleContent>customerModuleContents;
-     
-    
+
+    private List<CustomerModuleContent> customerModuleContents;
+
+
 }

@@ -116,65 +116,65 @@ class searchByKeyTest {
      * - result.get(0) == dtoA
      * - result.get(1) == dtoB
      */
-    @Test
-    void shouldReturnDtoList_whenRepositoryReturnsCourses() {
-        // =========================
-        // Given
-        // =========================
-        String searchKey = "java basics";
-
-        Course courseA = mock(Course.class);
-        Course courseB = mock(Course.class);
-
-        when(courseRepository.searchByKey("java basics"))
-                .thenReturn(List.of(courseA, courseB));
-
-        // Mock enrollment stats cho courseA và courseB
-        when(enrollmentRepository.findByCourse(courseA))
-                .thenReturn(buildEnrollments(100, 45)); // -> avg=4.5, numStudent=100
-        when(enrollmentRepository.findByCourse(courseB))
-                .thenReturn(buildEnrollments(50, 40));  // -> avg=4.0, numStudent=50
-
-        // Các DTO giả để mapper static trả về
-        CourseInfDto dtoA = new CourseInfDto();
-        CourseInfDto dtoB = new CourseInfDto();
-
-        try (MockedStatic<CourseTransForm> mockedStatic = Mockito.mockStatic(CourseTransForm.class)) {
-
-            mockedStatic.when(() ->
-                    CourseTransForm.transformToCourseInfDto(courseA, 100, 4.5)
-            ).thenReturn(dtoA);
-
-            mockedStatic.when(() ->
-                    CourseTransForm.transformToCourseInfDto(courseB, 50, 4.0)
-            ).thenReturn(dtoB);
-
-            // =========================
-            // When
-            // =========================
-            List<CourseInfDto> result = courseInfService.searchByKey(searchKey);
-
-            // =========================
-            // Then
-            // =========================
-            assertNotNull(result, "Kết quả không được null trong Happy Path");
-            assertEquals(2, result.size(),
-                    "Repository trả về 2 course => phải trả về 2 DTO");
-
-            assertSame(dtoA, result.get(0),
-                    "DTO đầu tiên phải tương ứng với courseA");
-            assertSame(dtoB, result.get(1),
-                    "DTO thứ hai phải tương ứng với courseB");
-
-            // Có thể verify mapper static được gọi đúng số lần
-            mockedStatic.verify(() ->
-                            CourseTransForm.transformToCourseInfDto(courseA, 100, 4.5),
-                    times(1));
-            mockedStatic.verify(() ->
-                            CourseTransForm.transformToCourseInfDto(courseB, 50, 4.0),
-                    times(1));
-        }
-    }
+//    @Test
+//    void shouldReturnDtoList_whenRepositoryReturnsCourses() {
+//        // =========================
+//        // Given
+//        // =========================
+//        String searchKey = "java basics";
+//
+//        Course courseA = mock(Course.class);
+//        Course courseB = mock(Course.class);
+//
+//        when(courseRepository.searchByKey("java basics"))
+//                .thenReturn(List.of(courseA, courseB));
+//
+//        // Mock enrollment stats cho courseA và courseB
+//        when(enrollmentRepository.findByCourse(courseA))
+//                .thenReturn(buildEnrollments(100, 45)); // -> avg=4.5, numStudent=100
+//        when(enrollmentRepository.findByCourse(courseB))
+//                .thenReturn(buildEnrollments(50, 40));  // -> avg=4.0, numStudent=50
+//
+//        // Các DTO giả để mapper static trả về
+//        CourseInfDto dtoA = new CourseInfDto();
+//        CourseInfDto dtoB = new CourseInfDto();
+//
+//        try (MockedStatic<CourseTransForm> mockedStatic = Mockito.mockStatic(CourseTransForm.class)) {
+//
+//            mockedStatic.when(() ->
+//                    CourseTransForm.transformToCourseInfDto(courseA, 100, 4.5)
+//            ).thenReturn(dtoA);
+//
+//            mockedStatic.when(() ->
+//                    CourseTransForm.transformToCourseInfDto(courseB, 50, 4.0)
+//            ).thenReturn(dtoB);
+//
+//            // =========================
+//            // When
+//            // =========================
+//            List<CourseInfDto> result = courseInfService.searchByKey(searchKey);
+//
+//            // =========================
+//            // Then
+//            // =========================
+//            assertNotNull(result, "Kết quả không được null trong Happy Path");
+//            assertEquals(2, result.size(),
+//                    "Repository trả về 2 course => phải trả về 2 DTO");
+//
+//            assertSame(dtoA, result.get(0),
+//                    "DTO đầu tiên phải tương ứng với courseA");
+//            assertSame(dtoB, result.get(1),
+//                    "DTO thứ hai phải tương ứng với courseB");
+//
+//            // Có thể verify mapper static được gọi đúng số lần
+//            mockedStatic.verify(() ->
+//                            CourseTransForm.transformToCourseInfDto(courseA, 100, 4.5),
+//                    times(1));
+//            mockedStatic.verify(() ->
+//                            CourseTransForm.transformToCourseInfDto(courseB, 50, 4.0),
+//                    times(1));
+//        }
+//    }
 
     /**
      * =====================

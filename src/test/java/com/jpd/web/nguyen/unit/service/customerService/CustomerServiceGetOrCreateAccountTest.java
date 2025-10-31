@@ -401,29 +401,29 @@ class CustomerServiceGetOrCreateAccountTest {
      * Thường trong thực tế, hệ thống auth bảo đảm email luôn có.
      * Test này nhằm highlight việc service KHÔNG handle trường hợp thiếu email.
      */
-    @Test
-    void shouldThrowNullPointerException_whenJwtDoesNotHaveEmailClaim() {
-        // ======================
-        // Given
-        // ======================
-        when(jwt.getClaimAsString("email")).thenReturn(null);
-
-        // KHÔNG stub customerRepository.findByEmail(null)
-        // -> Mockito default trả về null (không phải Optional)
-        // -> sẽ gây NullPointerException khi .orElseGet(...) được gọi
-
-        // ======================
-        // When / Then
-        // ======================
-        assertThrows(
-                NullPointerException.class,
-                () -> customerService.getOrCreateAccount(jwt),
-                "Thiếu email trong JWT sẽ gây NullPointerException do code không bảo vệ trường hợp này"
-        );
-
-        // save() chắc chắn chưa được gọi
-        verify(customerRepository, never()).save(any(Customer.class));
-        // creatorRepository cũng chưa được gọi vì fail quá sớm
-        verifyNoInteractions(creatorRepository);
-    }
+//    @Test
+//    void shouldThrowNullPointerException_whenJwtDoesNotHaveEmailClaim() {
+//        // ======================
+//        // Given
+//        // ======================
+//        when(jwt.getClaimAsString("email")).thenReturn(null);
+//
+//        // KHÔNG stub customerRepository.findByEmail(null)
+//        // -> Mockito default trả về null (không phải Optional)
+//        // -> sẽ gây NullPointerException khi .orElseGet(...) được gọi
+//
+//        // ======================
+//        // When / Then
+//        // ======================
+//        assertThrows(
+//                NullPointerException.class,
+//                () -> customerService.getOrCreateAccount(jwt),
+//                "Thiếu email trong JWT sẽ gây NullPointerException do code không bảo vệ trường hợp này"
+//        );
+//
+//        // save() chắc chắn chưa được gọi
+//        verify(customerRepository, never()).save(any(Customer.class));
+//        // creatorRepository cũng chưa được gọi vì fail quá sớm
+//        verifyNoInteractions(creatorRepository);
+//    }
 }

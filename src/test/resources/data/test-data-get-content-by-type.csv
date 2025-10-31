@@ -1,0 +1,6 @@
+testCase,contentType,moduleId,chapterId,courseId,creatorId,expectedCount,shouldSucceed,expectedErrorType,expectedErrorMessage
+Valid get VIDEO contents,VIDEO,1,1,1,1,3,true,,
+Valid get QUIZ contents,QUIZ,1,1,1,1,2,true,,
+Unauthorized creator,VIDEO,1,1,1,99,0,false,UnauthorizedException,Unauthorized access
+Invalid ownership,VIDEO,2,99,1,1,0,false,ModuleNotBelongsToChapterException,module not belongs to chapter
+Module not found,VIDEO,999,1,1,1,0,false,ModuleNotFoundException,Module not found

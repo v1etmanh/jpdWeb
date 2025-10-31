@@ -97,6 +97,13 @@ public static CourseInfDto transformToCourseInfDto(Course course, int numberS, d
 			.language(course.getLanguage())
 			.build();
 }
+    public static CourseLearningCardDto transformToCourseLearningCardDto(Course course) {
+        return CourseLearningCardDto.builder()
+                .course_img(course.getUrlImg())
+                .course_name(course.getName())
+                .courseId(course.getCourseId())
+                .build();
+    }
 public static CourseLearningCardDto transformToCourseLearningCardDto(Course course,long numerberFinishContent) {
 	 int total=0;
 	 

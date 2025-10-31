@@ -1,0 +1,6 @@
+testCase,creatorId,exists,fireBaseThrows,expectedError
+"Upload thành công",1,true,false,""
+"Firebase lỗi khi upload",2,true,true,"FileUploadException"
+"Creator không tồn tại",999,false,false,"CreatorNotFoundException"
+"File null (mock null pointer)",3,true,true,"FileUploadException"
+"Lưu DB lỗi (giả lập)",4,true,false,"RuntimeException"

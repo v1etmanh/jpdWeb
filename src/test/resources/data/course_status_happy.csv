@@ -1,0 +1,5 @@
+courseId,creatorId,initialPublic,expectedPublic
+1,10,False,True
+2,10,True,False
+999,999,False,True
+1001,1001,True,False

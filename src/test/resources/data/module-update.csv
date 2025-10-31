@@ -1,0 +1,5 @@
+creatorId,courseId,chapterId,moduleId,newTitle,expectedType,expectedMessage
+1,10,100,1000,NewTitle,SUCCESS,
+2,10,100,1000,BadOwner,UNAUTHORIZED,Not owner
+1,10,999,1000,WrongChap,UNAUTHORIZED,Not in chapter
+1,10,100,999,NotFound,NOT_FOUND,Module not found

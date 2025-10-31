@@ -18,5 +18,6 @@ import com.jpd.web.model.Module;
 
 public interface CustomerModuleContentRepository  extends JpaRepository<CustomerModuleContent,Long>{
  long countByEnrollment(Enrollment enrollment);
+    List<CustomerModuleContent> findByEnrollment(Enrollment enrollment);
  Optional<CustomerModuleContent> findByEnrollmentAndModule(Enrollment enrollment, Module module);
 }

@@ -1,0 +1,6 @@
+testCase,contentType,moduleId,chapterId,courseId,creatorId,shouldSucceed,expectedErrorType,expectedErrorMessage
+Valid delete VIDEO content,VIDEO,1,1,1,1,true,,
+Valid delete QUIZ content,QUIZ,1,1,1,1,true,,
+Unauthorized creator,VIDEO,1,1,1,99,false,UnauthorizedException,Unauthorized access
+Invalid ownership,VIDEO,2,99,1,1,false,ModuleNotBelongsToChapterException,module not belongs to chapter
+Invalid course,VIDEO,1,1,999,1,false,CourseNotFoundException,Course not found

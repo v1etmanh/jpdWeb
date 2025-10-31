@@ -1,0 +1,8 @@
+testName,courseExists,customerExists,alreadyEnrolled,accessMode,joinKey,providedKey,expectSuccess,expectExceptionClass
+"Course missing",false,true,false,PUBLIC,,"",false,CourseNotFoundException
+"Customer missing",true,false,false,PUBLIC,,"",false,
+"Already enrolled",true,true,true,PUBLIC,,"",false,EnrollmentExistException
+"Public course success",true,true,false,PUBLIC,,"",true,
+"Private wrong key",true,true,false,PRIVATE,JOIN123,WRONG,false,
+"Private correct key",true,true,false,PRIVATE,JOIN123,JOIN123,true,
+"Paid course should fail",true,true,false,PAID,,"",false,

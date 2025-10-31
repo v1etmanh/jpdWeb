@@ -1,0 +1,7 @@
+testCase,status,paymentEmail,certCount,balance,minimize,amount,expected
+"Status != SUCCESS",PENDING,p@p.com,1,100,50,20,false
+"Không có email",SUCCESS,,1,100,50,20,false
+"Không có chứng chỉ",SUCCESS,p@p.com,0,100,50,20,false
+"Balance < minimizeAmount",SUCCESS,p@p.com,1,30,50,20,false
+"Amount > balance",SUCCESS,p@p.com,1,100,50,150,false
+"Valid đủ điều kiện",SUCCESS,p@p.com,1,200,50,100,true

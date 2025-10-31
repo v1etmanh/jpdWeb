@@ -1,0 +1,3 @@
+creatorId,shouldSucceed,expectedUrl
+1,true,firebase-url
+1,false,-

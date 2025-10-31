@@ -1,0 +1,5 @@
+creatorId,courseId,chapterId,title,expectedType,expectedMessage
+1,10,100,Mod1,SUCCESS,
+1,10,999,Mod2,UNAUTHORIZED,Chapter not in course
+2,10,100,Mod3,UNAUTHORIZED,Not owner
+1,10,999,Mod4,RUNTIME,Chapter not found

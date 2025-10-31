@@ -15,6 +15,8 @@ import com.jpd.web.transform.FeedbackTransform;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -59,6 +61,82 @@ public class FeedbackServiceTest {
     }
 
     // ==== Test addFeedback ====
+
+    @ParameterizedTest
+    @DisplayName("addFeedback: valid cases from CSV")
+    @CsvFileSource(resources = "/feedback_add_valid.csv", numLinesToSkip = 1)
+    void addFeedback_valid_fromCsv(String email, long courseId, String content, int rate) {
+        // Arrange
+        when(validationResources.validateCustomerExist(email)).thenReturn(customer);
+        when(enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(eq(courseId), eq(10L)))
+                .thenReturn(Optional.of(enrollment));
+        setEnrollmentFeedback(null);
+        when(commentFilterService.isToxic(content)).thenReturn(false);
+        when(feedbackRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        // Act
+        feedbackService.addFeedback(email, courseId, content, rate);
+
+        // Assert
+        verify(feedbackRepository).save(argThat(fb ->
+                fb.getContent().equals(content) &&
+                        fb.getRate() == rate &&
+                        fb.getEnrollment() == enrollment
+        ));
+        clearInvocations(feedbackRepository);
+    }
+    @ParameterizedTest
+    @DisplayName("addFeedback: toxic content from CSV -> FeedBackIligalException")
+    @CsvFileSource(resources = "/feedback_add_toxic.csv", numLinesToSkip = 1)
+    void addFeedback_toxic_fromCsv(String email, long courseId, String content, int rate) {
+        when(validationResources.validateCustomerExist(email)).thenReturn(customer);
+        when(enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(eq(courseId), eq(10L)))
+                .thenReturn(Optional.of(enrollment));
+        setEnrollmentFeedback(null);
+        when(commentFilterService.isToxic(content)).thenReturn(true);
+
+        assertThatThrownBy(() -> feedbackService.addFeedback(email, courseId, content, rate))
+                .isInstanceOf(FeedBackIligalException.class);
+
+        verify(feedbackRepository, never()).save(any());
+    }
+    @ParameterizedTest
+    @DisplayName("addFeedback: not enrolled (Unauthorized) from CSV")
+    @CsvFileSource(resources = "/feedback_add_unauthorized.csv", numLinesToSkip = 1)
+    void addFeedback_unauthorized_fromCsv(String email, long courseId, String content, int rate) {
+        when(validationResources.validateCustomerExist(email)).thenReturn(customer);
+        when(enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(eq(courseId), eq(10L)))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> feedbackService.addFeedback(email, courseId, content, rate))
+                .isInstanceOf(UnauthorizedException.class)
+                .hasMessageContaining("you dont own this cours");
+    }
+    @ParameterizedTest
+    @DisplayName("updateFeedback: valid from CSV")
+    @CsvFileSource(resources = "/feedback_update_valid.csv", numLinesToSkip = 1)
+    void updateFeedback_valid_fromCsv(String email, long feedbackId, String newContent, int newRate) {
+        when(validationResources.validateCustomerExist(email)).thenReturn(customer);
+        when(validationResources.validateFeedbackBelongCustomer(feedbackId, 10L))
+                .thenReturn(Optional.of(feedback));
+        when(commentFilterService.isToxic(newContent)).thenReturn(false);
+        when(feedbackRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        FeedbackSimpleDto expectedDto = FeedbackSimpleDto.builder()
+                .content(newContent).rate(newRate).build();
+
+        try (MockedStatic<FeedbackTransform> mocked = mockStatic(FeedbackTransform.class)) {
+            mocked.when(() -> FeedbackTransform.tofeedbackDto(any())).thenReturn(expectedDto);
+
+            FeedbackSimpleDto result = feedbackService.updateFeedback(email, feedbackId, newContent, newRate);
+            assertThat(result).isEqualTo(expectedDto);
+        }
+
+        verify(feedbackRepository).save(feedback);
+        assertThat(feedback.getContent()).isEqualTo(newContent);
+        assertThat(feedback.getRate()).isEqualTo(newRate);
+    }
+
 
     @Test
     @DisplayName("should_AddFeedback_When_ValidInput")

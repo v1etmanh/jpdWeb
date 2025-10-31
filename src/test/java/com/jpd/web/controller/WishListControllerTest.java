@@ -3,6 +3,7 @@ package com.jpd.web.controller;
 import com.jpd.web.controller.common.GlobalExceptionHandler;
 import com.jpd.web.exception.CourseNotFoundException;
 import com.jpd.web.exception.WishlistExistException;
+import com.jpd.web.repository.CustomerRepository;
 import com.jpd.web.service.WishlistService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -35,12 +37,13 @@ class WishListControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Mock
+    @MockitoBean
     WishlistService wishlistService;
 
-    @Mock
+    @MockitoBean
     JwtDecoder jwtDecoder;
-
+@MockitoBean
+    CustomerRepository customerRepository;
     static JwtRequestPostProcessor jwtWithEmail(String email) {
         return jwt().jwt(jwt -> jwt.claim("email", email));
     }
@@ -143,8 +146,12 @@ class WishListControllerTest {
                             .with(jwtWithEmail(email)))
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.errorCode").value("COURSE_NOT_FOUND"))
-                    .andExpect(jsonPath("$.message", containsString(String.valueOf(courseId))));
+                    .andExpect(jsonPath("$.code").value("COURSE_NOT_FOUND"))
+                    .andExpect(jsonPath("$.message", containsString(String.valueOf(courseId))))
+                    .andExpect(jsonPath("$.userMessage").value("Tài nguyên không được tìm thấy"))
+                    .andExpect(jsonPath("$.path").value("/api/wishlist/" + courseId))
+                    .andExpect(jsonPath("$.timestamp").exists())
+                    .andExpect(jsonPath("$.traceId").exists());
 
             verify(wishlistService).addWishlist(email, courseId);
         }
@@ -161,14 +168,18 @@ class WishListControllerTest {
                             .with(jwtWithEmail(email)))
                     .andExpect(status().isConflict())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.errorCode").value("WISHLIST_ALREADY_EXISTS"))
-                    .andExpect(jsonPath("$.message", containsString("already exists")));
+                    .andExpect(jsonPath("$.code").value("WISHLIST_ALREADY_EXISTS"))
+                    .andExpect(jsonPath("$.message", containsString("already exists")))
+                    .andExpect(jsonPath("$.userMessage").value("Dữ liệu đã tồn tại hoặc bị trùng lặp"))
+                    .andExpect(jsonPath("$.path").value("/api/wishlist/123"))
+                    .andExpect(jsonPath("$.timestamp").exists())
+                    .andExpect(jsonPath("$.traceId").exists());
 
             verify(wishlistService).addWishlist(email, courseId);
         }
 
         @Test
-        @DisplayName("TC_ES_03: 404/400 when NoSuchElementException from service")
+        @DisplayName("TC_ES_03: 500 when NoSuchElementException from service")
         void addWishlist_NoSuchElement() throws Exception {
             long courseId = 111;
             String email = "unknown@example.com";
@@ -177,9 +188,14 @@ class WishListControllerTest {
 
             mockMvc.perform(post("/api/wishlist/{courseId}", courseId)
                             .with(jwtWithEmail(email)))
-                    .andExpect(status().isNotFound())
+                    .andExpect(status().isInternalServerError())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.message", containsString("Customer not found")));
+                    .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"))
+                    .andExpect(jsonPath("$.message", containsString("Customer not found")))
+                    .andExpect(jsonPath("$.userMessage").exists())
+                    .andExpect(jsonPath("$.path").value("/api/wishlist/" + courseId))
+                    .andExpect(jsonPath("$.timestamp").exists())
+                    .andExpect(jsonPath("$.traceId").exists());
 
             verify(wishlistService).addWishlist(email, courseId);
         }
@@ -196,17 +212,21 @@ class WishListControllerTest {
                             .with(jwtWithEmail(email)))
                     .andExpect(status().isInternalServerError())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"))
                     .andExpect(jsonPath("$.message", containsString("DB down")))
-                    .andExpect(jsonPath("$.status").value(500));
+                    .andExpect(jsonPath("$.userMessage").exists())
+                    .andExpect(jsonPath("$.path").value("/api/wishlist/102"))
+                    .andExpect(jsonPath("$.timestamp").exists())
+                    .andExpect(jsonPath("$.traceId").exists());
 
             verify(wishlistService).addWishlist(email, courseId);
         }
 
         @Test
-        @DisplayName("TC_ES_05: 401 when missing JWT")
+        @DisplayName("TC_ES_05: 403 when missing JWT")
         void addWishlist_MissingAuthentication() throws Exception {
             mockMvc.perform(post("/api/wishlist/{courseId}", 101L))
-                    .andExpect(status().isUnauthorized());
+                    .andExpect(status().isForbidden());
 
             verifyNoInteractions(wishlistService);
         }

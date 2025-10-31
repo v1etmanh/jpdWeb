@@ -13,6 +13,8 @@ import com.jpd.web.repository.ModuleContentRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -148,6 +150,262 @@ class SessionServiceTest {
                 .teacherName(teacherName)
                 .status(SessionStatus.FINISHED)
                 .build();
+    }
+
+
+    @ParameterizedTest
+    @DisplayName("submitAnswer: error scenarios from CSV")
+    @CsvFileSource(resources = "/session_submitAnswer_error.csv", numLinesToSkip = 1)
+    void submitAnswer_error_fromCsv(
+            String sessionExists,      // Y/N
+            String statusToken,        // ACTIVE/WAITING/FINISHED
+            String acceptingToken,     // Y/N
+            long endTimeOffsetSec,     // <0: đã quá hạn; >=0: chưa quá hạn
+            String participantExists,  // Y/N
+            String hashPutThrows,      // Y/N
+            String expectedErrorSubstr // substring kỳ vọng trong message
+    ) throws Exception {
+
+        // session
+        if ("N".equals(sessionExists)) {
+            when(valueOps.get("quiz:session:" + sessionCode)).thenReturn(null);
+        } else {
+            SessionStatus status = SessionStatus.valueOf(statusToken);
+            SessionInfo base = SessionInfo.builder()
+                    .sessionId(sessionActive.getSessionId())
+                    .sessionCode(sessionActive.getSessionCode())
+                    .kahootId(sessionActive.getKahootId())
+                    .title(sessionActive.getTitle())
+                    .questionIds(sessionActive.getQuestionIds())
+                    .totalQuestions(sessionActive.getTotalQuestions())
+                    .teacherId(sessionActive.getTeacherId())
+                    .teacherName(sessionActive.getTeacherName())
+                    .status(status)
+                    .currentQuestionIndex(sessionActive.getCurrentQuestionIndex())
+                    .currentQuestionId(sessionActive.getCurrentQuestionId())
+                    .currentQuestionType(sessionActive.getCurrentQuestionType())
+                    .questionStartTime(sessionActive.getQuestionStartTime())
+                    .questionTimeLimit(sessionActive.getQuestionTimeLimit())
+                    .acceptingAnswers("Y".equals(acceptingToken))
+                    .questionEndTime(LocalDateTime.now().plusSeconds(endTimeOffsetSec))
+                    .createdAt(sessionActive.getCreatedAt())
+                    .startedAt(sessionActive.getStartedAt())
+                    .finishedAt(sessionActive.getFinishedAt())
+                    .totalParticipants(sessionActive.getTotalParticipants())
+                    .currentAnswers(sessionActive.getCurrentAnswers())
+                    .showLeaderboardAfterEachQuestion(sessionActive.isShowLeaderboardAfterEachQuestion())
+                    .randomizeQuestions(sessionActive.isRandomizeQuestions())
+                    .randomizeOptions(sessionActive.isRandomizeOptions())
+                    .build();
+
+            String sessionJson = objectMapper.writeValueAsString(base);
+            when(valueOps.get("quiz:session:" + sessionCode)).thenReturn(sessionJson);
+        }
+
+        // participant
+        String participantKey = "quiz:session:" + sessionCode + ":participant:x";
+        if ("Y".equals(participantExists)) {
+            when(valueOps.get(participantKey)).thenReturn("{\"participantId\":\"x\"}");
+        } else {
+            when(valueOps.get(participantKey)).thenReturn(null);
+        }
+
+        // hashOps.put behavior
+        if ("Y".equals(hashPutThrows)) {
+            doThrow(new RuntimeException("PutError"))
+                    .when(hashOps).put(anyString(), anyString(), anyString());
+        } else {
+            doNothing().when(hashOps).put(anyString(), anyString(), anyString());
+        }
+
+        SubmitAnswerRequest req = SubmitAnswerRequest.builder()
+                .sessionCode(sessionCode)
+                .participantId("x")
+                .questionId(mcQuestionId)
+                .build();
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> service.submitAnswer(req));
+        assertTrue(ex.getMessage().contains(expectedErrorSubstr));
+    }
+    @ParameterizedTest
+    @DisplayName("joinSession: already started/finished from CSV")
+    @CsvFileSource(resources = "/session_join_status_blocked.csv", numLinesToSkip = 1)
+    void joinSession_statusBlocked_fromCsv(String statusToken, String expectedMsg) throws Exception {
+        SessionStatus status = SessionStatus.valueOf(statusToken);
+        SessionInfo s = new SessionInfo(
+                sessionActive.getSessionId(),
+                sessionActive.getSessionCode(),
+                sessionActive.getKahootId(),
+                sessionActive.getTitle(),
+                sessionActive.getQuestionIds(),
+                sessionActive.getTotalQuestions(),
+                sessionActive.getTeacherId(),
+                sessionActive.getTeacherName(),
+                status,
+                sessionActive.getCurrentQuestionIndex(),
+                sessionActive.getCurrentQuestionId(),
+                sessionActive.getCurrentQuestionType(),
+                sessionActive.getQuestionStartTime(),
+                sessionActive.getQuestionTimeLimit(),
+                sessionActive.isAcceptingAnswers(),
+                sessionActive.getQuestionEndTime(),
+                sessionActive.getCreatedAt(),
+                sessionActive.getStartedAt(),
+                sessionActive.getFinishedAt(),
+                sessionActive.getTotalParticipants(),
+                sessionActive.getCurrentAnswers(),
+                sessionActive.isShowLeaderboardAfterEachQuestion(),
+                sessionActive.isRandomizeQuestions(),
+                sessionActive.isRandomizeOptions()
+        );
+        String sessionJson = objectMapper.writeValueAsString(s);
+        when(valueOps.get("quiz:session:" + sessionCode))
+                .thenReturn(sessionJson);
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> service.joinSession(new JoinSessionRequest(sessionCode, "A")));
+        assertTrue(ex.getMessage().contains(expectedMsg));
+    }
+    @ParameterizedTest
+    @DisplayName("startNextQuestion: scenarios from CSV")
+    @CsvFileSource(resources = "/session_startNextQuestion.csv", numLinesToSkip = 1)
+    void startNextQuestion_fromCsv(
+            int currentIndex,           // -1: bắt đầu câu 1; 1: đã ở câu 2 (2/2) => completed
+            String questionFound,       // Y/N (để giả lập moduleContentRepository.findById)
+            String expectException,     // NONE/QUIZ_COMPLETED/RUNTIME
+            String expectedMsgSubstr    // substring nếu có exception
+    ) throws Exception {
+
+        SessionInfo s = SessionInfo.builder()
+                .sessionId(sessionWaiting.getSessionId())
+                .sessionCode(sessionWaiting.getSessionCode())
+                .kahootId(sessionWaiting.getKahootId())
+                .title(sessionWaiting.getTitle())
+                .questionIds(List.of(mcQuestionId, gfQuestionId))
+                .totalQuestions(2)
+                .teacherId(sessionWaiting.getTeacherId())
+                .teacherName(sessionWaiting.getTeacherName())
+                .status(SessionStatus.WAITING)
+                .currentQuestionIndex(currentIndex)
+                .acceptingAnswers(false)
+                .createdAt(sessionWaiting.getCreatedAt())
+                .showLeaderboardAfterEachQuestion(sessionWaiting.isShowLeaderboardAfterEachQuestion())
+                .randomizeQuestions(sessionWaiting.isRandomizeQuestions())
+                .randomizeOptions(sessionWaiting.isRandomizeOptions())
+                .build();
+        String sessionJson = objectMapper.writeValueAsString(s);
+        when(valueOps.get("quiz:session:" + sessionCode)).thenReturn(sessionJson);
+
+        // Nếu completed (currentIndex == 1 cho 2 câu), cần mock leaderboard
+        if (currentIndex >= 1) {
+            when(setOps.members("quiz:session:" + sessionCode + ":participants")).thenReturn(Set.of("pa","pb"));
+            when(valueOps.get("quiz:session:" + sessionCode + ":participant:pa"))
+                    .thenReturn("{\"participantId\":\"pa\",\"name\":\"A\",\"currentScore\":10}");
+            when(valueOps.get("quiz:session:" + sessionCode + ":participant:pb"))
+                    .thenReturn("{\"participantId\":\"pb\",\"name\":\"B\",\"currentScore\":20}");
+        }
+
+        if ("Y".equals(questionFound)) {
+            ModuleContent mcq = makeMCQuestion(mcQuestionId, "HideAnswer");
+            when(moduleContentRepository.findById(mcQuestionId)).thenReturn(Optional.of(mcq));
+        } else {
+            when(moduleContentRepository.findById(mcQuestionId)).thenReturn(Optional.empty());
+        }
+        doNothing().when(valueOps).set(anyString(), anyString(), eq(3L), eq(TimeUnit.HOURS));
+
+        switch (expectException) {
+            case "NONE" -> {
+                StartQuestionResponse resp = service.startNextQuestion(sessionCode);
+                assertEquals(mcQuestionId, resp.getQuestionId());
+                assertEquals(1, resp.getQuestionNumber()); // từ -1 -> 0 hiển thị là câu 1
+                MultipleChoiceQuestion r = (MultipleChoiceQuestion) resp.getQuestion();
+                assertTrue(r.getOptions().stream().noneMatch(MultipleChoiceOption::isCorrect));
+                verify(valueOps, atLeastOnce()).set(anyString(), anyString(), eq(3L), eq(TimeUnit.HOURS));
+            }
+            case "QUIZ_COMPLETED" -> {
+                QuizCompletedException ex = assertThrows(QuizCompletedException.class,
+                        () -> service.startNextQuestion(sessionCode));
+                assertTrue(ex.getFinalLeaderboard().size() >= 0);
+                if (expectedMsgSubstr != null && !expectedMsgSubstr.isEmpty()) {
+                    assertTrue(ex.getMessage() == null || ex.getMessage().contains(expectedMsgSubstr));
+                }
+            }
+            case "RUNTIME" -> {
+                RuntimeException ex = assertThrows(RuntimeException.class,
+                        () -> service.startNextQuestion(sessionCode));
+                assertTrue(ex.getMessage().contains(expectedMsgSubstr));
+            }
+        }
+    }
+    @ParameterizedTest
+    @DisplayName("getQuestionById: MC/GF/NotFound from CSV")
+    @CsvFileSource(resources = "/session_getQuestionById.csv", numLinesToSkip = 1)
+    void getQuestionById_fromCsv(long id, String typeToken, String exists, String expectedBehavior) {
+        if ("Y".equals(exists)) {
+            ModuleContent mc;
+            if ("MC".equals(typeToken)) {
+                mc = makeMCQuestion(id, "Ans");
+            } else {
+                mc = makeGapFillQuestion(id);
+            }
+            when(moduleContentRepository.findById(id)).thenReturn(Optional.of(mc));
+            ModuleContent ret = service.getQuestionById(id);
+            if ("MC".equals(typeToken)) {
+                MultipleChoiceQuestion mcq = (MultipleChoiceQuestion) ret;
+                assertTrue(mcq.getOptions().stream().allMatch(op -> !op.isCorrect())); // ẩn đáp án
+            } else {
+                GapFillQuestion gfq = (GapFillQuestion) ret;
+                assertNull(gfq.getAnswers()); // ẩn đáp án
+            }
+        } else {
+            when(moduleContentRepository.findById(id)).thenReturn(Optional.empty());
+            assertThrows(ModuleContentNotFoundException.class, () -> service.getQuestionById(id));
+        }
+    }
+    @ParameterizedTest
+    @DisplayName("saveSession: ok/error from CSV")
+    @CsvFileSource(resources = "/session_saveSession.csv", numLinesToSkip = 1)
+    void saveSession_fromCsv(String shouldThrow, String expectedMsgSubstr) throws Exception {
+        if ("Y".equals(shouldThrow)) {
+            doThrow(new RuntimeException("SETERR"))
+                    .when(valueOps).set(eq("quiz:session:" + sessionCode), anyString(), anyLong(), any(TimeUnit.class));
+            RuntimeException ex = assertThrows(RuntimeException.class, () -> service.saveSession(sessionCode, sessionWaiting));
+            assertTrue(ex.getMessage().contains(expectedMsgSubstr));
+        } else {
+            doNothing().when(valueOps).set(eq("quiz:session:" + sessionCode), anyString(), eq(3L), eq(TimeUnit.HOURS));
+            service.saveSession(sessionCode, sessionWaiting);
+            verify(valueOps).set(eq("quiz:session:" + sessionCode), anyString(), eq(3L), eq(TimeUnit.HOURS));
+        }
+    }
+    @ParameterizedTest
+    @DisplayName("getParticipants: empty/some/error from CSV")
+    @CsvFileSource(resources = "/session_getParticipants.csv", numLinesToSkip = 1)
+    void getParticipants_fromCsv(String membersCase, String p1Json, String p2Json, String expectCase) throws Exception {
+        switch (membersCase) {
+            case "NULL" -> when(setOps.members("quiz:session:" + sessionCode + ":participants")).thenReturn(null);
+            case "EMPTY" -> when(setOps.members("quiz:session:" + sessionCode + ":participants")).thenReturn(Set.of());
+            case "TWO" -> {
+                when(setOps.members("quiz:session:" + sessionCode + ":participants")).thenReturn(Set.of("p1","p2"));
+                if ("__BAD_JSON__".equals(p1Json)) {
+                    when(valueOps.get("quiz:session:" + sessionCode + ":participant:p1")).thenReturn("{not json");
+                } else {
+                    when(valueOps.get("quiz:session:" + sessionCode + ":participant:p1")).thenReturn(p1Json);
+                }
+                when(valueOps.get("quiz:session:" + sessionCode + ":participant:p2")).thenReturn(p2Json);
+            }
+        }
+
+        if ("ERROR".equals(expectCase)) {
+            assertThrows(RuntimeException.class, () -> service.getParticipants(sessionCode));
+            return;
+        }
+
+        List<ParticipantInfo> lst = service.getParticipants(sessionCode);
+        switch (expectCase) {
+            case "EMPTY_LIST" -> assertTrue(lst.isEmpty());
+            case "ONE" -> assertEquals(1, lst.size());
+            case "TWO" -> assertEquals(2, lst.size());
+        }
     }
 
     // ==== createSession ====

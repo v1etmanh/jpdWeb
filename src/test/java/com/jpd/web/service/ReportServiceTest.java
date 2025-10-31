@@ -7,9 +7,12 @@ import com.jpd.web.service.utils.ValidationResources;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -42,6 +45,151 @@ public class ReportServiceTest {
                 .detail("Nội dung không phù hợp")
                 .courseId(200L);
     }
+
+    @ParameterizedTest
+    @DisplayName("saveReport: valid rows from CSV")
+    @CsvFileSource(resources = "/report_valid.csv", numLinesToSkip = 1)
+    void saveReport_valid_fromCsv(String email, long courseId, String typeStr, String detailToken) {
+        // Arrange
+        ReportType type = ReportType.valueOf(typeStr);
+        String detail = mapToken(detailToken); // "__NULL__", "__LONG_A_1000__", hoặc giá trị thật
+
+        Customer customer = Customer.builder().customerId(100L).email(email).build();
+        Course course = Course.builder().courseId(courseId).name("Test Course").build();
+
+        when(validationResources.validateCustomerExist(email)).thenReturn(customer);
+        when(validationResources.validateCustomerWithCourse(email, courseId)).thenReturn(course);
+
+        ReportForm form = ReportForm.builder()
+                .type(type)
+                .detail(detail)
+                .courseId(courseId)
+                .build();
+
+        // Act
+        reportService.saveReport(email, form);
+
+        // Assert
+        verify(reportRepository).save(argThat(r ->
+                r.getCustomer().equals(customer)
+                        && r.getCourse().equals(course)
+                        && Objects.equals(r.getDetail(), detail)
+                        && r.getType() == type
+        ));
+        clearInvocations(reportRepository);
+    }
+    @ParameterizedTest
+    @DisplayName("saveReport: customer not exist from CSV -> exception")
+    @CsvFileSource(resources = "/report_customer_not_exist.csv", numLinesToSkip = 1)
+    void saveReport_customerNotExist_fromCsv(String email, long courseId, String typeStr, String detailToken) {
+        ReportType type = ReportType.valueOf(typeStr);
+        String detail = mapToken(detailToken);
+
+        when(validationResources.validateCustomerExist(email))
+                .thenThrow(new RuntimeException("Customer not found"));
+
+        ReportForm form = ReportForm.builder()
+                .type(type).detail(detail).courseId(courseId).build();
+
+        assertThatThrownBy(() -> reportService.saveReport(email, form))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Customer not found");
+
+        verify(reportRepository, never()).save(any());
+    }
+
+    @ParameterizedTest
+    @DisplayName("saveReport: invalid courseId from CSV -> exception")
+    @CsvFileSource(resources = "/report_course_invalid.csv", numLinesToSkip = 1)
+    void saveReport_courseInvalid_fromCsv(String email, long courseId, String typeStr, String detailToken, String expectedMsg) {
+        ReportType type = ReportType.valueOf(typeStr);
+        String detail = mapToken(detailToken);
+
+        Customer customer = Customer.builder().customerId(100L).email(email).build();
+        when(validationResources.validateCustomerExist(email)).thenReturn(customer);
+        when(validationResources.validateCustomerWithCourse(email, courseId))
+                .thenThrow(new RuntimeException(expectedMsg));
+
+        ReportForm form = ReportForm.builder().type(type).detail(detail).courseId(courseId).build();
+
+        assertThatThrownBy(() -> reportService.saveReport(email, form))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining(expectedMsg);
+
+        verify(reportRepository, never()).save(any());
+    }
+    @ParameterizedTest
+    @DisplayName("saveReport: email null/empty from CSV -> exception")
+    @CsvFileSource(resources = "/report_email_invalid.csv", numLinesToSkip = 1)
+    void saveReport_emailInvalid_fromCsv(String emailToken, long courseId, String typeStr, String detailToken, String expected, String expectedMsg) {
+        String email = "__NULL__".equals(emailToken) ? null : emailToken;
+        ReportType type = ReportType.valueOf(typeStr);
+        String detail = mapToken(detailToken);
+
+        if (email == null) {
+            when(validationResources.validateCustomerExist(null)).thenThrow(new IllegalArgumentException(expectedMsg));
+        } else {
+            when(validationResources.validateCustomerExist(email)).thenThrow(new IllegalArgumentException(expectedMsg));
+        }
+
+        ReportForm form = ReportForm.builder().type(type).detail(detail).courseId(courseId).build();
+
+        assertThatThrownBy(() -> reportService.saveReport(email, form))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(expectedMsg);
+
+        verify(reportRepository, never()).save(any());
+    }
+    @ParameterizedTest
+    @DisplayName("saveReport: all enum types from CSV")
+    @CsvFileSource(resources = "/report_enum_edge.csv", numLinesToSkip = 1)
+    void saveReport_enumEdge_fromCsv(String typeStr) {
+        String email = "foo@bar.com";
+        long courseId = 200L;
+        ReportType type = ReportType.valueOf(typeStr);
+
+        Customer customer = Customer.builder().customerId(100L).email(email).build();
+        Course course = Course.builder().courseId(courseId).name("Test Course").build();
+        when(validationResources.validateCustomerExist(email)).thenReturn(customer);
+        when(validationResources.validateCustomerWithCourse(email, courseId)).thenReturn(course);
+
+        ReportForm form = ReportForm.builder()
+                .type(type).detail("any").courseId(courseId).build();
+
+        reportService.saveReport(email, form);
+
+        verify(reportRepository).save(argThat(r -> r.getType() == type));
+        reset(reportRepository);
+    }
+    @ParameterizedTest
+    @DisplayName("saveReport: repository throws from CSV -> exception")
+    @CsvFileSource(resources = "/report_repository_fail.csv", numLinesToSkip = 1)
+    void saveReport_repositoryFail_fromCsv(String email, long courseId, String typeStr, String detailToken, String expectedMsg) {
+        ReportType type = ReportType.valueOf(typeStr);
+        String detail = mapToken(detailToken);
+
+        Customer customer = Customer.builder().customerId(100L).email(email).build();
+        Course course = Course.builder().courseId(courseId).name("Test Course").build();
+        when(validationResources.validateCustomerExist(email)).thenReturn(customer);
+        when(validationResources.validateCustomerWithCourse(email, courseId)).thenReturn(course);
+        doThrow(new RuntimeException(expectedMsg)).when(reportRepository).save(any());
+
+        ReportForm form = ReportForm.builder().type(type).detail(detail).courseId(courseId).build();
+
+        assertThatThrownBy(() -> reportService.saveReport(email, form))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining(expectedMsg);
+    }
+/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///
+    private static String mapToken(String token) {
+        if (token == null) return null;
+        if ("__NULL__".equals(token)) return null;
+        if ("__LONG_A_1000__".equals(token)) return "A".repeat(1000);
+        // Cho phép CSV dùng chuỗi rỗng "" để test empty
+        return token;
+    }
+
 
     @Test
     @DisplayName("should_SaveReport_When_ReportFormValid")

@@ -1,0 +1,3 @@
+statusToken,expectedMsg
+ACTIVE,already started
+FINISHED,already finished

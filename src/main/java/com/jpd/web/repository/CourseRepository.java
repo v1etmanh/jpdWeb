@@ -10,7 +10,8 @@ import com.jpd.web.model.Course;
 import com.jpd.web.model.Language;
 
 import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CourseRepository  extends JpaRepository<Course, Long>{
 List<Course> findByAccessMode(AccessMode accessMode);
@@ -26,9 +27,23 @@ AND (
     OR LOWER(c.description) LIKE LOWER(CONCAT('%', :searchKey, '%'))
     OR LOWER(c.learning_object) LIKE LOWER(CONCAT('%', :searchKey, '%'))
     OR LOWER(cr.full_name) LIKE LOWER(CONCAT('%', :searchKey, '%'))
+    OR LOWER(c.language) LIKE LOWER(CONCAT('%', :searchKey, '%'))
 )
-""", nativeQuery = true)
-List<Course> searchByKey(@Param("searchKey") String searchKey);
+""", 
+countQuery = """
+SELECT COUNT(c.course_id) FROM course c
+LEFT JOIN creator cr ON c.creator_id = cr.creator_id
+WHERE c.ispublic = true
+AND (
+    LOWER(c.name) LIKE LOWER(CONCAT('%', :searchKey, '%'))
+    OR LOWER(c.description) LIKE LOWER(CONCAT('%', :searchKey, '%'))
+    OR LOWER(c.learning_object) LIKE LOWER(CONCAT('%', :searchKey, '%'))
+    OR LOWER(cr.full_name) LIKE LOWER(CONCAT('%', :searchKey, '%'))
+    OR LOWER(c.language) LIKE LOWER(CONCAT('%', :searchKey, '%'))
+)
+""",
+nativeQuery = true)
+Page<Course> searchByKey(@Param("searchKey") String searchKey, Pageable pageable);
 @Query("SELECT COUNT(e) FROM Enrollment e WHERE e.course.courseId = :courseId")
 int countEnrollmentsByCourseId(@Param("courseId") Long courseId);
 
@@ -41,4 +56,6 @@ int countFeedbacksByCourseId(@Param("courseId") Long courseId);
        "JOIN f.enrollment e " +
        "WHERE e.course.courseId = :courseId")
 Double getAverageRatingByCourseId(@Param("courseId") Long courseId);
+
+
 }

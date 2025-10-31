@@ -54,7 +54,7 @@ private CustomerRepository customerRepository;
               
                     Creator creator = customer.getCreator();
                     
-                    if (creator == null) {
+                    if (creator == null||creator.isBan()) {
                         sendError(response, 403, "Creator profile does not exist");
                         return;
                     }
@@ -92,7 +92,9 @@ private CustomerRepository customerRepository;
 	protected boolean shouldNotFilter(HttpServletRequest request) {
 	    String path = request.getRequestURI();
 	    // Bỏ qua các request không bắt đầu bằng /api/creator/
-	    return !path.startsWith("/api/creator/");
+	   boolean sh= path.startsWith("/api/creator/")||
+	    		path.equals("/api/quiz/create");
+	   return !sh;
 	}
 
 }

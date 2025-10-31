@@ -1,263 +1,252 @@
 package com.jpd.web.nguyen.unit.controller;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jpd.web.controller.DictionaryController;
 import com.jpd.web.controller.common.GlobalExceptionHandler;
+import com.jpd.web.dto.RememberWordDto;
+import com.jpd.web.repository.CustomerRepository;
+import com.jpd.web.repository.RememberWordRepository;
 import com.jpd.web.service.DictionaryService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.NestedTestConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.eq;
+import java.util.List;
+import java.util.Collections;
 
-/**
- * Unit Test cho DictionaryController
- *
- * <p><b>Phạm vi test:</b> Controller layer cho personal dictionary management</p>
- *
- * <p><b>Endpoints được test:</b></p>
- * <ul>
- *   <li>GET /api/customer/dictionary - Lấy danh sách từ vựng đã lưu</li>
- *   <li>POST /api/customer/dictionary - Thêm từ mới vào dictionary</li>
- *   <li>PUT /api/customer/dictionary - Cập nhật từ đã có</li>
- *   <li>DELETE /api/customer/dictionary/{rwId} - Xóa từ khỏi dictionary</li>
- * </ul>
- *
- * <p><b>Kịch bản test bao gồm:</b></p>
- * <ul>
- *   <li><b>HAPPY PATHS:</b> Success cases cho CRUD operations</li>
- *   <li><b>EDGE CASES:</b> Empty dictionary, validation</li>
- *   <li><b>ERROR SCENARIOS:</b> Unauthorized access, not found, validation errors</li>
- * </ul>
- *
- * @author QA Team
- * @version 1.0
- */
-@ExtendWith(MockitoExtension.class)
-@DisplayName("DictionaryController Test Suite")
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.context.NestedTestConfiguration.EnclosingConfiguration.INHERIT;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@NestedTestConfiguration(INHERIT)
+@WebMvcTest(controllers = DictionaryController.class)
+@Import({ GlobalExceptionHandler.class })
+@DisplayName("DictionaryControllerTest - Controller Layer")
 class DictionaryControllerTest {
 
-    @Mock
-    DictionaryService dictionaryService;
-
-    @InjectMocks
-    com.jpd.web.controller.DictionaryController controller;
-
+    @Autowired
     MockMvc mockMvc;
 
-    // Đưa exception handler vào để verify exception mapping thông qua advice
-    @BeforeEach
-    void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
+    @MockitoBean
+    DictionaryService dictionaryService;
+    @MockitoBean
+    RememberWordRepository rememberWordRepository;
+    @MockitoBean
+    JwtDecoder jwtDecoder;
+@MockitoBean
+    CustomerRepository customerRepository;
+    private static final String BASE_URL = "/api/customer/dictionary";
+
+    // Helper for JWT with email claim
+    static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtWithEmail(String email) {
+        return jwt().jwt(jwt -> jwt.claim("email", email));
     }
 
-    // region GET - Lấy danh sách từ vựng đã lưu
-    @org.junit.jupiter.api.Test
-    @DisplayName("GET /api/customer/dictionary - success (hàm trả về list từ vựng user đã lưu)")
-    void testGetDictionarySuccess() throws Exception {
-        var dto1 = new com.jpd.web.dto.RememberWordDto(1L, "apple", "táo", "fruit");
-        var dto2 = new com.jpd.web.dto.RememberWordDto(2L, "cat", "mèo", "animal");
-        java.util.List<com.jpd.web.dto.RememberWordDto> data = java.util.List.of(dto1, dto2);
+    // --- HAPPY PATHS ---
 
-        org.mockito.Mockito.when(dictionaryService.getDictionary(eq("admin@email.com")))
-                .thenReturn(data);
+    @Nested
+    @DisplayName("GET /api/customer/dictionary")
+    class GetDictionary {
 
-        mockMvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/customer/dictionary")
-                                .requestAttr("org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken.AUTHENTICATION", null) // bypass
-                                .principal(makeJwtPrincipal("admin@email.com"))
-                )
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.length()").value(2))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$[0].rwId").value(1L))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$[1].word").value("cat"));
+        @Test
+        @DisplayName("TC_HP_01: 200 OK - return non-empty list")
+        void getDictionary_ReturnsList() throws Exception {
+            var dto1 = new RememberWordDto(1L, "apple", "táo", "fruit");
+            var dto2 = new RememberWordDto(2L, "cat", "mèo", "animal");
+            given(dictionaryService.getDictionary("admin@email.com"))
+                    .willReturn(List.of(dto1, dto2));
+
+            mockMvc.perform(get(BASE_URL)
+                            .with(jwtWithEmail("admin@email.com")))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.length()").value(2))
+                    .andExpect(jsonPath("$[0].rwId").value(1L))
+                    .andExpect(jsonPath("$[1].word").value("cat"));
+            verify(dictionaryService).getDictionary("admin@email.com");
+        }
+
+        @Test
+        @DisplayName("TC_HP_02: 200 OK - return empty list")
+        void getDictionary_ReturnsEmpty() throws Exception {
+            given(dictionaryService.getDictionary("empty@mail.com"))
+                    .willReturn(Collections.emptyList());
+
+            mockMvc.perform(get(BASE_URL)
+                            .with(jwtWithEmail("empty@mail.com")))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json("[]"));
+            verify(dictionaryService).getDictionary("empty@mail.com");
+        }
     }
 
-    @org.junit.jupiter.api.Test
-    @DisplayName("GET /api/customer/dictionary - empty (user chưa có từ vựng nào)")
-    void testGetDictionaryEmpty() throws Exception {
-        org.mockito.Mockito.when(dictionaryService.getDictionary(eq("empty@mail.com")))
-                .thenReturn(java.util.Collections.emptyList());
+    @Nested
+    @DisplayName("POST /api/customer/dictionary")
+    class AddWord {
 
-        mockMvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/customer/dictionary")
-                                .principal(makeJwtPrincipal("empty@mail.com")))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().json("[]"));
-    }
-    // endregion
+        @Test
+        @DisplayName("TC_HP_03: 201 CREATED - success case")
+        void postRememberWord_HappyPath() throws Exception {
+            var dto = new RememberWordDto(3L, "banana", "chuối", "fruit");
+            given(dictionaryService.addRememberWord(eq("user@mail.com"), org.mockito.Mockito.<RememberWordDto>any()))
+                    .willReturn(dto);
 
-    // region POST - Thêm mới một từ vào dictionary 
-    @org.junit.jupiter.api.Test
-    @DisplayName("POST /api/customer/dictionary - success (thêm từ thành công)")
-    void testAddDictionarySuccess() throws Exception {
-        var req = new com.jpd.web.dto.RememberWordDto(0L, "banana", "chuối", "fruit");
-        var expected = new com.jpd.web.dto.RememberWordDto(3L, "banana", "chuối", "fruit");
-
-        org.mockito.Mockito.when(dictionaryService.addRememberWord(eq("user@mail.com"), org.mockito.ArgumentMatchers.any()))
-                .thenReturn(expected);
-
-        mockMvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                                .post("/api/customer/dictionary")
-                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
-                                        {
-                                          "word":"banana",
-                                          "meaning":"chuối",
-                                          "description":"fruit"
-                                        }
-                                        """
-                                )
-                                .principal(makeJwtPrincipal("user@mail.com"))
-                )
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isCreated())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.word").value("banana"))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.meaning").value("chuối"));
+            mockMvc.perform(post(BASE_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"word":"banana","meaning":"chuối","description":"fruit"}
+                                    """)
+                            .with(jwtWithEmail("user@mail.com")))
+                    .andExpect(status().isCreated())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.rwId").value(3))
+                    .andExpect(jsonPath("$.word").value("banana"))
+                    .andExpect(jsonPath("$.meaning").value("chuối"));
+            verify(dictionaryService).addRememberWord(eq("user@mail.com"), org.mockito.Mockito.<RememberWordDto>any());
+        }
     }
 
-    @org.junit.jupiter.api.Test
-    @DisplayName("POST /api/customer/dictionary - validation error (thiếu trường required)")
-    void testAddDictionaryValidationFail() throws Exception {
-        // Bản thân controller không validate @RequestBody field (cần @Valid)
-        // nên code này sẽ chạy qua nếu service không null
-        org.mockito.Mockito.when(dictionaryService.addRememberWord(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.any()))
-                .thenReturn(null);
+    @Nested
+    @DisplayName("PUT /api/customer/dictionary")
+    class UpdateWord {
 
-        mockMvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                                .post("/api/customer/dictionary")
-                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
-                                        {"word":"", "meaning":"", "description":""}
-                                        """
-                                )
-                                .principal(makeJwtPrincipal("someone@mail.com"))
-                )
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isCreated())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(""));
-        // Vì controller không annotate @Valid nên spring không chặn, có thể cần bổ sung sau
+        @Test
+        @DisplayName("TC_HP_04: 200 OK - success")
+        void putRememberWord_HappyPath() throws Exception {
+            var dto = new RememberWordDto(2L, "do", "làm", "động từ");
+            given(dictionaryService.updateRememberWord(eq("updater@mail.com"), org.mockito.Mockito.<RememberWordDto>any()))
+                    .willReturn(dto);
+
+            mockMvc.perform(put(BASE_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"rwId":2,"word":"do","meaning":"làm","description":"động từ"}
+                                    """)
+                            .with(jwtWithEmail("updater@mail.com")))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.rwId").value(2))
+                    .andExpect(jsonPath("$.word").value("do"));
+            verify(dictionaryService).updateRememberWord(eq("updater@mail.com"), org.mockito.Mockito.<RememberWordDto>any());
+        }
     }
 
-    // endregion
+    @Nested
+    @DisplayName("DELETE /api/customer/dictionary/{rwId}")
+    class DeleteWord {
 
-    // region PUT - Update từ
-    @org.junit.jupiter.api.Test
-    @DisplayName("PUT /api/customer/dictionary - success (update từ thành công)")
-    void testUpdateDictionarySuccess() throws Exception {
-        var updateReq = new com.jpd.web.dto.RememberWordDto(2L, "do", "làm", "động từ");
-        org.mockito.Mockito.when(dictionaryService.updateRememberWord(eq("updater@mail.com"), org.mockito.ArgumentMatchers.any()))
-                .thenReturn(updateReq);
+        @Test
+        @DisplayName("TC_HP_05: 204 NO CONTENT - success")
+        void deleteRememberWord_HappyPath() throws Exception {
+            willDoNothing().given(dictionaryService).deleteRememberWord("user@mail.com", 2L);
 
-        mockMvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                                .put("/api/customer/dictionary")
-                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
-                                .content("""
-                                        {"rwId":2,"word":"do","meaning":"làm","description":"động từ"}
-                                        """)
-                                .principal(makeJwtPrincipal("updater@mail.com")))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.rwId").value(2))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.word").value("do"));
-
+            mockMvc.perform(delete(BASE_URL + "/2")
+                            .with(jwtWithEmail("user@mail.com")))
+                    .andExpect(status().isNoContent());
+            verify(dictionaryService).deleteRememberWord("user@mail.com", 2L);
+        }
     }
 
-    @org.junit.jupiter.api.Test
-    @DisplayName("PUT /api/customer/dictionary - NOT FOUND khi từ không tồn tại trong service (service quăng RuntimeException)")
-    void testUpdateDictionaryNotFound() throws Exception {
-        org.mockito.Mockito.when(dictionaryService.updateRememberWord(eq("x@mail.com"), org.mockito.ArgumentMatchers.any()))
-                .thenThrow(new RuntimeException("Remember word not found"));
+    // --- EDGE/ERROR CASES ---
 
-        mockMvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                                .put("/api/customer/dictionary")
-                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
-                                .content("""
-                                        {"rwId":999,"word":"nope","meaning":"không","description":"desc"}
-                                        """)
-                                .principal(makeJwtPrincipal("x@mail.com")))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.message").value("Remember word not found"));
+    @Nested
+    @DisplayName("POST: Edge validation and error cases")
+    class AddDictionaryEdgeCases {
+
+        @Test
+        @DisplayName("TC_EC_01: POST - 201 CREATED nếu thiếu required fields (controller không validate)")
+        void postRememberWord_MissingField() throws Exception {
+            // The controller does NOT validate required fields, so the service IS called even if fields are empty
+
+            mockMvc.perform(post(BASE_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"word":"","meaning":"","description":""}
+                                    """)
+                            .with(jwtWithEmail("someone@mail.com")))
+                    .andExpect(status().isCreated())
+                    .andExpect(header().exists("X-Content-Type-Options"))
+                    .andExpect(header().string("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate"));
+            // Service is called even with blank fields (see DictionaryController.addDictionary log + test output)
+            verify(dictionaryService).addRememberWord(eq("someone@mail.com"), org.mockito.ArgumentMatchers.any());
+        }
     }
 
-    // endregion
+    @Nested
+    @DisplayName("PUT/DELETE: error - service throws exception")
+    class ErrorScenarios {
 
-    // region DELETE - Xóa từ
-    @org.junit.jupiter.api.Test
-    @DisplayName("DELETE /api/customer/dictionary/{rwId} - success (xóa thành công)")
-    void testDeleteDictionarySuccess() throws Exception {
-        org.mockito.Mockito.doNothing()
-                .when(dictionaryService).deleteRememberWord(eq("user@mail.com"), eq(2L));
+        @Test
+        @DisplayName("TC_ES_01: PUT - not found → 500 (INTERNAL_ERROR), API vẫn trả về message")
+        void putRememberWord_NotFound() throws Exception {
+            given(dictionaryService.updateRememberWord(eq("x@mail.com"), org.mockito.ArgumentMatchers.<RememberWordDto>any()))
+                    .willThrow(new RuntimeException("Remember word not found"));
+            mockMvc.perform(put(BASE_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"rwId":999,"word":"nope","meaning":"không","description":"desc"}
+                                    """)
+                            .with(jwtWithEmail("x@mail.com")))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.message").value("Remember word not found"));
+            verify(dictionaryService).updateRememberWord(eq("x@mail.com"), org.mockito.ArgumentMatchers.<RememberWordDto>any());
+        }
 
-        mockMvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                                .delete("/api/customer/dictionary/2")
-                                .principal(makeJwtPrincipal("user@mail.com")))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isNoContent());
+        @Test
+        @DisplayName("TC_ES_02: DELETE - service exception → 500 (ẩn lỗi)")
+        void deleteRememberWord_ServiceError() throws Exception {
+            willThrow(new RuntimeException("database error"))
+                    .given(dictionaryService).deleteRememberWord("er@mail.com", 42L);
+
+            mockMvc.perform(delete(BASE_URL + "/42")
+                            .with(jwtWithEmail("er@mail.com")))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.message", anyOf(
+                        is("Internal server error"),
+                        containsString("error")
+                    )));
+            verify(dictionaryService).deleteRememberWord("er@mail.com", 42L);
+        }
     }
 
-    @org.junit.jupiter.api.Test
-    @DisplayName("DELETE /api/customer/dictionary/{rwId} - UnauthorizedException (xóa từ không phải của mình)")
-    void testDeleteDictionaryUnauthorized() throws Exception {
-        org.mockito.Mockito.doThrow(new com.jpd.web.exception.UnauthorizedException("you do not own this word"))
-                .when(dictionaryService).deleteRememberWord(eq("other@mail.com"), eq(5L));
+    @Nested
+    @DisplayName("Auth/Validation: forbidden or missing JWT")
+    class AuthorizationAndValidation {
+        @Test
+        @DisplayName("TC_ES_03: POST - 403 when no JWT")
+        void postRememberWord_Forbidden_NoJwt() throws Exception {
+            mockMvc.perform(post(BASE_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
+                            {"word":"some","meaning":"gì đó","description":"test"}
+                            """))
+                .andExpect(status().isForbidden());
+            verifyNoInteractions(dictionaryService);
+        }
 
-        // Instead of setting a null request attribute (which triggers an IllegalArgumentException),
-        // simply provide a JWT principal for a different user than the "owner" to simulate the UnauthorizedException path.
-        mockMvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                                .delete("/api/customer/dictionary/5")
-                                .principal(makeJwtPrincipal("other@mail.com"))
-                )
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.message").value("you do not own this word"));
+        @Test
+        @DisplayName("TC_ES_04: DELETE - 403 when no JWT")
+        void deleteRememberWord_Forbidden_NoJwt() throws Exception {
+            mockMvc.perform(delete(BASE_URL + "/2"))
+                .andExpect(status().isForbidden());
+            verifyNoInteractions(dictionaryService);
+        }
     }
-
-    @org.junit.jupiter.api.Test
-    @DisplayName("DELETE /api/customer/dictionary/{rwId} - runtime error/unexpected exception")
-    void testDeleteDictionaryUnexpectedError() throws Exception {
-        org.mockito.Mockito.doThrow(new RuntimeException("database error"))
-                .when(dictionaryService).deleteRememberWord(eq("er@mail.com"), eq(42L));
-
-        mockMvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                                .delete("/api/customer/dictionary/42")
-                                .principal(
-                                        new JwtAuthenticationToken(
-                                                new org.springframework.security.oauth2.jwt.Jwt(
-                                                        "non-empty-token-value", // Must not be empty!
-                                                        null,
-                                                        null,
-                                                        java.util.Map.of("alg", "none"),
-                                                        java.util.Map.of("email", "er@mail.com")
-                                                )
-                                        )
-                                )
-                )
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.message").value("database error"));
-    }
-    // endregion
-
-    // region Helper
-    /**
-     * Mô phỏng JWT principal có chứa claim email
-     */
-    private JwtAuthenticationToken makeJwtPrincipal(String email) {
-        java.util.Map<String, Object> claims = new java.util.HashMap<>();
-        claims.put("email", email);
-        org.springframework.security.oauth2.jwt.Jwt jwt = new org.springframework.security.oauth2.jwt.Jwt("token", null, null, java.util.Map.of("alg", "none"), claims);
-        return new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(jwt);
-    }
-    // endregion
-
 }

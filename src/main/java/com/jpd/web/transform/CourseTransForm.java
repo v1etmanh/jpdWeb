@@ -31,7 +31,6 @@ public class CourseTransForm {
                 .build();
         if (c.getAccessMode() == AccessMode.PAID) {
             c.setPrice(courseFormDto.getPrice());
-
         }
         return c;
     }

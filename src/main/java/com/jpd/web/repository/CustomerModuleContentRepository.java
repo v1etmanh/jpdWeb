@@ -40,8 +40,4 @@ public interface CustomerModuleContentRepository extends JpaRepository<CustomerM
     long countCompletedModulesByEnrollment(@Param("enrollment") Enrollment enrollment);
 
 
-
-
-
-
 }

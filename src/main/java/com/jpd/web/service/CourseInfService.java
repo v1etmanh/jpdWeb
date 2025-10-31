@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.jpd.web.dto.*;
 import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,12 +12,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.jpd.web.dto.CourseDescriptionDto;
-import com.jpd.web.dto.CourseInfDto;
-import com.jpd.web.dto.CourseLearningCardDto;
-import com.jpd.web.dto.CreatorSimpleDto;
-import com.jpd.web.dto.CustomerSimpleDto;
-import com.jpd.web.dto.FeedbackSimpleDto;
 import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.model.Chapter;
 import com.jpd.web.model.Course;
@@ -112,25 +107,12 @@ public class CourseInfService {
 		return new RatingInfo(avgRating, enrollments.size());
 	}
 
-	// tìm kiếm theo name + language+ creatorName+description
-	public Page<CourseInfDto> searchByKey(String searchKey, int page, int size) {
-	    if (searchKey == null || searchKey.trim().isEmpty()) {
-	        return Page.empty();
-	    }
-
-	    Pageable pageable = PageRequest.of(page, size); // ❌ Không sort nữa
-
-	    Page<Course> coursesPage = this.courseRepository.searchByKey(searchKey.trim(), pageable);
-
-	    List<CourseInfDto> dtoList = coursesPage.getContent().stream()
-	        .map(course -> {
-	            RatingInfo info = calculateAvtRatingAndNumberStudent(course);
-	            return CourseTransForm.transformToCourseInfDto(course, info.numStudent(), info.avgRating());
-	        })
-	        .collect(Collectors.toList());
-
-	    return new PageImpl<>(dtoList, pageable, coursesPage.getTotalElements());
-	}
+    // tìm kiếm theo name + language+ creatorName+description and paging
+    public Page<CourseSearchDto> searchAndPagination(String searchKey, Pageable pageable) {
+        if (searchKey == null || searchKey.trim().isEmpty()) return null;
+        Page<CourseSearchDto> coursePage = courseRepository.searchAndCalculate(searchKey.trim(), pageable);
+        return coursePage;
+    }
 
 	@Transactional()
 	public CourseDescriptionDto getCourseDescription(long courseId) {

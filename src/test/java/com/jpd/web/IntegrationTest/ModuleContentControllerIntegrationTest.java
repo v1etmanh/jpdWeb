@@ -93,7 +93,6 @@ class ModuleContentControllerIntegrationTest {
         }
     }
 
-
     @Test
     @DisplayName("DELETE /deleteModuleContentByType - delete contents by type")
     @WithMockUser(username = "creator1", roles = {"CREATOR"})

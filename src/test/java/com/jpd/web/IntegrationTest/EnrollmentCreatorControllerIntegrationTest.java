@@ -34,7 +34,6 @@ class EnrollmentCreatorControllerIntegrationTest {
     @MockBean
     private EnrollmentService enrollmentService;
 
-
     @Test
     @DisplayName("GET /{courseId} - retrieve enrollments for a course")
     @WithMockUser(username = "creator1", roles = {"CREATOR"})

@@ -36,7 +36,6 @@ class CourseControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @MockBean
     private CourseService courseService;
 

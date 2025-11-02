@@ -1,4 +1,4 @@
-package com.jpd.web.controller;
+package com.jpd.web.IntegrationTest;
 
 import com.jpd.web.controller.common.GlobalExceptionHandler;
 import com.jpd.web.controller.creator.AiGenerateController;
@@ -34,7 +34,6 @@ class ChapterControllerIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
-
 
     @MockBean
     ChapterService chapterService;

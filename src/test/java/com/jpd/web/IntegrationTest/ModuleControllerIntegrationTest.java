@@ -34,6 +34,7 @@ class ModuleControllerIntegrationTest {
     @MockBean
     private ModuleService moduleService;
 
+
     @Test
     @DisplayName("DELETE /api/creator/{courseId}/{chapterId}/module/{moduleId} → 204 No Content")
     @WithMockUser(username = "creator1", roles = {"CREATOR"})

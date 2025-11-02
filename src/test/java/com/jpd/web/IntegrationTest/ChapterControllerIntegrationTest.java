@@ -35,6 +35,7 @@ class ChapterControllerIntegrationTest {
     @Autowired
     MockMvc mockMvc;
 
+
     @MockBean
     ChapterService chapterService;
 

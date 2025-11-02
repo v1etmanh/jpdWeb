@@ -39,6 +39,7 @@ class CreatorControllerIntegrationTest {
     @MockBean
     private CreatorService creatorService;
 
+
     @Test
     @DisplayName("GET /getAccount - success")
     @WithMockUser(username = "creator1", roles = {"CREATOR"})

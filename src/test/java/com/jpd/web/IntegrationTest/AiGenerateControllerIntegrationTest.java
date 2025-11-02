@@ -44,6 +44,7 @@ class AiGenerateControllerIntegrationTest {
     @Autowired
     MockMvc mockMvc;
 
+
     @Autowired
     ObjectMapper objectMapper;
 

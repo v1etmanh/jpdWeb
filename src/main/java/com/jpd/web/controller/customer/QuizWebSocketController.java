@@ -29,8 +29,7 @@ public class QuizWebSocketController {
             @Payload JoinSessionRequest request) {
         
         try {
-            System.out.println("🔵 WebSocket Join: " + request.getParticipantName() + " → " + sessionCode);
-            
+           
             // Join session
             ParticipantInfo participant = sessionService.joinSession(request);
             
@@ -44,10 +43,8 @@ public class QuizWebSocketController {
                 )
             );
             
-            System.out.println("✅ Broadcasted participant joined: " + participant.getName());
-            
+           
         } catch (Exception e) {
-            System.err.println("❌ Join error: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -69,10 +66,8 @@ public class QuizWebSocketController {
                 )
             );
             
-            System.out.println("✅ Sent participants list: " + participants.size() + " participants");
-            
+             
         } catch (Exception e) {
-            System.err.println("❌ Get participants error: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -85,8 +80,7 @@ public class QuizWebSocketController {
     @MessageMapping("/quiz/{sessionCode}/start")
     public void startQuiz(@DestinationVariable String sessionCode) {
         try {
-            System.out.println("🎬 Starting quiz: " + sessionCode);
-            
+           
             SessionInfo session = sessionService.getSession(sessionCode);
             if (session == null) {
                 throw new RuntimeException("Session not found");
@@ -107,13 +101,11 @@ public class QuizWebSocketController {
                 )
             );
             
-            System.out.println("✅ Quiz started successfully");
-            
+           
             // ✨✨✨ THÊM PHẦN NÀY - Tự động start câu hỏi đầu tiên sau 2 giây
             new Thread(() -> {
                 try {
                     Thread.sleep(2000); // Delay 2 giây
-                    System.out.println("📤 Auto-starting first question...");
                     
                     StartQuestionResponse response = sessionService.startNextQuestion(sessionCode);
                     
@@ -130,7 +122,6 @@ public class QuizWebSocketController {
                         )
                     );
                     
-                    System.out.println("✅ First question started automatically");
                     
                 } catch (Exception e) {
                     System.err.println("❌ Failed to auto-start first question: " + e.getMessage());
@@ -150,8 +141,7 @@ public class QuizWebSocketController {
     @MessageMapping("/quiz/{sessionCode}/next-question")
     public void nextQuestion(@DestinationVariable String sessionCode) {
         try {
-            System.out.println("➡️ Next question for: " + sessionCode);
-            
+           
             StartQuestionResponse response = sessionService.startNextQuestion(sessionCode);
             
             // Broadcast câu hỏi MỚI đến TẤT CẢ participants
@@ -172,8 +162,7 @@ public class QuizWebSocketController {
             
         } catch (QuizCompletedException e) {
             // Hết câu hỏi rồi → Broadcast QUIZ_ENDED
-            System.out.println("🎯 Quiz completed, broadcasting final results");
-            
+           
             messagingTemplate.convertAndSend(
                 "/topic/quiz/" + sessionCode,
                 Map.of(
@@ -183,8 +172,7 @@ public class QuizWebSocketController {
                 )
             );
             
-            System.out.println("✅ Quiz ended - all questions completed");
-            
+           
         } catch (Exception e) {
             System.err.println("❌ Next question error: " + e.getMessage());
             e.printStackTrace();
@@ -209,8 +197,6 @@ public class QuizWebSocketController {
             @Payload SubmitAnswerRequest request) {
         
         try {
-            System.out.println("📝 Answer submitted: " + request.getParticipantId());
-            System.out.print("answer"+request.getAnswer());
             SubmitAnswerResponse response = sessionService.submitAnswer(request);
             
             // Broadcast CẬP NHẬT SỐ NGƯỜI ĐÃ TRẢ LỜI
@@ -223,7 +209,6 @@ public class QuizWebSocketController {
                 )
             );
             
-            System.out.println("✅ Answer recorded: " + response.getTotalAnswered() + "/" + response.getTotalParticipants());
             
         } catch (Exception e) {
             System.err.println("❌ Submit answer error: " + e.getMessage());
@@ -237,8 +222,7 @@ public class QuizWebSocketController {
     @MessageMapping("/quiz/{sessionCode}/end-question")
     public void endQuestion(@DestinationVariable String sessionCode) {
         try {
-            System.out.println("🏁 Ending question for: " + sessionCode);
-            
+           
             QuestionResultResponse result = sessionService.endQuestion(sessionCode);
             
             // Broadcast KẾT QUẢ + ĐÁNH GIÁ đến TẤT CẢ
@@ -252,7 +236,6 @@ public class QuizWebSocketController {
                 )
             );
             
-            System.out.println("✅ Question ended, results sent");
             
         } catch (Exception e) {
             System.err.println("❌ End question error: " + e.getMessage());
@@ -266,8 +249,6 @@ public class QuizWebSocketController {
     @MessageMapping("/quiz/{sessionCode}/show-leaderboard")
     public void showLeaderboard(@DestinationVariable String sessionCode) {
         try {
-            System.out.println("📊 Showing leaderboard: " + sessionCode);
-            
             List<ParticipantInfo> participants = sessionService.getParticipants(sessionCode);
             
             // Sort by score (cao → thấp)
@@ -282,7 +263,6 @@ public class QuizWebSocketController {
                 )
             );
             
-            System.out.println("✅ Leaderboard sent");
             
         } catch (Exception e) {
             System.err.println("❌ Leaderboard error: " + e.getMessage());
@@ -296,8 +276,7 @@ public class QuizWebSocketController {
     @MessageMapping("/quiz/{sessionCode}/end-quiz")
     public void endQuiz(@DestinationVariable String sessionCode) {
         try {
-            System.out.println("🎯 Ending quiz: " + sessionCode);
-            
+           
             SessionInfo session = sessionService.getSession(sessionCode);
             session.setStatus(SessionStatus.FINISHED);
             sessionService.saveSession(sessionCode, session);
@@ -316,7 +295,6 @@ public class QuizWebSocketController {
                 )
             );
             
-            System.out.println("✅ Quiz ended");
             
         } catch (Exception e) {
             System.err.println("❌ End quiz error: " + e.getMessage());
@@ -330,6 +308,5 @@ public class QuizWebSocketController {
     @MessageMapping("/quiz/ping")
     public void ping() {
         messagingTemplate.convertAndSend("/topic/quiz/test", Map.of("message", "PONG"));
-        System.out.println("✅ Ping received, sent PONG");
-    }
+        }
 }

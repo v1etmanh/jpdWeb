@@ -24,7 +24,7 @@ public class TtsController {
             @RequestParam String text,
             @RequestParam(defaultValue = "ja-JP") String lang) {
 
-        try { System.out.print("da dc ket noi");
+        try { 
             // Mã hóa văn bản cho URL
             String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
             String googleTtsUrl = "https://translate.google.com/translate_tts?ie=UTF-8" +

@@ -74,7 +74,7 @@ public List<ModuleContent> updateCourseMaterial(List<ModuleContent> m,long kahoo
 
     // 8️⃣ XÓA các bản ghi cũ trước
     if (!idsToDelete.isEmpty()) {
-        System.out.println("Deleting IDs: " + idsToDelete);
+       
         
         this.moduleContentRepository.deleteAllById(idsToDelete);
         this.moduleContentRepository.flush();
@@ -86,7 +86,7 @@ public List<ModuleContent> updateCourseMaterial(List<ModuleContent> m,long kahoo
     
     // 9️⃣ INSERT tất cả
     
-    System.out.println("Inserting " + toInsert.size() + " records");
+   
     List<ModuleContent>mds=  (List<ModuleContent>) moduleContentRepository.saveAll(toInsert);
     return mds;
 }

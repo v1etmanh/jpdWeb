@@ -83,8 +83,7 @@ public class ModuleContentService {
 
 	    // 8️⃣ XÓA các bản ghi cũ trước
 	    if (!idsToDelete.isEmpty()) {
-	        System.out.println("Deleting IDs: " + idsToDelete);
-	        
+	       
 	        this.moduleContentRepository.deleteAllById(idsToDelete);
 	        this.moduleContentRepository.flush();
 	         // ⚠️ Quan trọng: Force delete ngay
@@ -95,7 +94,7 @@ public class ModuleContentService {
 	    
 	    // 9️⃣ INSERT tất cả
 	    
-	    System.out.println("Inserting " + toInsert.size() + " records");
+	   
 	    List<ModuleContent>mds=  (List<ModuleContent>) moduleContentRepository.saveAll(toInsert);
 	    return mds;
 	}

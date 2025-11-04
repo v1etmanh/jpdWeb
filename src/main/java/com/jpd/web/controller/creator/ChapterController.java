@@ -63,7 +63,7 @@ public class ChapterController {
     @PutMapping("/{chapterID}/update")
     public ResponseEntity<?>updateChapter(@RequestParam String name ,HttpServletRequest request,
     		@PathVariable("chapterID")long chapterId){
-    	System.out.print("d");
+  
     	Long creatorId =RequestAttributeExtractor.extractCreatorId(request);
     	this.chapterService.updateChapter(creatorId, name, chapterId);
     	return ResponseEntity.noContent().build();

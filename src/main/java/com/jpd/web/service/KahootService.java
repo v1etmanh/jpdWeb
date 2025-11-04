@@ -34,7 +34,7 @@ public class KahootService {
 	private ModuleContentRepository moduleContentRepository;
 	public List<KahootDto> retrieveAll(long creatorId){
 		Creator c=this.validationResources.validateCreatorExists(creatorId);
-		System.out.print("d");
+		
 		return c.getKahootListFunctions().stream().map(e->KahootTransform.transformToKahootDto(e))
 				.collect(Collectors.toList());
 		

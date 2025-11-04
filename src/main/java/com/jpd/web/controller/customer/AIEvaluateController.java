@@ -54,9 +54,9 @@ public ResponseEntity<SemanticResult> evaluateAnswer(
 }
 @PostMapping("/evaluateWriting")
 public ResponseEntity<?> evaluateWritingText(@RequestBody WritingTextEvaluateForm form)
-{ System.out.print(form.getWritingText());
+{ 
 	WritingScores score=this.aiService.evaluateWritingSimple(form.getWritingText(), form.getLanguage());
-	System.out.print(score);
+	
 	return ResponseEntity.ok(score);
 }
 }

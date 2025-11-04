@@ -40,7 +40,7 @@ public class DictionaryController {
     public ResponseEntity<RememberWordDto> addDictionary(@AuthenticationPrincipal Jwt jwt,@RequestBody RememberWordDto rememberWordDto){
         log.info("Post add new remember word customer {} , remember word :{}",rememberWordDto.getDescription());
        String email=jwt.getClaimAsString("email");
-       System.out.print(rememberWordDto);
+     
         RememberWordDto wordDto= dictionaryService.addRememberWord(email,rememberWordDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(wordDto);
     }

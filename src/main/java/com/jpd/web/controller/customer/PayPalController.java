@@ -37,7 +37,7 @@ public class PayPalController {
             @AuthenticationPrincipal Jwt jwt) {
         try {
             // Lấy customer ID từ JWT
-        	System.out.print(courseId);
+       
             long customerId = customerRepository
                 .findByEmail(jwt.getClaimAsString("email"))
                 .orElseThrow(() -> new RuntimeException("Customer not found"))
@@ -48,7 +48,7 @@ public class PayPalController {
             
             // Tìm approval URL
             String approvalUrl = extractApprovalUrl(order);
-             System.out.print("d");
+             
             return ResponseEntity.ok().body(Map.of(
                 "status", "success",
                 "order_id", order.id(),

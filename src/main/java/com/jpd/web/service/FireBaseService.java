@@ -27,7 +27,7 @@ public class FireBaseService {
 	    
 	    public String uploadFile(MultipartFile file,TypeOfFile moduleContent) throws IOException {
 	        try {
-	        	System.out.print("hello22");
+	      
 	            // Lấy bucket từ StorageClient
 	            Bucket bucket = storageClient.bucket();
 	            
@@ -43,7 +43,7 @@ public class FireBaseService {
 	                bucket.getName(),
 	                fileName.replace("/", "%2F")
 	            );
-	            System.out.print(downloadUrl);
+	           
 	            return downloadUrl;
 	            
 	        } catch (Exception e) {
@@ -91,8 +91,7 @@ public class FireBaseService {
 	            deleteImgByUrl(img.getUrl());
 	            pendingImageRepository.delete(img);
 	        }
-	        System.out.println("✅ Cleaned " + oldImages.size() + " expired pending images");
-	    }
+	         }
 	    
 	    public byte[] getFileFromUrl(String url) throws IOException {
 	        try {

@@ -32,7 +32,7 @@ private CustomerService customerSer;
 @GetMapping("/account_infor")
 public ResponseEntity<UserInfoDto> getCustomerAccountInf(@AuthenticationPrincipal Jwt jwt){
 	UserInfoDto c=this.customerSer.getOrCreateAccount(jwt);
-	System.out.print("recieve");
+	
 	return ResponseEntity.status(HttpStatus.OK).body(c);
 }
 @PostMapping(value="/upload_profile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

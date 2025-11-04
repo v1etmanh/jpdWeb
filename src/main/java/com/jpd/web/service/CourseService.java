@@ -70,7 +70,7 @@ public class CourseService {
 
 	private void validatePaidCourseRequirements(Creator creator, CourseFormDto courseFormDto) {
 		// Check creator status
-		System.out.print(creator.getStatus());
+		
 		if (creator.getStatus() != Status.SUCCESS) {
 			log.warn("Creator {} attempted to create paid course without verified status", creator.getCreatorId());
 			throw new UnauthorizedException(

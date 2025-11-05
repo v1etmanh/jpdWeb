@@ -1,5 +1,7 @@
 package com.jpd.web.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -41,4 +43,9 @@ int countFeedbacksByCourseId(@Param("courseId") Long courseId);
        "JOIN f.enrollment e " +
        "WHERE e.course.courseId = :courseId")
 Double getAverageRatingByCourseId(@Param("courseId") Long courseId);
+
+    Page<Course> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+            String name, String description, Pageable pageable
+    );
 }
+

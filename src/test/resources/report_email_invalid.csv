@@ -1,0 +1,3 @@
+emailToken,courseId,type,detail,expected,expectedMsg
+__NULL__,200,INAPPROPRIATE_CONTENT,abc,NULL,email required
+,200,SCAM_OR_FRAUD,def,EMPTY,email required

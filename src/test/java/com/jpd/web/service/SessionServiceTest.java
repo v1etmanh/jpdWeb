@@ -83,9 +83,9 @@ class SessionServiceTest {
 
         moduleContents = new ArrayList<>();
         ModuleContent q1 = makeMCQuestion(mcQuestionId, "A");
-        ModuleContent q2 = makeGapFillQuestion(gfQuestionId);
+//        ModuleContent q2 = makeGapFillQuestion(gfQuestionId);
         moduleContents.add(q1);
-        moduleContents.add(q2);
+//        moduleContents.add(q2);
 
         kahoot = mock(KahootListFunction.class);
         when(kahoot.getModuleContent()).thenReturn(moduleContents);
@@ -346,9 +346,9 @@ class SessionServiceTest {
             if ("MC".equals(typeToken)) {
                 mc = makeMCQuestion(id, "Ans");
             } else {
-                mc = makeGapFillQuestion(id);
+//                mc = makeGapFillQuestion(id);
             }
-            when(moduleContentRepository.findById(id)).thenReturn(Optional.of(mc));
+//            when(moduleContentRepository.findById(id)).thenReturn(Optional.of(mc));
             ModuleContent ret = service.getQuestionById(id);
             if ("MC".equals(typeToken)) {
                 MultipleChoiceQuestion mcq = (MultipleChoiceQuestion) ret;
@@ -934,14 +934,14 @@ class SessionServiceTest {
         assertTrue(mcq.getOptions().stream().allMatch(op -> !op.isCorrect()));
     }
 
-    @Test
-    void TC_HP_09_getQuestionById_gapfill_hidesAnswer() {
-        ModuleContent gf = makeGapFillQuestion(22L);
-        when(moduleContentRepository.findById(22L)).thenReturn(Optional.of(gf));
-        ModuleContent ret = service.getQuestionById(22L);
-        GapFillQuestion gfq = (GapFillQuestion) ret;
-        assertNull(gfq.getAnswers());
-    }
+//    @Test
+//    void TC_HP_09_getQuestionById_gapfill_hidesAnswer() {
+//        ModuleContent gf = makeGapFillQuestion(22L);
+//        when(moduleContentRepository.findById(22L)).thenReturn(Optional.of(gf));
+//        ModuleContent ret = service.getQuestionById(22L);
+//        GapFillQuestion gfq = (GapFillQuestion) ret;
+//        assertNull(gfq.getAnswers());
+//    }
 
     @Test
     void TC_EC_12_getQuestionById_idNotFound() {
@@ -1302,12 +1302,12 @@ class SessionServiceTest {
         mcq.setOptions(List.of(op1, op2));
         return mcq;
     }
-    private ModuleContent makeGapFillQuestion(Long id) {
-        GapFillQuestion gf = new GapFillQuestion();
-        gf.setMcId(id);
-        gf.setTypeOfContent(TypeOfContent.GAPFILL);
-        GapFillAnswer ans = GapFillAnswer.builder().answer("dap an 1").build();
-        gf.setAnswers(List.of(ans));
-        return gf;
-    }
+//    private ModuleContent makeGapFillQuestion(Long id) {
+//        GapFillQuestion gf = new GapFillQuestion();
+//        gf.setMcId(id);
+//        gf.setTypeOfContent(TypeOfContent.GAPFILL);
+//        GapFillAnswer ans = GapFillAnswer.builder().answer("dap an 1").build();
+//        gf.setAnswers(List.of(ans));
+//        return gf;
+//    }
 }

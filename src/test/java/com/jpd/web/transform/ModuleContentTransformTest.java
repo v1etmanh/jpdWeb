@@ -140,7 +140,7 @@ class ModuleContentTransformTest {
         StandardizedContentDto dto = ModuleContentTransform.transform(v);
         List<StandardizedAnswerDto> answers = ModuleContentTransform.extractAnswers(v);
 
-        assertEquals("httpsexample.comvideo.mp4", dto.getContent());
+        assertEquals("example.com.video.mp4", dto.getContent());
         assertTrue(answers.isEmpty());
     }
 
@@ -153,7 +153,7 @@ class ModuleContentTransformTest {
         StandardizedContentDto dto = ModuleContentTransform.transform(pdf);
         List<StandardizedAnswerDto> answers = ModuleContentTransform.extractAnswers(pdf);
 
-        assertEquals("httpsexample.comdoc.pdf", dto.getContent());
+        assertEquals("example.com.doc.pdf", dto.getContent());
         assertTrue(answers.isEmpty());
     }
 
@@ -179,7 +179,7 @@ class ModuleContentTransformTest {
         StandardizedContentDto dto = ModuleContentTransform.transform(sp);
         List<StandardizedAnswerDto> answers = ModuleContentTransform.extractAnswers(sp);
 
-        assertEquals("httpsexample.compic.jpg", dto.getContent());
+        assertEquals("example.com.pic.jpg", dto.getContent());
         assertTrue(answers.isEmpty());
     }
 

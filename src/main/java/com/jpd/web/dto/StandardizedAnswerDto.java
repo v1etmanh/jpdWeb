@@ -12,7 +12,5 @@ import lombok.NoArgsConstructor;
 public class StandardizedAnswerDto {
     private String answerText; // nội dung đáp án
     private boolean correct;   // đánh dấu đúng/sai
-
-
 }
 

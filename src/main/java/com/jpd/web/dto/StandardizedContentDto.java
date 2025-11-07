@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class StandardizedContentDto {
     private String lang;      // Ngôn ngữ (nếu có)
     private String content;   // Nội dung sau khi chuẩn hóa (removed special chars, HTML...)
-
 }

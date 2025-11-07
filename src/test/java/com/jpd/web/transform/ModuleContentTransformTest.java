@@ -212,5 +212,4 @@ class ModuleContentTransformTest {
         assertEquals(2, answers.size());
         assertTrue(answers.stream().anyMatch(a -> a.getAnswerText().equals("Tokyo") && a.isCorrect()));
     }
-
 }

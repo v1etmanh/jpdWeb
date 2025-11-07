@@ -164,4 +164,5 @@ public class ModuleContentTransform {
                 .replaceAll("\\.{2,}", ".")
                 .trim();
     }
+
 }

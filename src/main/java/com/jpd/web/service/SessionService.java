@@ -2,9 +2,11 @@ package com.jpd.web.service;
 import com.jpd.web.model.*;
 import com.jpd.web.repository.KahootRepository;
 import com.jpd.web.repository.ModuleContentRepository;
+import com.jpd.web.service.utils.ValidationResources;
 import com.jpd.web.dto.*;
 import com.jpd.web.exception.ModuleContentNotFoundException;
 import com.jpd.web.exception.QuizCompletedException;
+import com.jpd.web.exception.UnauthorizedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -19,13 +21,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class SessionService {
-    
+
     @Autowired
     private KahootRepository kahootRepository;
-    
+    @Autowired
+    private ValidationResources validationResources;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-    
+
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -33,26 +36,28 @@ public class SessionService {
     /**
      * Tạo session mới
      */
-    public CreateSessionResponse createSession(CreateSessionRequest request) {
-        // 1. Lấy Kahoot từ database
+    public CreateSessionResponse createSession(CreateSessionRequest request, long creatorId) {
+        // 1. Lấy Kahoot từ database,long
         KahootListFunction kahoot = kahootRepository.findById(request.getKahootId())
             .orElseThrow(() -> new RuntimeException("Kahoot not found with id: " + request.getKahootId()));
-        
+        Creator c=this.validationResources.validateCreatorExists(creatorId);
+        if(kahoot.getCreator().getCreatorId()!=creatorId)
+        	throw new UnauthorizedException("tài nguyên không thuộc về mày");
         // 2. Lọc chỉ lấy câu hỏi Multiple Choice và GapFill
         List<Long> questionIds = kahoot.getModuleContent().stream()
-            .filter(mc -> mc.getTypeOfContent() == TypeOfContent.MULTIPLE_CHOICE 
+            .filter(mc -> mc.getTypeOfContent() == TypeOfContent.MULTIPLE_CHOICE
                        || mc.getTypeOfContent() == TypeOfContent.GAPFILL)
             .map(ModuleContent::getMcId)
             .collect(Collectors.toList());
-        
+
         if (questionIds.isEmpty()) {
             throw new RuntimeException("No valid questions (Multiple Choice or GapFill) found in this Kahoot");
         }
-        
+
         // 3. Generate session code và ID
         String sessionCode = generateUniqueSessionCode();
         String sessionId = UUID.randomUUID().toString();
-        
+
         // 4. Tạo SessionInfo
         SessionInfo session = SessionInfo.builder()
             .sessionId(sessionId)
@@ -61,7 +66,7 @@ public class SessionService {
             .title(kahoot.getTitle())
             .questionIds(questionIds)
             .totalQuestions(questionIds.size())
-            .teacherId(request.getTeacherId())
+            .teacherId(creatorId)
             .teacherName(request.getTeacherName())
             .status(SessionStatus.WAITING)
             .currentQuestionIndex(-1)
@@ -76,25 +81,25 @@ public class SessionService {
             .randomizeQuestions(false)
             .randomizeOptions(true)
             .build();
-        
+
         // 5. Lưu vào Redis (TTL 3 giờ)
         try {
             String sessionKey = "quiz:session:" + sessionCode;
             String sessionJson = objectMapper.writeValueAsString(session);
             stringRedisTemplate.opsForValue().set(sessionKey, sessionJson, 3, TimeUnit.HOURS);
-            
+
             // Tạo Set để tracking participants
             String participantsKey = "quiz:session:" + sessionCode + ":participants";
             stringRedisTemplate.delete(participantsKey); // Clear nếu có
-            
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to save session to Redis: " + e.getMessage(), e);
         }
-        
+
         // 6. Generate QR code URL (dùng API public)
-        String joinUrl = "http://localhost:3000/join/" + sessionCode; // Thay bằng domain thật
+        String joinUrl = "http://localhost:3000/creator/class/kahoot/studentJoin/" + sessionCode; // Thay bằng domain thật
         String qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + joinUrl;
-        
+
         // 7. Return response
         return CreateSessionResponse.builder()
             .sessionCode(sessionCode)
@@ -105,32 +110,32 @@ public class SessionService {
             .totalQuestions(questionIds.size())
             .build();
     }
-    
+
     /**
      * Join session
      */
     public ParticipantInfo joinSession(JoinSessionRequest request) {
         String sessionCode = request.getSessionCode();
         String participantName = request.getParticipantName();
-        
+
         // 1. Kiểm tra session có tồn tại không
         SessionInfo session = getSession(sessionCode);
         if (session == null) {
             throw new RuntimeException("Session not found with code: " + sessionCode);
         }
-        
+
         // 2. Kiểm tra session status
         if (session.getStatus() == SessionStatus.FINISHED) {
             throw new RuntimeException("This quiz has already finished");
         }
-        
+
         if (session.getStatus() == SessionStatus.ACTIVE) {
             throw new RuntimeException("Quiz already started. Cannot join now.");
         }
-        
+
         // 3. Generate participant ID
         String participantId = UUID.randomUUID().toString();
-        
+
         // 4. Tạo ParticipantInfo
         ParticipantInfo participant = ParticipantInfo.builder()
             .participantId(participantId)
@@ -139,29 +144,29 @@ public class SessionService {
             .joinedAt(LocalDateTime.now())
             .currentScore(0)
             .build();
-        
+
         // 5. Lưu participant vào Redis
         try {
             // Add vào Set participants
             String participantsKey = "quiz:session:" + sessionCode + ":participants";
             stringRedisTemplate.opsForSet().add(participantsKey, participantId);
-            
+
             // Lưu participant info
             String participantKey = "quiz:session:" + sessionCode + ":participant:" + participantId;
             String participantJson = objectMapper.writeValueAsString(participant);
             stringRedisTemplate.opsForValue().set(participantKey, participantJson, 3, TimeUnit.HOURS);
-            
+
             // Update total participants count
             session.setTotalParticipants(session.getTotalParticipants() + 1);
             saveSession(sessionCode, session);
-            
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to join session: " + e.getMessage(), e);
         }
-        
+
         return participant;
     }
-    
+
     /**
      * Get session by code
      */
@@ -169,17 +174,17 @@ public class SessionService {
         try {
             String sessionKey = "quiz:session:" + sessionCode;
             String sessionJson = stringRedisTemplate.opsForValue().get(sessionKey);
-            
+
             if (sessionJson == null) {
                 return null;
             }
-            
+
             return objectMapper.readValue(sessionJson, SessionInfo.class);
         } catch (Exception e) {
             throw new RuntimeException("Failed to get session: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Save session to Redis
      */
@@ -192,7 +197,7 @@ public class SessionService {
             throw new RuntimeException("Failed to save session: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Get all participants in session
      */
@@ -200,28 +205,28 @@ public class SessionService {
         try {
             String participantsKey = "quiz:session:" + sessionCode + ":participants";
             Set<String> participantIds = stringRedisTemplate.opsForSet().members(participantsKey);
-            
+
             if (participantIds == null || participantIds.isEmpty()) {
                 return new ArrayList<>();
             }
-            
+
             List<ParticipantInfo> participants = new ArrayList<>();
             for (String participantId : participantIds) {
                 String participantKey = "quiz:session:" + sessionCode + ":participant:" + participantId;
                 String participantJson = stringRedisTemplate.opsForValue().get(participantKey);
-                
+
                 if (participantJson != null) {
                     ParticipantInfo participant = objectMapper.readValue(participantJson, ParticipantInfo.class);
                     participants.add(participant);
                 }
             }
-            
+
             return participants;
         } catch (Exception e) {
             throw new RuntimeException("Failed to get participants: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Generate unique 6-character session code
      */
@@ -229,7 +234,7 @@ public class SessionService {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();
         String code;
-        
+
         // Retry nếu code đã tồn tại
         do {
             StringBuilder sb = new StringBuilder();
@@ -238,10 +243,10 @@ public class SessionService {
             }
             code = sb.toString();
         } while (getSession(code) != null);
-        
+
         return code;
     }
-    
+
     /**
      * Delete session (cleanup)
      */
@@ -249,7 +254,7 @@ public class SessionService {
         try {
             // Delete session
             stringRedisTemplate.delete("quiz:session:" + sessionCode);
-            
+
             // Delete participants
             Set<String> participantIds = stringRedisTemplate.opsForSet().members("quiz:session:" + sessionCode + ":participants");
             if (participantIds != null) {
@@ -258,13 +263,13 @@ public class SessionService {
                 }
             }
             stringRedisTemplate.delete("quiz:session:" + sessionCode + ":participants");
-            
+
             // Delete other related keys
             Set<String> keys = stringRedisTemplate.keys("quiz:session:" + sessionCode + "*");
             if (keys != null && !keys.isEmpty()) {
                 stringRedisTemplate.delete(keys);
             }
-            
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete session: " + e.getMessage(), e);
         }
@@ -287,7 +292,7 @@ public class SessionService {
             }
 
             // 3. Kiểm tra thời gian (nếu đã hết giờ thì reject)
-            if (session.getQuestionEndTime() != null && 
+            if (session.getQuestionEndTime() != null &&
                 LocalDateTime.now().isAfter(session.getQuestionEndTime())) {
                 throw new RuntimeException("Time's up! Cannot submit answer");
             }
@@ -313,7 +318,7 @@ public class SessionService {
             String answersKey = "quiz:session:" + sessionCode + ":question:" + questionId + ":answers";
             String tempAnswerJson = objectMapper.writeValueAsString(tempAnswer);
             stringRedisTemplate.opsForHash().put(answersKey, participantId, tempAnswerJson);
-            
+
             // Set TTL cho key này
             stringRedisTemplate.expire(answersKey, 3, TimeUnit.HOURS);
 
@@ -352,7 +357,7 @@ public class SessionService {
         else {
         	throw new ModuleContentNotFoundException(questionId);
         }
-       
+
     }
     public QuestionResultResponse endQuestion(String sessionCode) {
         try {
@@ -389,7 +394,7 @@ public class SessionService {
 
                 // Kiểm tra đáp án
                 boolean correct = checkAnswer(question, tempAnswer.getAnswer());
-                
+
                 // Tính điểm dựa trên thời gian trả lời
                 int points = calculatePoints(correct, session, tempAnswer.getSubmittedAt());
 
@@ -397,9 +402,9 @@ public class SessionService {
                 String participantKey = "quiz:session:" + sessionCode + ":participant:" + participantId;
                 String participantJson = stringRedisTemplate.opsForValue().get(participantKey);
                 ParticipantInfo participant = objectMapper.readValue(participantJson, ParticipantInfo.class);
-                
+
                 participant.setCurrentScore(participant.getCurrentScore() + points);
-                
+
                 String updatedJson = objectMapper.writeValueAsString(participant);
                 stringRedisTemplate.opsForValue().set(participantKey, updatedJson, 3, TimeUnit.HOURS);
 
@@ -445,15 +450,15 @@ public class SessionService {
                 }
             }
             return false;
-            
+
         } else if (question.getTypeOfContent() == TypeOfContent.GAPFILL) {
             GapFillQuestion gfq = (GapFillQuestion) question;
             List<String> userAnswers = Arrays.asList(answer.split(","));
-            
+
             if (userAnswers.size() != gfq.getAnswers().size()) {
                 return false;
             }
-            
+
             for (int i = 0; i < userAnswers.size(); i++) {
                 if (!userAnswers.get(i).trim().equalsIgnoreCase(
                         gfq.getAnswers().get(i).getAnswer().trim())) {
@@ -462,7 +467,7 @@ public class SessionService {
             }
             return true;
         }
-        
+
         return false;
     }
 
@@ -486,7 +491,7 @@ public class SessionService {
         // Trả lời ở giây cuối = 500 điểm
         double ratio = 1.0 - ((double) secondsTaken / timeLimit);
         ratio = Math.max(0, Math.min(1, ratio)); // Clamp [0, 1]
-        
+
         return (int) (500 + (ratio * 500));
     }
 
@@ -509,47 +514,47 @@ public class SessionService {
         }
         return null;
     }
-    
-        
+
+
         // ... existing code
-        
+
         /**
          * Bắt đầu câu hỏi tiếp theo
          */
         public StartQuestionResponse startNextQuestion(String sessionCode) {
             SessionInfo session = getSession(sessionCode);
-            
+
             if (session == null) {
                 throw new RuntimeException("Session not found");
             }
-            
+
             // Tăng index
             int nextIndex = session.getCurrentQuestionIndex() + 1;
-            
+
             // Kiểm tra còn câu hỏi không
             if (nextIndex >= session.getQuestionIds().size()) {
             	session.setStatus(SessionStatus.FINISHED);
                 saveSession(sessionCode, session);
-                
+
                 // Lấy final leaderboard
                 List<ParticipantInfo> participants = getParticipants(sessionCode);
                 participants.sort((a, b) -> Integer.compare(b.getCurrentScore(), a.getCurrentScore()));
-                
+
                 // Broadcast QUIZ_ENDED (cần inject SimpMessagingTemplate vào SessionService)
                 // Hoặc throw một custom exception để controller xử lý
                 throw new QuizCompletedException("Quiz completed", participants);
-               
+
             }
-            
+
             Long questionId = session.getQuestionIds().get(nextIndex);
-            
+
             // Lấy question từ DB
             ModuleContent question = moduleContentRepository.findById(questionId)
                 .orElseThrow(() -> new RuntimeException("Question not found"));
-            
+
             Integer timeLimit = 30;
             LocalDateTime now = LocalDateTime.now();
-            
+
             // Update session
             session.setCurrentQuestionIndex(nextIndex);
             session.setCurrentQuestionId(questionId);
@@ -559,9 +564,9 @@ public class SessionService {
             session.setAcceptingAnswers(true);
             session.setCurrentAnswers(0);
             session.setQuestionTimeLimit(timeLimit);
-            
+
             saveSession(sessionCode, session);
-            
+
             return StartQuestionResponse.builder()
                 .questionId(questionId)
                 .questionNumber(nextIndex + 1)
@@ -571,6 +576,6 @@ public class SessionService {
                 .serverTime(now)
                 .build();
         }
-    
-    
+
+
 }

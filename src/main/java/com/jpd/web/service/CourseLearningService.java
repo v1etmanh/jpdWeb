@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
 
@@ -47,26 +48,26 @@ public class CourseLearningService {
         this.courseController = courseController;
     }
 	@Transactional
-	
-	public CourseContentDto getCourseById(long courseId, String email )  {
 
-		log.info("Retrieving course {} for creator {}", courseId, email);
+    public CourseContentDto getCourseById(long courseId, String email) {
 
-		
-		Course course = validationResources.validateCustomerWithCourse(email,courseId);
-      if(course.isPublic()==false) throw new UnauthorizedException("this course is not exist");
-		course.getChapters().forEach(chapter -> {
-			chapter.getModules();
+        log.info("Retrieving course {} for creator {}", courseId, email);
+
+
+        Course course = validationResources.validateCustomerWithCourse(email, courseId);
+        if (course.isPublic() == false) throw new UnauthorizedException("this course is not exist");
+        course.getChapters().forEach(chapter -> {
+            chapter.getModules();
 			/*.forEach(module -> {
 
 				List<ModuleContent> contents = this.moduleContentRepository.findByModule(module);
 
 				module.setModuleContent(contents);
 			});*/
-		});
-		CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
-		return cdto;
-	}
+        });
+        CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
+        return cdto;
+    }
 	@Transactional
 	public List<ModuleContent>getModuleContentsByTypeAndModuleId( TypeOfContent type, Long moduleId, Long chapterId, Long courseId, String email){
 		Module module = validationResources.validateModuleContentOwnerShip(moduleId, chapterId, courseId, email);

@@ -8,11 +8,8 @@ import com.jpd.web.dto.CourseContentDto;
 import com.jpd.web.dto.CourseFormDto;
 import com.jpd.web.dto.CourseInfDto;
 import com.jpd.web.dto.CourseLearningCardDto;
-import com.jpd.web.model.AccessMode;
-import com.jpd.web.model.Chapter;
-import com.jpd.web.model.Course;
-import com.jpd.web.model.Enrollment;
-import com.jpd.web.model.ModuleContent;
+import com.jpd.web.model.*;
+import com.jpd.web.model.Module;
 
 public class CourseTransForm {
 public static Course transformFromCourseFormDto(CourseFormDto courseFormDto) {
@@ -100,16 +97,27 @@ public static CourseInfDto transformToCourseInfDto(Course course, int numberS, d
 			.language(course.getLanguage())
 			.build();
 }
+    public static CourseLearningCardDto transformToCourseLearningCardDto(Course course) {
+        return CourseLearningCardDto.builder()
+                .course_img(course.getUrlImg())
+                .course_name(course.getName())
+                .courseId(course.getCourseId())
+                .build();
+    }
 public static CourseLearningCardDto transformToCourseLearningCardDto(Course course,long numerberFinishContent) {
-	 AtomicInteger total = new AtomicInteger(0);
+	 int total=0;
+	 
+	 for(int i=0;i<course.getChapters().size();i++)
+	 {List
+		 <Chapter>chapters=course.getChapters();
+		 for(int j=0;j<chapters.get(i).getModules().size();j++)
+		 {Module md=chapters.get(i).getModules().get(j);
+			 total+=md.getContentTypes().size();
+		 }
+	 }
 
-	    course.getChapters().forEach(c -> {
-	        c.getModules().forEach(m -> {
-	            total.addAndGet(m.getContentTypes().size());
-	        });
-	    });
-
-	    double progress = total.get() == 0 ? 0 : (double) numerberFinishContent / total.get();
+	    double progress = (double) numerberFinishContent / total * 100;
+	    System.out.print("numb"+numerberFinishContent+"d"+total);
 return CourseLearningCardDto.builder()
 .course_img(course.getUrlImg())
 .course_name(course.getName())

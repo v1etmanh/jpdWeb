@@ -1,0 +1,6 @@
+courseId,email,code,accessMode,existingEnrollment,expectedResult,expectedException
+1,test1@example.com,join123,PRIVATE,false,true,
+2,test2@example.com,wrong,PRIVATE,false,false,
+3,test3@example.com,any,PAID,false,,CourseNotFoundException
+4,test4@example.com,join123,PRIVATE,true,,EnrollmentExistException
+5,test5@example.com,join123,PRIVATE,false,true,

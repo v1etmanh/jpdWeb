@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateSessionRequest {
     private Long kahootId;
-    private Long teacherId;
+  
     private String teacherName;
 }

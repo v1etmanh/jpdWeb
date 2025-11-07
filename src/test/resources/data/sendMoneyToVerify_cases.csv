@@ -1,0 +1,6 @@
+testCase,creatorId,exists,hasEmail,isMax,createThrows,expectedError
+"Creator chưa có email",1,true,false,false,false,""
+"Creator đã có email",2,true,true,false,false,"PaymentEmailAlreadyExistsException"
+"Vượt giới hạn payout",3,true,false,true,false,"PayoutLimitExceededException"
+"PayPal gửi lỗi",4,true,false,false,true,"RuntimeException"
+"Creator không tồn tại",999,false,false,false,false,"CreatorNotFoundException"

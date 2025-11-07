@@ -1,0 +1,5 @@
+testName,courseId,email,providedKey,expectSuccess,expectExceptionClass
+"Public enroll OK",100,u@domain.com,,true,
+"Private enroll wrong key",101,u@domain.com,WRONG,false,Exception
+"Private enroll correct key",101,u@domain.com,JOIN123,true,
+"Course not exist",999,u@domain.com,,false,CourseNotFoundException

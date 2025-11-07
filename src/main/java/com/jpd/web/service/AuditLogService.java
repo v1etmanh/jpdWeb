@@ -16,8 +16,26 @@ public class AuditLogService {
 
     private final AuditLogRepository auditLogRepository;
 
+
+
+    public List<AuditLog> getLogsByCreator(Long creatorId) {
+        return auditLogRepository.findByTargetCreatorIdOrderByTimestampDesc(creatorId);
+    }
+
+
+
     @Transactional
     public void logAction(String actionType, Long targetCreatorId, String adminEmail, String reason) {
+        if (actionType == null || actionType.isBlank()) {
+            throw new IllegalArgumentException("Action cannot be null");
+        }
+        if (targetCreatorId == null) {
+            throw new IllegalArgumentException("Entity ID cannot be null");
+        }
+        if (adminEmail == null || adminEmail.isBlank()) {
+            throw new IllegalArgumentException("Performed by cannot be empty");
+        }
+
         AuditLog auditLog = AuditLog.builder()
                 .actionType(actionType)
                 .targetCreatorId(targetCreatorId)
@@ -29,11 +47,8 @@ public class AuditLogService {
         log.debug("Audit log created: {} for creator {} by admin {}", actionType, targetCreatorId, adminEmail);
     }
 
-    public List<AuditLog> getLogsByCreator(Long creatorId) {
-        return auditLogRepository.findByTargetCreatorIdOrderByTimestampDesc(creatorId);
-    }
-
     public List<AuditLog> getLogsByAdmin(String adminEmail) {
         return auditLogRepository.findByAdminEmailOrderByTimestampDesc(adminEmail);
     }
 }
+

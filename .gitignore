@@ -33,4 +33,5 @@ build/
 .vscode/
 # Firebase secret key
 src/main/resources/firebase-service-account.json
+src/main/resources/application.properties
 .cursor/

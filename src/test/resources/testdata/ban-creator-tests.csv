@@ -1,0 +1,8 @@
+testCase,creatorId,durationDays,reason,adminEmail,hasCourses,courseCount,shouldSucceed,expectedBanStatus,expectedBannedUntil,shouldBanCourses,expectedError
+ban_permanent_null_duration,1,,Violation policy,admin@test.com,true,3,true,BANNED,NULL,true,
+ban_permanent_zero_duration,2,0,Serious violation,admin@test.com,true,2,true,BANNED,NULL,true,
+ban_temporary_7_days,3,7,Temporary investigation,admin@test.com,true,1,true,BANNED,NOT_NULL,true,
+ban_temporary_30_days,4,30,Severe violation,admin@test.com,true,4,true,BANNED,NOT_NULL,true,
+ban_with_courses,5,14,Multiple issues,admin@test.com,true,5,true,BANNED,NOT_NULL,true,
+ban_no_courses,6,14,Single issue,admin@test.com,false,0,true,BANNED,NOT_NULL,false,
+Creator not found,999,14,Any reason,admin@test.com,false,0,false,BANNED,NOT_NULL,false,Creator not found

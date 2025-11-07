@@ -1,0 +1,6 @@
+sessionExists,statusToken,acceptingToken,endTimeOffsetSec,participantExists,hashPutThrows,expectedErrorSubstr
+N,ACTIVE,Y,10,Y,N,Session not found
+Y,ACTIVE,N,10,Y,Y,Failed to submit answer
+Y,ACTIVE,Y,-1,Y,Y,Failed to submit answer
+Y,ACTIVE,Y,10,N,N,Participant not found
+Y,ACTIVE,Y,10,Y,Y,Failed to submit answer

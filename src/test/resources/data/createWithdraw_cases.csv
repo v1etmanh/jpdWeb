@@ -1,0 +1,6 @@
+testCase,creatorId,exists,status,paymentEmail,certCount,balance,amount,payoutThrow,expectedError
+"Creator valid - success",1,true,SUCCESS,p@p.com,1,200,50,false,""
+"Thiếu email",2,true,SUCCESS,,1,200,50,false,"WithdrawException"
+"Thiếu chứng chỉ",3,true,SUCCESS,p@p.com,0,200,50,false,"WithdrawException"
+"Amount vượt balance",4,true,SUCCESS,p@p.com,1,100,150,false,"WithdrawException"
+"PayPal payout lỗi",5,true,SUCCESS,p@p.com,1,200,50,true,"WithdrawException"

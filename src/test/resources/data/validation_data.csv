@@ -1,0 +1,6 @@
+testName,moduleId,chapterId,courseId,creatorId,shouldPass
+Valid_CompleteOwnership,1,10,100,1,true
+Invalid_WrongCreator,1,10,100,999,false
+Invalid_WrongChapter,1,999,100,1,false
+Invalid_WrongCourse,1,10,999,1,false
+Valid_AllCorrect,2,20,200,2,true

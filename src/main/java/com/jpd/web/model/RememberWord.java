@@ -54,7 +54,8 @@ public class RememberWord {
         name = "remember_word_vote",
         joinColumns = @JoinColumn(name = "id")
     )
-    
+   
     private List<Long> vote = new ArrayList<>();
+    private Language language;
 
 }

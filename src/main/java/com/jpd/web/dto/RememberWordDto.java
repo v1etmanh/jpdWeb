@@ -3,6 +3,8 @@ package com.jpd.web.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.jpd.web.model.Language;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -28,7 +30,7 @@ public class RememberWordDto {
 	private List<String> synonyms;
 	@NotEmpty
 	private List<String> example;
-	
+	private Language language;
 	private Integer voteCount; // Số lượng vote
 	private String customerEmail; // Email của người tạo từ
 }

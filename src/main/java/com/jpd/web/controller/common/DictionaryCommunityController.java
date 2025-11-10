@@ -21,7 +21,6 @@ import com.jpd.web.service.CustomerService;
 
 @RestController
 @RequestMapping("/api/dictionary")
-@CrossOrigin(origins = "*")
 public class DictionaryCommunityController {
     
     @Autowired
@@ -66,6 +65,7 @@ public class DictionaryCommunityController {
             @RequestParam(defaultValue = "20") int size) {
         
         try {
+        	
             Page<RememberWordDto> wordsPage = dictionaryService.searchWords(keyword, page, size);
             
             Map<String, Object> response = new HashMap<>();
@@ -77,6 +77,7 @@ public class DictionaryCommunityController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+        	System.out.print(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("error", e.getMessage()));
         }

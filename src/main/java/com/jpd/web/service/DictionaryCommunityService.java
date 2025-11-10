@@ -42,8 +42,8 @@ public class DictionaryCommunityService {
         PageRequest pageRequest = PageRequest.of(page, size);
         
         Page<RememberWord> results = rememberWordRepository
-            .findByWordContainingIgnoreCaseOrMeaningContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-                keyword, keyword, keyword, pageRequest);
+            .searchRememberWords(
+                keyword, pageRequest);
         
         return results.map(this::convertToDto);
     }

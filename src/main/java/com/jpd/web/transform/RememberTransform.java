@@ -1,6 +1,11 @@
 package com.jpd.web.transform;
 
+import java.awt.desktop.UserSessionEvent.Reason;
+
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices.RememberMeTokenAlgorithm;
+
 import com.jpd.web.dto.RememberWordDto;
+import com.jpd.web.model.Language;
 import com.jpd.web.model.RememberWord;
 
 public class RememberTransform {
@@ -14,6 +19,7 @@ return	RememberWordDto.builder().
 	.example(re.getExample())
 	.synonyms(re.getSynonyms())
 	.voteCount(re.getVote().size())
+	.language(re.getLanguage())
 	.build();
 	}
 
@@ -25,7 +31,7 @@ public static RememberWord toRememberWord(RememberWordDto rememberWordDto) {
 	.description(rememberWordDto.getDescription())
 	.example(rememberWordDto.getExample())
 	.synonyms(rememberWordDto.getSynonyms())
-	
+	.language(rememberWordDto.getLanguage())
 	.build();
 
 }

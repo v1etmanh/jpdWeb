@@ -15,6 +15,7 @@ import com.jpd.web.dto.CourseContentDto;
 import com.jpd.web.exception.ModuleNotFoundException;
 import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.model.Course;
+import com.jpd.web.model.Creator;
 import com.jpd.web.model.Customer;
 import com.jpd.web.model.CustomerModuleContent;
 import com.jpd.web.model.Enrollment;
@@ -47,30 +48,57 @@ public class CourseLearningService {
     CourseLearningService(CourseController courseController) {
         this.courseController = courseController;
     }
-	@Transactional
-	
-	public CourseContentDto getCourseById(long courseId, String email )  {
-
-		log.info("Retrieving course {} for creator {}", courseId, email);
-
-		
-		Enrollment e = validationResources.validateCustomerWithCourseGetE(email,courseId);
-		Course course=e.getCourse();
-      if(course.isPublic()==false) throw new UnauthorizedException("this course is not exist");
-		course.getChapters().forEach(chapter -> {
-			chapter.getModules()
-			.forEach(module -> {
-				List<CustomerModuleContent> filteredContents = module.getCustomerModuleContents().stream()
-	                    .filter(content -> content.getEnrollment().getEnrollId() == e.getEnrollId())
-	                    .collect(Collectors.toList());
-
-	            module.setCustomerModuleContents(filteredContents);
-				
-			});
-		});
-		CourseContentDto cdto = CourseTransForm.transformToCourseContentDto(course);
-		return cdto;
-	}
+    @Transactional()
+    public CourseContentDto getCourseById(long courseId, String email) {
+        log.info("Retrieving course {} for user {}", courseId, email);
+        
+        Course course = this.validationResources.validateCourseExists(courseId);
+        Customer customer = this.validationResources.validateCustomerExist(email);
+        Creator creator = customer.getCreator();
+        
+        // Check nếu course không public
+       
+        
+        // Case 1: Creator xem course của chính mình
+        if (creator != null && course.getCreator().getCreatorId() == creator.getCreatorId()) {
+            log.info("Creator accessing their own course {}", courseId);
+            
+            // Force load lazy collections trong transaction
+            course.getChapters().forEach(chapter -> {
+                chapter.getModules().forEach(module -> {
+                    // Trigger lazy loading
+                    module.getCustomerModuleContents().size();
+                });
+            });
+            
+            return CourseTransForm.transformToCourseContentDto(course);
+        }
+        
+        // Case 2: Student đã enroll xem course
+        else {
+        	 
+            log.info("Student accessing enrolled course {}", courseId);
+            Enrollment enrollment = validationResources.validateCustomerWithCourseGetE(email, courseId);
+            course = enrollment.getCourse();
+            if (!course.isPublic()) {
+                throw new UnauthorizedException("This course does not exist");
+            }
+            final long enrollmentId = enrollment.getEnrollId();
+            
+            // Filter content theo enrollment và force load trong transaction
+            course.getChapters().forEach(chapter -> {
+                chapter.getModules().forEach(module -> {
+                    List<CustomerModuleContent> filteredContents = module.getCustomerModuleContents().stream()
+                        .filter(content -> content.getEnrollment().getEnrollId() == enrollmentId)
+                        .collect(Collectors.toList());
+                    
+                    module.setCustomerModuleContents(filteredContents);
+                });
+            });
+            
+            return CourseTransForm.transformToCourseContentDto(course);
+        }
+    }
 	@Transactional
 	public List<ModuleContent>getModuleContentsByTypeAndModuleId( TypeOfContent type, Long moduleId, Long chapterId, Long courseId, String email){
 		Module module = validationResources.validateModuleContentOwnerShip(moduleId, chapterId, courseId, email);

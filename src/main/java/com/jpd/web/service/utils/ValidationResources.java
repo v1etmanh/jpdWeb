@@ -144,39 +144,61 @@ public class ValidationResources {
 		  if(customer.isEmpty())throw new CustomerNotFoundException(email);
 		  return customer.get();
 	  }
-	 public Course validateCustomerWithCourse(String email , long courseId) {
-		 Course course=validateCourseExists(courseId);
-		 if(course.getCreator().getCustomer().getEmail().equals(email)) {
-			 return course;
-		 }
-		 Customer customer=validateCustomerExist(email);
-		
-		Optional< Enrollment> enr=this.enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(courseId, customer.getCustomerId());
-		 if(enr.isEmpty())throw new UnauthorizedException("you must enroll after learning");
-		 return course;
-	 }
+	  public Course validateCustomerWithCourse(String email, long courseId) {
+		    Course course = validateCourseExists(courseId);
+		    Customer customer = validateCustomerExist(email);
+		    Creator creator = customer.getCreator();
+		    
+		    // Check nếu là Creator của course
+		    if (creator != null && course.getCreator().getCreatorId() == creator.getCreatorId()) {
+		        return course;
+		    }
+		    
+		    // Check enrollment cho student
+		    Optional<Enrollment> enr = enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(
+		        courseId, customer.getCustomerId()
+		    );
+		    
+		    if (enr.isEmpty()) {
+		        throw new UnauthorizedException("You must enroll before learning");
+		    }
+		    
+		    return course;
+		}
 	 public Enrollment validateCustomerWithCourseGetE(String email , long courseId) {
 		 Course course=validateCourseExists(courseId);
 		 
 		 Customer customer=validateCustomerExist(email);
-		
+		Creator c1=customer.getCreator();
+		if(c1!=null) 
+		{
+			 if(course.getCreator().getCreatorId()==c1.getCreatorId())
+				 return null;
+		}
 		Optional< Enrollment> enr=this.enrollmentRepository.findByCourse_CourseIdAndCustomer_CustomerId(courseId, customer.getCustomerId());
 		 if(enr.isEmpty())throw new UnauthorizedException("you must enroll after learning");
 		 return enr.get();
 	 }
-	 public com.jpd.web.model.Module validateModuleContentOwnerShip(Long moduleId, Long chapterId, Long courseId, String email) {
-		    log.debug("Validating complete ownership chain for module {}", moduleId);
-		    
-		    // Validate course ownership (includes creator & course validation)
-		    Course course = validateCustomerWithCourse(email,courseId);
-		    
-		    // Validate chapter belongs to course
-		    Chapter chapter = validateChapterBelongsToCourse(chapterId, courseId);
-		    
-		    // Validate module belongs to chapter
-		    com.jpd.web.model.Module module = validateModuleBelongsToChapter(moduleId, chapterId);
-		    
-		    log.debug("Complete ownership chain validated successfully");
-		    return module;
-		}
+	 public com.jpd.web.model.Module validateModuleContentOwnerShip(
+			    Long moduleId, Long chapterId, Long courseId, String email) {
+			    
+			    log.debug("Validating module content ownership for module {}", moduleId);
+			    
+			    Course course = validateCourseExists(courseId);
+			    Customer customer = validateCustomerExist(email);
+			    Creator creator = customer.getCreator();
+			    
+			    // Check nếu KHÔNG phải Creator hoặc KHÔNG phải Creator của course này
+			    if (creator == null || course.getCreator().getCreatorId() != creator.getCreatorId()) {
+			        // Validate enrollment cho student
+			        course = validateCustomerWithCourse(email, courseId);
+			    }
+			    
+			    // Validate chapter và module
+			    Chapter chapter = validateChapterBelongsToCourse(chapterId, courseId);
+			    com.jpd.web.model.Module module = validateModuleBelongsToChapter(moduleId, chapterId);
+			    
+			    log.debug("Module content ownership validated successfully");
+			    return module;
+			}
 }

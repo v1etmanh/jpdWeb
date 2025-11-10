@@ -1,14 +1,23 @@
 package com.jpd.web.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jpd.web.dto.ModerationBatchResult;
 import com.jpd.web.dto.ModuleContentDto;
+import com.jpd.web.dto.ModuleContentUpdateResult;
+import com.jpd.web.dto.RejectedContent;
+import com.jpd.web.dto.RejectedContentInfo;
+import com.jpd.web.dto.StandardizedContentDto;
+import com.jpd.web.exception.ModerationException;
 import com.jpd.web.exception.ModuleContentNotFoundException;
 import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.model.Chapter;
@@ -25,6 +34,8 @@ import com.jpd.web.repository.ModuleContentRepository;
 import com.jpd.web.repository.PassageRepository;
 import com.jpd.web.repository.ReadingQuestionRepository;
 import com.jpd.web.service.utils.ValidationResources;
+import com.jpd.web.transform.ModuleContentBatchTransform;
+import com.jpd.web.transform.ModuleContentTransform;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -44,6 +55,8 @@ public class ModuleContentService {
 	private PassageRepository passageRepository;
 	 @Autowired
 	    private EntityManager entityManager;
+	 @Autowired
+	 private ContentModerationService moderationService;
 	@Transactional
 	public List<ModuleContent> updateCourseMaterial(ModuleContentDto moduleContentDto,long creatorId) {
 		 Module module = validationResources.validateCompleteOwnership(
@@ -159,6 +172,124 @@ public class ModuleContentService {
 		}
 		return res;
 
+		}
+		@Transactional
+		public ModuleContentUpdateResult updateCourseMaterial1(ModuleContentDto moduleContentDto, long creatorId) {
+		    Module module = validationResources.validateCompleteOwnership(
+		        moduleContentDto.getModuleId(),
+		        moduleContentDto.getChapterId(),
+		        moduleContentDto.getCourseId(),
+		        creatorId
+		    );
+		    
+		    Course c = module.getChapter().getCourse();
+		    
+		    // 1️⃣ Kiểm tra moduleContent rỗng
+		    List<ModuleContent> dtoContents = moduleContentDto.getModuleContent();
+		    List<StandardizedContentDto> toModerate = ModuleContentBatchTransform.transformBatch(
+		        dtoContents, 
+		        c.getLanguage(), 
+		        c.getTeachingLanguage()
+		    );
+		    
+		    if (toModerate.isEmpty()) {
+		        throw new ModerationException("Failed to transform any content");
+		    }
+		    
+		    // 2️⃣ Call moderation API
+		    ModerationBatchResult moderationResult;
+		    try {
+		        moderationResult = moderationService.moderateBatchWithDetails(toModerate);
+		    } catch (ModerationException e) {
+		        log.error("Moderation service failed", e);
+		        throw new ModerationException("Content moderation service unavailable: " + e.getMessage());
+		    }
+		    
+		    // 3️⃣ Create map of approved content IDs
+		    Set<Long> approvedIds = moderationResult.getApprovedContents().stream()
+		        .map(StandardizedContentDto::getContent_id)
+		        .collect(Collectors.toSet());
+		    
+		    // 4️⃣ Create rejection reason map
+		    Map<Long, String> rejectionReasons = moderationResult.getRejectedContents().stream()
+		        .collect(Collectors.toMap(
+		            RejectedContentInfo::getContentId,
+		            RejectedContentInfo::getReason
+		        ));
+		    
+		    log.info("Moderation results: {} submitted, {} approved, {} rejected",
+		        toModerate.size(), approvedIds.size(), rejectionReasons.size());
+		    
+		    // 5️⃣ Filter only approved module contents
+		    List<ModuleContent> approvedModuleContents = dtoContents.stream()
+		        .filter(mc -> {
+		            long contentId = mc.getMcId() != null && mc.getMcId() > 0 
+		                ? mc.getMcId() 
+		                : -Math.abs(System.nanoTime() + mc.hashCode());
+		            return approvedIds.contains(contentId);
+		        })
+		        .collect(Collectors.toList());
+		    
+		    // 6️⃣ Collect rejected contents with reasons
+		    List<RejectedContent> rejectedContents = dtoContents.stream()
+		        .filter(mc -> {
+		            long contentId = mc.getMcId() != null && mc.getMcId() > 0 
+		                ? mc.getMcId() 
+		                : -Math.abs(System.nanoTime() + mc.hashCode());
+		            return !approvedIds.contains(contentId);
+		        })
+		        .map(mc -> {
+		            long contentId = mc.getMcId() != null && mc.getMcId() > 0 
+		                ? mc.getMcId() 
+		                : -Math.abs(System.nanoTime() + mc.hashCode());
+		            
+		            RejectedContent rejected = new RejectedContent();
+		            rejected.setMcId(mc.getMcId());
+		            rejected.setContent(ModuleContentTransform.extractRawContent(mc));
+		            rejected.setType(mc.getTypeOfContent());
+		            rejected.setReason(rejectionReasons.getOrDefault(contentId, "Unknown reason"));
+		            return rejected;
+		        })
+		        .collect(Collectors.toList());
+		    
+		    if (approvedModuleContents.isEmpty()) {
+		        // Return result with all rejected
+		        log.warn("All {} contents were rejected by moderation", dtoContents.size());
+		        return new ModuleContentUpdateResult(Collections.emptyList(), rejectedContents);
+		    }
+
+		    // 7️⃣ Phân loại: MỚI vs ĐÃ TỒN TẠI
+		    List<ModuleContent> toInsert = new ArrayList<>();
+		    List<Long> idsToDelete = new ArrayList<>();
+		    
+		    for (ModuleContent mc : approvedModuleContents) {
+		        mc.setModule(module);
+		        
+		        if (mc.getMcId() == null || mc.getMcId() < 0) {
+		            // ✅ MỚI: Insert
+		            mc.setMcId(null);
+		            toInsert.add(mc);
+		        } else {
+		            // ✅ ĐÃ TỒN TẠI: Xóa rồi insert lại
+		            idsToDelete.add(mc.getMcId());
+		            mc.setMcId(null);  // Set null để generate ID mới
+		            toInsert.add(mc);
+		        }
+		    }
+
+		    // 8️⃣ XÓA các bản ghi cũ trước
+		    if (!idsToDelete.isEmpty()) {
+		        this.moduleContentRepository.deleteAllById(idsToDelete);
+		        this.moduleContentRepository.flush();
+		    }
+		    this.entityManager.clear();
+		    
+		    // 9️⃣ INSERT tất cả
+		    List<ModuleContent> savedContents = (List<ModuleContent>) moduleContentRepository.saveAll(toInsert);
+		    
+		    log.info("Update complete: {} saved, {} rejected", savedContents.size(), rejectedContents.size());
+		    
+		    return new ModuleContentUpdateResult(savedContents, rejectedContents);
 		}
 	
 }

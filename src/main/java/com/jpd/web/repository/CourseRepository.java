@@ -57,5 +57,7 @@ int countFeedbacksByCourseId(@Param("courseId") Long courseId);
        "WHERE e.course.courseId = :courseId")
 Double getAverageRatingByCourseId(@Param("courseId") Long courseId);
 
-
+Page<Course> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+        String name, String description, Pageable pageable
+);
 }

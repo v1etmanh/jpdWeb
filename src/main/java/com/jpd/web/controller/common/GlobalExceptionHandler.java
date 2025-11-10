@@ -117,7 +117,8 @@ public class GlobalExceptionHandler {
             WithdrawException.class,
             FileUploadException.class,
             ApiException.class,
-            AIHandlerException.class
+            AIHandlerException.class,
+            FeedBackIligalException.class
     })
     public ResponseEntity<ErrorResponse> handleBadRequest(
             BusinessException e,
@@ -163,6 +164,8 @@ public class GlobalExceptionHandler {
                         .traceId(traceId)
                         .build());
     }
+    //feedback
+    
 
     // ===== 400 TYPE MISMATCH =====
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

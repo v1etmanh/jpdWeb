@@ -53,7 +53,7 @@ public class JaenConfig {
 				// .requestMatchers("/actuator","/actuator/health","/actuator/health/**"
 				// ,"/actuator/error","/actuator/health","/actuator/info","/actuator/beans").permitAll()
 				.requestMatchers("/actuator/**").hasRole("ADMIN")
-				.requestMatchers("/api/quiz/join","/api/course/*").permitAll()
+				.requestMatchers("/api/quiz/join","/api/course/*","/api/dictionary/*").permitAll()
 				.requestMatchers("/api/admin/**").hasRole("ADMIN") // Admin endpoints
 				.requestMatchers("/quiz/**").permitAll()
 				.requestMatchers("/homepage/**", "/api/**").authenticated() // Public course listing

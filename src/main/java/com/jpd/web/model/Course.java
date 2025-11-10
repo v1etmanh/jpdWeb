@@ -90,7 +90,9 @@ public class Course {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
     @JsonManagedReference("course-report")
     private List<Report> reports;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
+    @JsonManagedReference("course-comment")
+    private List<Comment>comments;
     // link to Wishlist
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     private List<Wishlist> wishlists;

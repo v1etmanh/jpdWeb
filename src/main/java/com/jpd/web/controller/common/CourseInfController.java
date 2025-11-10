@@ -36,7 +36,7 @@ public ResponseEntity<?> searchCourses(
         @RequestParam String name,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
-) {
+) {  
     Page<CourseInfDto> result = this.courseInfService.searchByKey(name, page, size);
 
     return ResponseEntity.ok(Map.of(

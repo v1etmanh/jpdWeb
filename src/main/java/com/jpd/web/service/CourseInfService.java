@@ -114,12 +114,10 @@ public class CourseInfService {
 
 	// tìm kiếm theo name + language+ creatorName+description
 	public Page<CourseInfDto> searchByKey(String searchKey, int page, int size) {
-	    if (searchKey == null || searchKey.trim().isEmpty()) {
-	        return Page.empty();
-	    }
+	   
 
 	    Pageable pageable = PageRequest.of(page, size); // ❌ Không sort nữa
-
+       
 	    Page<Course> coursesPage = this.courseRepository.searchByKey(searchKey.trim(), pageable);
 
 	    List<CourseInfDto> dtoList = coursesPage.getContent().stream()
@@ -143,7 +141,7 @@ public class CourseInfService {
 		return mapToCourseDescriptionDto(course);
 	}
 
-	private CourseDescriptionDto mapToCourseDescriptionDto(Course course) {
+	public CourseDescriptionDto mapToCourseDescriptionDto(Course course) {
 		// Statistics
 		int totalStudents = courseRepository.countEnrollmentsByCourseId(course.getCourseId());
 		int totalFeedbacks = courseRepository.countFeedbacksByCourseId(course.getCourseId());

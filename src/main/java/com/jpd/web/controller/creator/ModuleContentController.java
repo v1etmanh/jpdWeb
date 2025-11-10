@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jpd.web.dto.ModuleContentDto;
+import com.jpd.web.dto.ModuleContentUpdateResult;
 import com.jpd.web.model.ModuleContent;
 import com.jpd.web.model.TypeOfContent;
 import com.jpd.web.service.ModuleContentService;
@@ -76,9 +77,9 @@ public class ModuleContentController {
     public ResponseEntity<?> updateModuleContents(
             @Valid @RequestBody ModuleContentDto moduleContentDto,
             HttpServletRequest request) {
-		System.out.print("hello");
+		
         Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
-        List<ModuleContent> contents = moduleContentService.updateCourseMaterial(moduleContentDto, creatorId);
+        ModuleContentUpdateResult contents = moduleContentService.updateCourseMaterial1(moduleContentDto, creatorId);
         return ResponseEntity.ok(contents);
     }
 }

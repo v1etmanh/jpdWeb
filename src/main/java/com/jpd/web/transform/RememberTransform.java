@@ -11,6 +11,9 @@ return	RememberWordDto.builder().
 	.word(re.getWord())
 	.description(re.getDescription())
 	.meaning(re.getMeaning())
+	.example(re.getExample())
+	.synonyms(re.getSynonyms())
+	.voteCount(re.getVote().size())
 	.build();
 	}
 
@@ -19,7 +22,11 @@ public static RememberWord toRememberWord(RememberWordDto rememberWordDto) {
 	return RememberWord.builder()
 	.meaning(rememberWordDto.getMeaning())
 	.word(rememberWordDto.getWord())
-	.description(rememberWordDto.getDescription()).build();
+	.description(rememberWordDto.getDescription())
+	.example(rememberWordDto.getExample())
+	.synonyms(rememberWordDto.getSynonyms())
+	
+	.build();
 
 }
 }

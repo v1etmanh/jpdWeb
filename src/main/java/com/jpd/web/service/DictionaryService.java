@@ -35,6 +35,7 @@ public class DictionaryService {
             Customer customer = validationResources.validateCustomerExist(email);
             if(customer != null){
                 RememberWord rememberWord = RememberTransform.toRememberWord(rememberWordDto);
+               
                 rememberWord.setCustomer(customer);
                 repository.save(rememberWord);
                 log.info("success to add new remember word {}", rememberWord.getWord());
@@ -50,6 +51,7 @@ public class DictionaryService {
         //so sanh voi ai nguoi dung
           RememberWord re=RememberTransform.toRememberWord(rememberWordDto);
           re.setId(rememberWord.getId());
+          re.setVote(rememberWord.getVote());
           this.repository.save(re);
           return rememberWordDto;
     }

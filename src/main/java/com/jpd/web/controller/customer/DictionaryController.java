@@ -44,7 +44,7 @@ public class DictionaryController {
         RememberWordDto wordDto= dictionaryService.addRememberWord(email,rememberWordDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(wordDto);
     }
-    @DeleteMapping("{rwId}")
+    @DeleteMapping("/{rwId}")
     public ResponseEntity<Void> deleteDictionary(@PathVariable("rwId") long id,@AuthenticationPrincipal
     		Jwt jwt){
     	String email=jwt.getClaimAsString("email");

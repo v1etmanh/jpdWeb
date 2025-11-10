@@ -76,7 +76,7 @@ public class Creator {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator")
     @JsonManagedReference("creator-payout")
     private List<PayoutTracking> payoutTrackings;
-
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator",fetch = FetchType.LAZY)
     @JsonManagedReference("creator-monthlyBalance")
     private List<MonthlyCreatorBalance> monthlyBalances;

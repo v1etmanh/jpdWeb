@@ -61,5 +61,7 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference("customer-report")
     private List<Report>reports;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
+    @JsonManagedReference("customer-comment")
+    private List<Comment> comments;
 }

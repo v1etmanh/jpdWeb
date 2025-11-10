@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jpd.web.exception.ApiException;
+import com.jpd.web.exception.FileUploadException;
 import com.jpd.web.model.Creator;
 import com.jpd.web.model.Customer;
 import com.jpd.web.model.PendingImage;
@@ -16,6 +17,8 @@ import com.jpd.web.model.TypeOfFile;
 import com.jpd.web.repository.CustomerRepository;
 import com.jpd.web.repository.PendingImgRepository;
 import com.jpd.web.service.utils.ValidationResources;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class FileUploadService {
@@ -44,4 +47,13 @@ public class FileUploadService {
 		}
 		
 	}
+	@Transactional
+	public void deleteFileByUrl(String url,long creatorId) 
+	{
+		Creator creator=	validationResources.validateCreatorExists(creatorId);
+		Optional< PendingImage> pe=this.pendingImgRepository.deleteByCreatorIdAndUrl(creatorId, url);
+		if(pe.isEmpty())throw new FileUploadException("url này ko tồn tại");
+			this.fireBaseService.deleteImgByUrl(url);
+	}
+	
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,6 +41,13 @@ public class FileUploadController {
 	   if(a==null) {return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();}
 	   else return ResponseEntity.status(HttpStatus.OK).body(a);
 	
+	}
+	@DeleteMapping("/delete_file")
+	public ResponseEntity<?> deleteImage(@RequestParam("url")String url,HttpServletRequest request)
+	{
+		 long creatorId=RequestAttributeExtractor.extractCreatorId(request);
+		 this.fileUploadService.deleteFileByUrl(url, creatorId);
+		 return ResponseEntity.noContent().build();
 	}
 	
 }

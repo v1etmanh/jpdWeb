@@ -3,7 +3,12 @@ package com.jpd.web.service;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.jpd.web.dto.ModerationResponse;
+import com.jpd.web.exception.BusinessException;
+import com.jpd.web.exception.ModerateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,10 +31,17 @@ public class FileUploadService {
 	private ValidationResources validationResources;
 	@Autowired
 	private FireBaseService fireBaseService;
-	public String saveImgIntoFirebase(long creatorId,MultipartFile img,TypeOfFile type) throws IllegalAccessException {
+    @Autowired
+    private  ModerationClient moderationClient;
+
+	public String saveImgIntoFirebase(long creatorId,MultipartFile img,TypeOfFile type) throws IllegalAccessException, IOException {
 		    
 		Creator creator=	validationResources.validateCreatorExists(creatorId);
+        if( type.name().equalsIgnoreCase("IMG") ) {
+            moderateImg(img);
+        }
 		try {
+
 			String url= this.fireBaseService.uploadFile(img, type);
 			PendingImage p=new PendingImage();
 			p.setCreatorId(creator.getCreatorId());
@@ -44,4 +56,11 @@ public class FileUploadService {
 		}
 		
 	}
+    public void  moderateImg(MultipartFile file) throws IOException {
+        byte[] bytes = file.getBytes();
+        ModerationResponse res = moderationClient.check(bytes);
+        if ("BLOCKED".equalsIgnoreCase(res.getDecision())) {
+           throw new ModerateException() ;
+        }
+    }
 }

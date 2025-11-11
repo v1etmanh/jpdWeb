@@ -1,25 +1,26 @@
 package com.jpd.web.system.tests;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import com.jpd.web.system.utils.DriverFactory;
 
 public abstract class BaseTest {
-    protected static WebDriver driver;
+    protected WebDriver driver;
 
-    @BeforeAll
-    static void setup() {
+    @BeforeEach  // ✅ TẠO MỚI driver cho MỖI test
+    void setup() {
+        System.out.println("\n=== NEW TEST SESSION STARTED ===\n");
         driver = DriverFactory.createDriver();
         driver.manage().timeouts().implicitlyWait(java.time.Duration.ofSeconds(10));
     }
 
-    @AfterEach
-    void reset() {
+    @AfterEach  // ✅ ĐÓNG driver sau mỗi test
+    void tearDown() {
         if (driver != null) {
-            driver.manage().deleteAllCookies();
-            ((JavascriptExecutor) driver).executeScript("localStorage.clear(); sessionStorage.clear();");
+            System.out.println("\n=== TEST SESSION ENDED ===\n");
+            driver.quit();
         }
     }
 }

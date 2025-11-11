@@ -1,6 +1,5 @@
 package com.jpd.web.system.tests;
 
-
 import io.qameta.allure.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,19 +18,23 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UploadCertificatePOMTest extends BaseTest {
 
     private final String BASE_URL = "http://localhost:3000";
-    private LoginPage loginPage;
-    private CreatorProfilePage profilePage;
+    private static LoginPage loginPage;
+    private static CreatorProfilePage profilePage;
 
     @BeforeAll
-    void init() {
-        loginPage = new LoginPage(driver);
-        profilePage = new CreatorProfilePage(driver);
+    static void init() {  // ✅ MUST BE STATIC
+        // Note: driver will be initialized in BaseTest's @BeforeEach
+        // So we can't initialize pages here. Move to test method instead.
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource("utils.TestDataProvider#uploadCases")
+    @MethodSource("com.jpd.web.system.utils.TestDataProvider#uploadCases")  // ✅ FULL PACKAGE PATH
     @Severity(SeverityLevel.CRITICAL)
     void testUpload(String name, String email, String pwd, String file, boolean success, String toast) {
+        // Initialize pages here (after driver is ready)
+        loginPage = new LoginPage(driver);
+        profilePage = new CreatorProfilePage(driver);
+
         Allure.step("Login & Navigate", () -> {
             loginPage.login(BASE_URL, email, pwd);
             profilePage.goTo(BASE_URL);
@@ -69,7 +72,11 @@ public class UploadCertificatePOMTest extends BaseTest {
     }
 
     private void attach(String name) {
-        byte[] shot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-        Allure.addAttachment(name, "image/png", new ByteArrayInputStream(shot), ".png");
+        try {
+            byte[] shot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            Allure.addAttachment(name, "image/png", new ByteArrayInputStream(shot), ".png");
+        } catch (Exception e) {
+            System.out.println("⚠ Screenshot failed: " + e.getMessage());
+        }
     }
 }

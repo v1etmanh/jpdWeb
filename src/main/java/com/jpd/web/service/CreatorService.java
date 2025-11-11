@@ -28,6 +28,7 @@ import com.jpd.web.dto.PopularCourseDTO;
 import com.jpd.web.exception.Creator_code_changePNotFoundException;
 import com.jpd.web.exception.PaymentEmailAlreadyExistsException;
 import com.jpd.web.exception.PayoutLimitExceededException;
+import com.jpd.web.exception.PaypalEmailNotFoundException;
 import com.jpd.web.exception.UnauthorizedException;
 import com.jpd.web.service.utils.CodeGenerator;
 import com.jpd.web.service.utils.SendNoticeService;
@@ -187,6 +188,7 @@ public class CreatorService {
    public void upLoadCertificate(long creatorId,MultipartFile multipartFile) throws FileUploadException {	   
 	   Creator c=validationResources.validateCreatorExists(creatorId);
 	   try {
+		   if(c.getPaymentEmail()==null)throw new PaypalEmailNotFoundException("Bạn chưa hoàn thành đăng kí paypalEmail");
 	        String url =fireBaseService.uploadFile(multipartFile, TypeOfFile.CERTIFICATE);
 	        c.getCertificateUrl().add(url);
 	        c.setStatus(Status.PENDING);

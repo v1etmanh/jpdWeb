@@ -62,7 +62,7 @@ public class JaenConfig {
 						"/v3/api-docs/**",
 						"/v3/api-docs.yaml",
 						"/actuator/**")
-				.hasRole("ADMIN")
+				.permitAll()
 				.anyRequest().authenticated());
 		http.oauth2ResourceServer(
 				rsc -> rsc.jwt(JwtConfigurer -> JwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));

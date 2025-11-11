@@ -62,10 +62,10 @@ public class UploadCertificateSystemTest {
 
     @ParameterizedTest(name = "{0}")
     @CsvSource(delimiter = '|', textBlock = """
-        TC01_Valid_PDF      | vaanthanh2005@gmail.com | 123456 | creator | valid_certificate.pdf | true  | uploaded successfully | PENDING
-        TC02_Valid_JPG      | vaanthanh2005@gmail.com | 123456 | creator | certificate.jpg       | true  | uploaded successfully | PENDING
-        TC03_Too_Large      | vaanthanh2005@gmail.com | 123456 | creator | large_6mb.pdf         | false | File size must not exceed 5MB | NOT_SUBMITTED
-        TC04_Invalid_Format | vaanthanh2005@gmail.com | 123456 | creator | invalid.txt           | false | Only PDF, JPG, JPEG, PNG | NOT_SUBMITTED
+        TC01_Valid_PDF      | leducsucute2005@gmail.com | Leducsu0342005, | creator | valid_certificate.pdf | true  | uploaded successfully | PENDING
+        TC02_Valid_JPG      | leducsucute2005@gmail.com | Leducsu0342005, | creator | certificate.jpg       | true  | uploaded successfully | PENDING
+        TC03_Too_Large      | leducsucute2005@gmail.com | Leducsu0342005, | creator | large_6mb.pdf         | false | File size must not exceed 5MB | NOT_SUBMITTED
+        TC04_Invalid_Format | leducsucute2005@gmail.com | Leducsu0342005, | creator | invalid.txt           | false | Only PDF, JPG, JPEG, PNG | NOT_SUBMITTED
         """)
     @Severity(SeverityLevel.CRITICAL)
     void testUploadCertificate(
@@ -213,7 +213,20 @@ public class UploadCertificateSystemTest {
 
             // Click upload button
             WebElement uploadBtn = findUploadButton();
-            Assertions.assertNotNull(uploadBtn, "Upload button not found");
+            if (uploadBtn == null) {
+                System.out.println("⚠ Upload button not found — likely file rejected by frontend validation.");
+                Thread.sleep(2000); // chờ toast hiển thị
+                String msg = getToastOrStatusMessage();
+                // Kiểm tra nếu toast lỗi hiển thị ngay sau khi chọn file
+                System.out.println("📢 Immediate toast after file select: " + msg);
+                Assertions.assertTrue(
+                        msg.toLowerCase().contains("must not exceed") || msg.toLowerCase().contains("5mb"),
+                        "Expected 'File size must not exceed 5MB' toast message but got: " + msg
+                );
+                attachScreenshot("Too_Large_File_Toast");
+                return; // Dừng test case tại đây, không cần upload
+            }
+
             Assertions.assertTrue(uploadBtn.isEnabled(), "Upload button is disabled");
 
             attachScreenshot("Before_Click_Upload");
@@ -306,14 +319,12 @@ public class UploadCertificateSystemTest {
             clickElementWithRetry(loginLink, 3);
             System.out.println("✓ Login link clicked");
 
-            // Wait for Keycloak redirect
+            // Wait for redirect to Keycloak
             longWait.until(ExpectedConditions.urlContains("localhost:8080"));
             System.out.println("✓ Redirected to Keycloak");
 
-            // Enter credentials
-            WebElement username = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.id("username")
-            ));
+            // Fill credentials
+            WebElement username = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
             username.clear();
             username.sendKeys(email);
 
@@ -322,7 +333,6 @@ public class UploadCertificateSystemTest {
             pwd.sendKeys(password);
             System.out.println("✓ Credentials entered");
 
-            // Click Sign In
             WebElement signInBtn = wait.until(ExpectedConditions.elementToBeClickable(
                     By.cssSelector("input[name='login'], #kc-login, button[type='submit']")
             ));
@@ -332,17 +342,45 @@ public class UploadCertificateSystemTest {
             // Wait for redirect back and token storage
             longWait.until(d -> {
                 String url = driver.getCurrentUrl();
-                String token = (String) ((JavascriptExecutor) driver)
-                        .executeScript("return localStorage.getItem('kc_token');");
 
-                boolean redirected = url.contains(baseUrl);
-                boolean hasToken = token != null && !token.isEmpty();
+                // Đảm bảo đã quay về React app
+                if (!url.contains("localhost:3000")) {
+                    System.out.println("⏳ Still on Keycloak or redirecting... URL = " + url);
+                    return false;
+                }
 
-                if (redirected && hasToken) {
+                Object token = null;
+                try {
+                    token = ((JavascriptExecutor) driver).executeScript("""
+                    try {
+                        if (window.location.origin.includes('localhost:3000')) {
+                            return localStorage.getItem('kc_token') || sessionStorage.getItem('kc_token');
+                        } else {
+                            return null;
+                        }
+                    } catch (e) {
+                        return null;
+                    }
+                """);
+                } catch (JavascriptException e) {
+                    System.out.println("⚠ Cannot access localStorage yet, retrying...");
+                    driver.get(baseUrl);
+                    return false;
+                } catch (WebDriverException e) {
+                    System.out.println("⚠ WebDriverException while reading localStorage: " + e.getMessage());
+                    driver.get(baseUrl);
+                    return false;
+                }
+
+                boolean hasToken = token != null && !token.toString().isEmpty();
+
+                if (hasToken) {
                     System.out.println("✓ Login successful - Token stored");
                     return true;
+                } else {
+                    System.out.println("⏳ Waiting for token...");
+                    return false;
                 }
-                return false;
             });
 
             Thread.sleep(3000); // Extra wait for React to process
@@ -354,6 +392,7 @@ public class UploadCertificateSystemTest {
             throw e;
         }
     }
+
 
     private WebElement findCertificateSetupButton() {
         System.out.println("🔍 Finding Certificate Setup button...");

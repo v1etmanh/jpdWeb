@@ -17,6 +17,8 @@ import com.jpd.web.service.utils.RequestAttributeExtractor;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/creator/uploadFile")
 public class FileUploadController {
@@ -24,8 +26,8 @@ public class FileUploadController {
 	private FileUploadService fileUploadService;
 	@PostMapping("/savePdf")
 	 public ResponseEntity<?> storePDf(  @RequestParam("pdf") MultipartFile pdf,
-			 HttpServletRequest request) throws IllegalAccessException {
-	
+			 HttpServletRequest request) throws IllegalAccessException, IOException {
+
 	 	long creatorId=RequestAttributeExtractor.extractCreatorId(request);
 	    String a=this.fileUploadService.saveImgIntoFirebase(creatorId,pdf,TypeOfFile.PDF);
 	    if(a==null) {return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();}
@@ -34,7 +36,7 @@ public class FileUploadController {
 	}
 	@PostMapping("/saveImg")
 	public ResponseEntity<?> postMethodName(  @RequestParam("img") MultipartFile img,
-			HttpServletRequest request) throws IllegalAccessException {
+			HttpServletRequest request) throws IllegalAccessException, IOException {
 	   long creatorId=RequestAttributeExtractor.extractCreatorId(request);
 	   String a=this.fileUploadService.saveImgIntoFirebase(creatorId,img,TypeOfFile.IMG);
 	   if(a==null) {return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();}

@@ -37,11 +37,11 @@ public class FileUploadService {
 	public String saveImgIntoFirebase(long creatorId,MultipartFile img,TypeOfFile type) throws IllegalAccessException, IOException {
 		    
 		Creator creator=	validationResources.validateCreatorExists(creatorId);
-        if( type.name().equalsIgnoreCase("IMG") ) {
-            moderateImg(img);
-        }
-		try {
 
+		try {
+            if( type.name().equalsIgnoreCase("IMG") ) {
+                moderateImg(img);
+            }
 			String url= this.fireBaseService.uploadFile(img, type);
 			PendingImage p=new PendingImage();
 			p.setCreatorId(creator.getCreatorId());

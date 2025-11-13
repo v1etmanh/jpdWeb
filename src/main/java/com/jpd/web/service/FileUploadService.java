@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.jpd.web.dto.ModerationResponse;
 import com.jpd.web.exception.ApiException;
 import com.jpd.web.exception.FileUploadException;
+import com.jpd.web.exception.ModerateException;
 import com.jpd.web.model.Creator;
 import com.jpd.web.model.Customer;
 import com.jpd.web.model.PendingImage;
@@ -22,16 +24,20 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class FileUploadService {
-
+	@Autowired
+    private  ModerationClient moderationClient;
 	@Autowired
 	private PendingImgRepository pendingImgRepository; 
 	@Autowired
 	private ValidationResources validationResources;
 	@Autowired
 	private FireBaseService fireBaseService;
-	public String saveImgIntoFirebase(long creatorId,MultipartFile img,TypeOfFile type) throws IllegalAccessException {
+	public String saveImgIntoFirebase(long creatorId,MultipartFile img,TypeOfFile type) throws IllegalAccessException, IOException {
 		    
 		Creator creator=	validationResources.validateCreatorExists(creatorId);
+		if( type.name().equalsIgnoreCase("IMG") ) {
+            moderateImg(img);
+        }
 		try {
 			String url= this.fireBaseService.uploadFile(img, type);
 			PendingImage p=new PendingImage();
@@ -55,5 +61,12 @@ public class FileUploadService {
 		if(pe.isEmpty())throw new FileUploadException("url này ko tồn tại");
 			this.fireBaseService.deleteImgByUrl(url);
 	}
+	  public void  moderateImg(MultipartFile file) throws IOException {
+	        byte[] bytes = file.getBytes();
+	        ModerationResponse res = moderationClient.check(bytes);
+	        if ("BLOCKED".equalsIgnoreCase(res.getDecision())) {
+	           throw new ModerateException() ;
+	        }
+	    }
 	
 }

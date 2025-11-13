@@ -278,7 +278,7 @@ public class PayPalService {
 
         Creator creator = course.getCreator();
         // TODO: Cập nhật logic cộng tiền vào balance
-        double currentBalance = creator.getBalance()+course.getPrice();
+        double currentBalance = creator.getBalance()+(double)course.getPrice()*0.8;
         creator.setBalance(currentBalance);
 
         creatorRepository.save(creator);

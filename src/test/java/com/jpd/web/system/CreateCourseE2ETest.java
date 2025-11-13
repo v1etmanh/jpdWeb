@@ -7,9 +7,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.logging.LogEntries;
-import org.openqa.selenium.logging.LogEntry;
-import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.*;
 import org.junit.jupiter.api.Assertions;
 
@@ -17,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Epic("JPD Web - Creator Portal")

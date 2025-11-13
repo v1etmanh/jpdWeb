@@ -1,5 +1,7 @@
 package com.jpd.web.controller.creator;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ public class FileUploadController {
 	private FileUploadService fileUploadService;
 	@PostMapping("/savePdf")
 	 public ResponseEntity<?> storePDf(  @RequestParam("pdf") MultipartFile pdf,
-			 HttpServletRequest request) throws IllegalAccessException {
+			 HttpServletRequest request) throws IllegalAccessException, IOException {
 	
 	 	long creatorId=RequestAttributeExtractor.extractCreatorId(request);
 	    String a=this.fileUploadService.saveImgIntoFirebase(creatorId,pdf,TypeOfFile.PDF);
@@ -35,7 +37,7 @@ public class FileUploadController {
 	}
 	@PostMapping("/saveImg")
 	public ResponseEntity<?> postMethodName(  @RequestParam("img") MultipartFile img,
-			HttpServletRequest request) throws IllegalAccessException {
+			HttpServletRequest request) throws IllegalAccessException, IOException {
 	   long creatorId=RequestAttributeExtractor.extractCreatorId(request);
 	   String a=this.fileUploadService.saveImgIntoFirebase(creatorId,img,TypeOfFile.IMG);
 	   if(a==null) {return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();}

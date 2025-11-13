@@ -56,13 +56,14 @@ public class JaenConfig {
 				.requestMatchers("/api/quiz/join","/api/course/*","/api/dictionary/*").permitAll()
 				.requestMatchers("/api/admin/**").hasRole("ADMIN") // Admin endpoints
 				.requestMatchers("/quiz/**").permitAll()
-				.requestMatchers("/homepage/**", "/api/**").authenticated() // Public course listing
-				.requestMatchers("/webhook/**").permitAll().requestMatchers("/swagger-ui/**",
+				.requestMatchers("/webhook/**","/api/paypal/**","/api/vnpay/**").permitAll().requestMatchers("/swagger-ui/**",
 						"/swagger-ui.html",
 						"/v3/api-docs/**",
 						"/v3/api-docs.yaml",
 						"/actuator/**")
 				.permitAll()
+				.requestMatchers("/homepage/**", "/api/**").authenticated() // Public course listing
+				
 				.anyRequest().authenticated());
 		http.oauth2ResourceServer(
 				rsc -> rsc.jwt(JwtConfigurer -> JwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));

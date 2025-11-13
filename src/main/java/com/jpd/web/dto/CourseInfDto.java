@@ -26,6 +26,6 @@ public class CourseInfDto {
 	private int numberStudent;
 	private double rating;
 	private String instructor;
-	private double price;
+	private long price;
 	private Language language;
 }

@@ -23,7 +23,7 @@ public class CourseDescriptionDto {
     private String description;
     private Language language;
     private Language teachingLanguage;
-    private double price;
+    private long price;
     private String urlImg;
     private LocalDate createdAt;
     private LocalDate lastUpdate;

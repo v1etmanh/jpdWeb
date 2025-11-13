@@ -32,7 +32,7 @@ public class PayPalController {
     
     @PostMapping("/create-order/{courseId}")
     public ResponseEntity<?> createOrder(
-         @Positive   @RequestParam("amount") double amount,
+         @Positive   @RequestParam("amount") long amount,
          @Positive   @PathVariable("courseId") long courseId,
             @AuthenticationPrincipal Jwt jwt) {
         try {
@@ -44,7 +44,8 @@ public class PayPalController {
                 .getCustomerId();
             
             // Tạo order qua service (service sẽ tự tạo description và currency)
-            Order order = payPalService.createOrderWithTracking(amount, courseId, customerId);
+            double amount1=(double)amount/23000;
+            Order order = payPalService.createOrderWithTracking(amount1, courseId, customerId);
             
             // Tìm approval URL
             String approvalUrl = extractApprovalUrl(order);

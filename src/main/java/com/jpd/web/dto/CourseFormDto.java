@@ -41,7 +41,7 @@ public class CourseFormDto {
     @NotNull
     private Language teachingLanguage;
     @PositiveOrZero(message = "Price must be zero or positive")
-    private double price;
+    private long price;
 
    
     private MultipartFile imgFile;

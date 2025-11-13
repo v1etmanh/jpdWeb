@@ -54,7 +54,8 @@ public class Course {
     private String learningObject;
 
     private String name;
-    private double price;
+    @Column(name ="price")
+    private long price;
     private String requirements;
 
     @Column(name = "target_audience")

@@ -62,7 +62,7 @@ public class TransactionDetailDto {
         private Long courseId;
         private String name;
         private String imageUrl;
-        private Double price;
+        private long price;
     }
 
     @Data

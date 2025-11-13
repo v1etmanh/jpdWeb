@@ -168,12 +168,12 @@ public class CreatorService {
 
        return true;
 	}
-   public CreatorDashboardDTO retrieveStatictisInfo(long creatorId) {
+   public CreatorDashboardDTO retrieveStatictisInfo(long creatorId,int month,int year) {
 	   Creator c=validationResources.validateCreatorExists(creatorId);
 	 
 
 	   MonthlyCreatorBalance currentMonthBalance =
-	            monthlyBalanceService.getCurrentMonthDashboard(creatorId);
+	            monthlyBalanceService.getCurrentMonthDashboard(creatorId,month,year);
 	   List<PopularCourseDTO> popularCourseDTOs = currentMonthBalance.getPopularCourses().stream()
 	            .map(courseId -> {
 	                Course course = courseRepository.findById(courseId).orElse(null);

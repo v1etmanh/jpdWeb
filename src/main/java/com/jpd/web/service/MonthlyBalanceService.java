@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,7 +55,6 @@ public class MonthlyBalanceService {
     public MonthlyCreatorBalance calculateAndSaveMonthlyBalance(
         Creator creator, int year, int month
     ) {
-        // Kiểm tra đã tồn tại chưa
         MonthlyCreatorBalance balance = balanceRepository
             .findByCreator_CreatorIdAndYearAndMonth(creator.getCreatorId(), year, month)
             .orElse(MonthlyCreatorBalance.builder()
@@ -63,18 +63,15 @@ public class MonthlyBalanceService {
                 .month(month)
                 .build());
         
-        // Lấy danh sách courses có phí
         List<Course> paidCourses = creator.getCourses().stream()
-            .filter(c -> c.getAccessMode() == AccessMode.PAID)
+            
             .toList();
         
-        // Tính toán các metrics
-        int totalCourses = paidCourses.size();
-        
-        // Lấy tất cả enrollments của tháng đó
+        // Time range của tháng
         LocalDateTime startOfMonth = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusSeconds(1);
         
+        // ✅ Lấy enrollments TRONG THÁNG
         List<Enrollment> monthEnrollments = paidCourses.stream()
             .flatMap(c -> c.getEnrollments().stream())
             .filter(e -> {
@@ -83,26 +80,30 @@ public class MonthlyBalanceService {
             })
             .toList();
         
-        // Tất cả enrollments (để tính tổng students)
-        List<Enrollment> allEnrollments = paidCourses.stream()
-            .flatMap(c -> c.getEnrollments().stream())
-            .toList();
-        
-        long totalStudents = allEnrollments.stream()
+        // ✅ Số học viên MỚI trong tháng (distinct customers)
+        long totalStudents = monthEnrollments.stream()
             .map(e -> e.getCustomer().getCustomerId())
+            .distinct()
+            .count();
+        
+        // ✅ Số khóa học ĐƯỢC MUA trong tháng (distinct courses)
+        int totalCourses = (int) monthEnrollments.stream()
+            .map(e -> e.getCourse().getCourseId())
             .distinct()
             .count();
         
         long newEnrollments = monthEnrollments.size();
         
-        // Tính completion rate
-        long completed = allEnrollments.stream()
+        // ✅ Completion rate chỉ tính cho enrollments trong tháng
+        long completed = monthEnrollments.stream()
             .filter(Enrollment::isFinish)
             .count();
-        double completionRate = totalStudents == 0 ? 0 : (double) completed / allEnrollments.size() * 100;
+        double completionRate = monthEnrollments.isEmpty() 
+            ? 0 
+            : (double) completed / monthEnrollments.size() * 100;
         
-        // Tính rating
-        List<Integer> ratings = allEnrollments.stream()
+        // ✅ Rating chỉ tính cho feedbacks trong tháng
+        List<Integer> ratings = monthEnrollments.stream()
             .filter(e -> e.getFeedback() != null)
             .map(e -> e.getFeedback().getRate())
             .toList();
@@ -113,19 +114,21 @@ public class MonthlyBalanceService {
         
         long totalReviews = ratings.size();
         
-        // Tính revenue của tháng
+        // ✅ Revenue của tháng (đã đúng)
         double totalRevenue = monthEnrollments.stream()
             .mapToDouble(e -> e.getCourse().getPrice())
             .sum();
         
-        // Lấy top 4 popular courses (theo số students)
-        List<Long> popularCourseIds = paidCourses.stream()
-            .sorted((c1, c2) -> Integer.compare(
-                c2.getEnrollments().size(), 
-                c1.getEnrollments().size()
+        // ✅ Popular courses TRONG THÁNG (theo số enrollments trong tháng)
+        List<Long> popularCourseIds = monthEnrollments.stream()
+            .collect(Collectors.groupingBy(
+                e -> e.getCourse().getCourseId(),
+                Collectors.counting()
             ))
+            .entrySet().stream()
+            .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
             .limit(4)
-            .map(Course::getCourseId)
+            .map(Map.Entry::getKey)
             .collect(Collectors.toList());
         
         // Update balance
@@ -141,14 +144,12 @@ public class MonthlyBalanceService {
         
         return balanceRepository.save(balance);
     }
-    
     /**
      * Get dashboard data cho creator
      */
-    public MonthlyCreatorBalance getCurrentMonthDashboard(Long creatorId) {
+    public MonthlyCreatorBalance getCurrentMonthDashboard(Long creatorId,int month, int year) {
         LocalDateTime now = LocalDateTime.now();
-        int year = now.getYear();
-        int month = now.getMonthValue();
+        
         
         // Tìm hoặc tạo mới cho tháng hiện tại
         return balanceRepository.findCurrentMonth(creatorId, year, month)

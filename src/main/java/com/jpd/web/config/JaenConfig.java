@@ -88,4 +88,7 @@ public class JaenConfig {
 	         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
 	         .build();
 	 }
+
+
+
 }

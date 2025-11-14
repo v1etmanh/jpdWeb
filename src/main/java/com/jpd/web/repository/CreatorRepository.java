@@ -30,4 +30,6 @@ public interface CreatorRepository extends JpaRepository<Creator, Long> {
        List<Creator> findAllByStatus(Status status);
 
        List<Creator> findByFullNameContainingIgnoreCase(String fullName);
+
+
 }

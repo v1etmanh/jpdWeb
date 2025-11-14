@@ -126,11 +126,7 @@ public class CourseService {
 		
        
 		Course savedCourse = courseRepository.save(course);
-		Enrollment e=Enrollment.builder()
-				.course(savedCourse)
-				.customer(creator.getCustomer())
-				.build();
-		this.enrollmentRepository.save(e);
+		
 		log.info("Successfully created course {} for creator {}", savedCourse.getCourseId(), creatorId);
 
 		return savedCourse;

@@ -1,5 +1,6 @@
 package com.jpd.web.controller.creator;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -25,6 +26,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,9 +71,9 @@ public ResponseEntity<?> uploadPaypalEmail(@RequestParam("pEmail") String  paypa
     return  ResponseEntity.status(HttpStatus.CREATED) .body(this.creatorService.createWithdraw(creatorId, amount));
 }
 @GetMapping("/getStatisticInfor")
-public  ResponseEntity< CreatorDashboardDTO >getStatisticInfor(HttpServletRequest request) {
+public  ResponseEntity< CreatorDashboardDTO >getStatisticInfor(HttpServletRequest request,@RequestParam("month") int month,@RequestParam("year") int year) {
 	long creatorId=RequestAttributeExtractor.extractCreatorId(request);
-    return ResponseEntity.ok(creatorService.retrieveStatictisInfo(creatorId));
+    return ResponseEntity.ok(creatorService.retrieveStatictisInfo(creatorId,month,year));
     		}
 @PostMapping("/upade_certificate") // Nên sửa thành /update_certificate
 public ResponseEntity<?> updateCertificate(

@@ -19,6 +19,7 @@ import com.jpd.web.exception.ErrorResponse;
 import com.jpd.web.exception.FileUploadException;
 import com.jpd.web.exception.UnauthorizedException;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,32 @@ public class GlobalExceptionHandler {
                         .responseType("NOT_FOUND")
                         .build());
     }
-
+    @ExceptionHandler(ModerateException.class)
+    public ResponseEntity<ErrorResponse> handleModerateException(
+            ModerateException ex, 
+            HttpServletRequest request) {
+        
+        String traceId = getTraceId();
+        log.error("[{}] ❌ Moderation failed: {}", traceId, ex.getMessage());
+        
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                // ✅ Khớp với pattern hiện tại
+                .success(false)
+                .status(HttpStatus.BAD_REQUEST.value())
+                .code(ex.getErrorCode() != null ? ex.getErrorCode() : "MODERATION_ERROR")
+                .message(ex.getMessage())
+                .userMessage("Nội dung vi phạm chính sách cộng đồng")
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .traceId(traceId)
+                .responseType("BAD_REQUEST")
+                
+                .build();
+        
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
     // ===== 401 UNAUTHORIZED =====
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorized(

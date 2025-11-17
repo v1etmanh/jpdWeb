@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,8 +32,15 @@ public class CustomerController {
 private CustomerService customerSer;
 @GetMapping("/account_infor")
 public ResponseEntity<UserInfoDto> getCustomerAccountInf(@AuthenticationPrincipal Jwt jwt){
+	System.out.print(jwt);
 	UserInfoDto c=this.customerSer.getOrCreateAccount(jwt);
-	
+	boolean isAdmin = SecurityContextHolder
+	        .getContext()
+	        .getAuthentication()
+	        .getAuthorities()
+	        .stream()
+	        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+	c.setAdmin(isAdmin);
 	return ResponseEntity.status(HttpStatus.OK).body(c);
 }
 @PostMapping(value="/upload_profile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

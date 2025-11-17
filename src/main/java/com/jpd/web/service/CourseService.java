@@ -121,7 +121,7 @@ public class CourseService {
 		course.setCreator(creator);
 
 		// Generate join key for private courses
-		
+		//
 			course.setJoinKey(codeGenerator.generate6DigitCode());
 		
        

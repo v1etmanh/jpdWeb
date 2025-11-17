@@ -22,6 +22,7 @@ private String givenName;
 private Date createDate;
 private String email;
 private boolean isCreator;
+private boolean isAdmin;
 
 	
 }

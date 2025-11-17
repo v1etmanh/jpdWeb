@@ -15,6 +15,7 @@ public class JwtRoleConverted implements Converter<Jwt, Collection<GrantedAuthor
 
 	@Override
 	public Collection<GrantedAuthority> convert(Jwt source) {
+		System.out.print("đá");
 		// TODO Auto-generated method stub
 		Map<String, Object>realmAccess=(Map<String,Object>)source.getClaims().get("realm_access");
 		if(realmAccess==null) {

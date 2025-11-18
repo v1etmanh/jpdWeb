@@ -73,13 +73,12 @@ public class ModuleContentController {
 	        return ResponseEntity.noContent().build();
 	   
 	}
-	@PostMapping
+    @PostMapping
     public ResponseEntity<?> updateModuleContents(
             @Valid @RequestBody ModuleContentDto moduleContentDto,
             HttpServletRequest request) {
-		
         Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
-        ModuleContentUpdateResult contents = moduleContentService.updateCourseMaterial1(moduleContentDto, creatorId);
+        List<ModuleContent> contents = moduleContentService.updateCourseMaterial(moduleContentDto, creatorId);
         return ResponseEntity.ok(contents);
     }
 }

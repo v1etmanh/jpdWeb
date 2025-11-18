@@ -99,7 +99,7 @@ public class OpenAIService {
         double similarity = calculateCosineSimilarity(embedding1, embedding2);
         
         // 3. Đánh giá kết quả
-        boolean isCorrect = similarity >= 0.85; // Ngưỡng 85% cho semantic
+        boolean isCorrect = similarity >= 0.8; // Ngưỡng 85% cho semantic
         String feedback = generateSemanticFeedback(similarity);
         
         return SemanticResult.builder()

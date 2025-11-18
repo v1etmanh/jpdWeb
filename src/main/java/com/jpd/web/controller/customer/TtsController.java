@@ -11,15 +11,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000") // Cho phép CORS từ tất cả các nguồn
+ // Cho phép CORS từ tất cả các nguồn
+@RequestMapping("/api/tts")
 public class TtsController {
 
-    @GetMapping("/api/tts")
+    @GetMapping()
     public ResponseEntity<StreamingResponseBody> textToSpeech(
             @RequestParam String text,
             @RequestParam(defaultValue = "ja-JP") String lang) {

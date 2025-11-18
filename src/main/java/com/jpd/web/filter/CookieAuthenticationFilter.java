@@ -50,7 +50,8 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 
             } catch (JwtException e) {
-                logger.debug("Failed to authenticate with cookie token: " + e.getMessage());
+            	logger.debug("Invalid JWT in cookie: " + e.getMessage());
+                SecurityContextHolder.clearContext(); //   
             } catch (Exception e) {
                 logger.error("Unexpected error during JWT authentication", e);
             }

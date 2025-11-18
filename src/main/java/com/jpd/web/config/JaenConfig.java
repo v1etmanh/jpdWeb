@@ -85,7 +85,7 @@ public class JaenConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new JwtRoleConverted());
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**","/api/tts").permitAll()
                 .requestMatchers("/actuator/**").hasRole("ADMIN")
                 .requestMatchers("/api/quiz/join", "/api/course/*", "/api/dictionary/*").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")

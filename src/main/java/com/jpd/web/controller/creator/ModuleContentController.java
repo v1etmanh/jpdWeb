@@ -1,15 +1,11 @@
 package com.jpd.web.controller.creator;
 
-import java.util.List;
-
-import com.google.api.Http;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,68 +13,56 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jpd.web.dto.ModuleContentDto;
-import com.jpd.web.dto.ModuleContentUpdateResult;
-import com.jpd.web.model.ModuleContent;
-import com.jpd.web.model.TypeOfContent;
-import com.jpd.web.service.ModuleContentService;
+import com.jpd.web.dto.ModuleDto;
+import com.jpd.web.model.Module;
+import com.jpd.web.service.ModuleService;
 import com.jpd.web.service.utils.RequestAttributeExtractor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import lombok.extern.slf4j.Slf4j;
-@RestController
-@RequestMapping("/api/creator/{courseId}/{chapterId}/{moduleId}")
-@Slf4j
-public class ModuleContentController {
-	@Autowired
-	private ModuleContentService moduleContentService;
-	@GetMapping()
-	public ResponseEntity<List<ModuleContent>> getModuleContentByTypeAndModuleId(@RequestParam("type") TypeOfContent typeOfContent,
-																				 @Positive @PathVariable("moduleId") Long moduleId,
-																				 @Positive @PathVariable("chapterId") Long chapterId,
-																				 @Positive @PathVariable("courseId") Long courseId,
-																				 HttpServletRequest request) {
-		//return
-	long creatorId=RequestAttributeExtractor.extractCreatorId(request);
-		List<ModuleContent>mds=moduleContentService.getModuleContentsByTypeAndModuleId(typeOfContent,moduleId,chapterId,courseId,creatorId);
-     
-		return ResponseEntity.ok().body(mds);
-	}
-	@DeleteMapping("/{moduleContentId}")
-	public ResponseEntity<?> deleteModuleContent(    @Positive @PathVariable("moduleContentId") long moduleContentId,
-			@Positive @PathVariable("moduleId") Long moduleId,
-            @Positive @PathVariable("chapterId") Long chapterId,
-            @Positive @PathVariable("courseId") Long courseId,
-            HttpServletRequest request               ) {
+import org.springframework.web.bind.annotation.PutMapping;
 
-        Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
-        moduleContentService.deleteModuleContent(
-        		moduleContentId, moduleId, chapterId, courseId, creatorId
-        );
-        
-        return ResponseEntity.noContent().build();
-	  
+
+@RestController
+@RequestMapping("/api/creator/{courseId}/{chapterId}/module")
+public class ModuleController {
+	@Autowired
+	private ModuleService moduleService;
+
+	@DeleteMapping("/{moduleId}")
+	public ResponseEntity<?> deleteModule(
+			@Positive(message = "Module ID must be positive") @PathVariable("moduleId") Long moduleId,
+			@Positive(message = "Chapter ID must be positive") @PathVariable("chapterId") Long chapterId,
+			@Positive(message = "Course ID must be positive") @PathVariable("courseId") Long courseId,
+			HttpServletRequest request) {
+		long creatorId = RequestAttributeExtractor.extractCreatorId(request);
+		moduleService.deleteModule(creatorId, courseId, chapterId, moduleId);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content
+
 	}
-	@DeleteMapping("/deleteModuleContentByType")
-	public ResponseEntity<?> deleteModuleContentByType(@RequestParam("type") TypeOfContent type,
-			                          @Positive    @PathVariable ("moduleId")long moduleId,
-			                          @Positive     @PathVariable ("chapterId")long chapterId,
-			                          @Positive    @PathVariable ("courseId")long courseId,
-			                              HttpServletRequest request   
-	                                       ) {
-	     Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
-	        moduleContentService.deleteModuleContentsByType( type, moduleId, chapterId, courseId, creatorId);
-	        return ResponseEntity.noContent().build();
-	   
+
+	@PostMapping()
+	public ResponseEntity<?> createModule(@Valid @RequestParam("moduleName") String moduleName,
+			@Positive(message = "Course ID must be positive") @PathVariable("courseId") Long courseId,
+			@Positive(message = "Chapter ID must be positive") @PathVariable("chapterId") Long chapterId,
+			HttpServletRequest request) {
+		// TODO: process POST request
+         
+		Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
+
+		// GlobalExceptionHandler sẽ xử lý exceptions
+	Module module=	moduleService.createModule(moduleName, creatorId, courseId, chapterId);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(module);
+
 	}
-    @PostMapping
-    public ResponseEntity<?> updateModuleContents(
-            @Valid @RequestBody ModuleContentDto moduleContentDto,
-            HttpServletRequest request) {
-        Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
-        List<ModuleContent> contents = moduleContentService.updateCourseMaterial(moduleContentDto, creatorId);
-        return ResponseEntity.ok(contents);
-    }
+	@PutMapping("/{moduleId}/update")
+	public ResponseEntity<?> putMethodName(@PathVariable("moduleId") long moduleId, @RequestParam String name,
+			HttpServletRequest request) {
+		//TODO: process PUT request
+		Long creatorId = RequestAttributeExtractor.extractCreatorId(request);
+		this.moduleService.updateModuleName(creatorId, moduleId, name);
+		return ResponseEntity.noContent().build();
+	}
 }

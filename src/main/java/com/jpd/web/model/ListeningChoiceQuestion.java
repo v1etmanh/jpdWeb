@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
+@EqualsAndHashCode(exclude = {"options"}, callSuper = true) 
 public class ListeningChoiceQuestion extends ModuleContent {
     @Lob
     private String question;

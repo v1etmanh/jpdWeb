@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = {"speakingPictureQuestion"}) 
 public class SpeakingPictureListQuestions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

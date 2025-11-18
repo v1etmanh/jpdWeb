@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -18,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-
+@EqualsAndHashCode(exclude = {"options"}, callSuper = true) 
 public class MultipleChoiceQuestion extends ModuleContent {
     @Lob
     private String questionText;
@@ -29,6 +30,7 @@ public class MultipleChoiceQuestion extends ModuleContent {
 
     @JsonManagedReference
     @ToString.Exclude  // ← THÊM annotation này
+   
     private List<MultipleChoiceOption> options;
      
 

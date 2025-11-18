@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude = {"answers"}, callSuper = true) 
 public class GapFillQuestion extends ModuleContent {
     private String questionText;
     private String feedback;
@@ -29,6 +31,7 @@ public class GapFillQuestion extends ModuleContent {
 
     @JsonManagedReference
     @ToString.Exclude
+    
     private List<GapFillAnswer> answers;
 
 }

@@ -9,12 +9,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -28,7 +30,6 @@ public class VNPayController {
 
     private final CustomerRepository customerRepository;
     private final VNPayService vnPayService;
-
     private static final DateTimeFormatter VNPAY_DATE_FORMAT = DateTimeFormatter.ofPattern("uuuuMMddHHmmss");
 
     public VNPayController(CustomerRepository customerRepository, VNPayService vnPayService) {
@@ -115,16 +116,32 @@ public class VNPayController {
             }
 
             log.info("VNPay payment successful for txnRef={}", vnpTxnRef);
-            return ResponseEntity.ok(Map.of(
-                    "status", "PaymentSuccess",
-                    "orderInfo", orderInfo,
-                    "paymentTime", paymentTime,
-                    "transactionId", parsedTransactionId,
-                    "totalPrice", parsedAmount
-            ));
+
+            String redirectUrl = "http://localhost:3000/payment/success?"
+                    + "status=success"
+                    + "&order=" + vnpTxnRef
+                    + "&amount=" + parsedAmount;
+
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(redirectUrl))
+                    .build();
+//            return ResponseEntity.ok(Map.of(
+//                    "status", "PaymentSuccess",
+//                    "orderInfo", orderInfo,
+//                    "paymentTime", paymentTime,
+//                    "transactionId", parsedTransactionId,
+//                    "totalPrice", parsedAmount
+//            ));
         } catch (Exception e) {
             log.error("Error handling VNPay callback for txnRef={}", vnpTxnRef, e);
-            return ResponseEntity.status(500).body(Map.of("status", "PaymentFailed"));
+            String redirectUrl = "http://localhost:3000/payment/fail?"
+                    + "status=fail";
+
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(redirectUrl))
+                    .build();
+
+//            return ResponseEntity.status(500).body(Map.of("status", "PaymentFailed"));
         }
     }
 

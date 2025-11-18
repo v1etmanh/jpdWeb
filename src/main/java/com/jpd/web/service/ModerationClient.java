@@ -1,5 +1,6 @@
 package com.jpd.web.service;
 import com.jpd.web.dto.ModerationResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -13,6 +14,7 @@ import java.util.Base64;
 import java.util.Map;
 @Service
 public class ModerationClient {
+
     private final WebClient webClient;
     public ModerationClient(
             @Value("${moderation1.api.url}") String apiUrl,

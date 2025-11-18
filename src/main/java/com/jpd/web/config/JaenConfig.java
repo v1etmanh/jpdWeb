@@ -29,16 +29,18 @@ import com.jpd.web.filter.CookieAuthenticationFilter;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.springframework.web.reactive.function.client.WebClient;
+
 @Configuration
 public class JaenConfig {
 
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String jwkSetUri;
-   
 
-    
+
+
     @Autowired
-    @Lazy  
+    @Lazy
     private CookieAuthenticationFilter cookieAuthenticationFilter;
 
     @Bean
@@ -57,7 +59,7 @@ public class JaenConfig {
         	    // ✅ Đổi "/api/*" thành "/api/**" (2 dấu *)
         	    .ignoringRequestMatchers(
         	        "/api/**",           // ✅ Match tất cả sub-paths
-        	        "/webhook/**", 
+        	        "/webhook/**",
         	        "/quiz/**"
         	    )
         	);
@@ -68,7 +70,7 @@ public class JaenConfig {
                 corsF.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000")); // ✅ Đổi sang Pattern
                 corsF.setAllowCredentials(true);
                 corsF.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
-                
+
                 corsF.setAllowedHeaders(Collections.singletonList("*"));
                 corsF.setExposedHeaders(Arrays.asList("Set-Cookie"));
                 corsF.setMaxAge(3600L);
@@ -88,7 +90,7 @@ public class JaenConfig {
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/quiz/**").permitAll()
                 .requestMatchers("/webhook/**", "/api/paypal/**", "/api/vnpay/**","/api/customer/account_infor").permitAll()
-                
+
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
                 .requestMatchers("/homepage/**", "/api/**").authenticated()
                 .anyRequest().authenticated());
@@ -97,7 +99,7 @@ public class JaenConfig {
                 JwtConfigurer -> JwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
         http.addFilterBefore(cookieAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        
+
         return http.build();
     }
 

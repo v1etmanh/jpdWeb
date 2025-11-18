@@ -1,8 +1,10 @@
 package com.jpd.web.controller.customer;
 
+import java.net.URI;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -89,16 +91,28 @@ public class PayPalController {
     public ResponseEntity<?> paymentSuccess(@RequestParam("token") String orderId) {
         try {
             Order order = payPalService.captureOrderAndEnroll(orderId);
-            
-            return ResponseEntity.ok().body(Map.of(
-                "status", "success",
-                "message", "Payment completed successfully!"
-            ));
+
+//            return ResponseEntity.ok().body(Map.of(
+//                "status", "success",
+//                "message", "Payment completed successfully!"
+//            ));
+            String redirectUrl = "http://localhost:3000/payment/success?"
+                    + "status=success";
+
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(redirectUrl))
+                    .build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "status", "error",
-                "message", e.getMessage()
-            ));
+            String redirectUrl = "http://localhost:3000/payment/fail?"
+                    + "status=fail";
+
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(redirectUrl))
+                    .build();
+//            return ResponseEntity.badRequest().body(Map.of(
+//                "status", "error",
+//                "message", e.getMessage()
+//            ));
         }
     }
     

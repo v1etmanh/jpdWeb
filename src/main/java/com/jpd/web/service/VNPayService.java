@@ -8,6 +8,7 @@ import com.jpd.web.model.Course;
 import com.jpd.web.model.Enrollment;
 import com.jpd.web.model.PaymentTracking;
 import com.jpd.web.repository.*;
+import com.jpd.web.service.utils.ExchangeRateService;
 import com.paypal.orders.Order;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,8 @@ public class VNPayService {
     private CustomerTransactionRepository customerTransactionRepository;
     @Autowired
     PayPalService payPalService;
+    @Autowired
+    private ExchangeRateService exchangeRateService;
     /**
      * Tạo PayPal order và lưu tracking vào database
      *
@@ -62,7 +65,7 @@ public class VNPayService {
             String description = payPalService.generateDescription(courseId, customerId);
             String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
             String vnpayUrl = createOrder(amount, description, vnp_TxnRef);
-            payPalService.savePaymentTracking(vnp_TxnRef, amount, description, courseId, customerId);
+            payPalService.savePaymentTracking(vnp_TxnRef, (double)amount/exchangeRateService.getUsdToVndRate(), description, courseId, customerId);
             log.info("Payment Tracking Created Successfully");
             return vnpayUrl;
         }

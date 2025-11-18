@@ -3,6 +3,7 @@ package com.jpd.web.controller.customer;
 import java.net.URI;
 import java.util.Map;
 
+import com.jpd.web.service.utils.ExchangeRateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,9 @@ public class PayPalController {
     
     @Autowired
     private CustomerRepository customerRepository;
-    
+    @Autowired
+    private ExchangeRateService exchangeRateService;
+
     @PostMapping("/create-order/{courseId}")
     public ResponseEntity<?> createOrder(
          @Positive   @RequestParam("amount") long amount,
@@ -46,7 +49,7 @@ public class PayPalController {
                 .getCustomerId();
             
             // Tạo order qua service (service sẽ tự tạo description và currency)
-            double amount1=(double)amount/23000;
+            double amount1=(double)amount/exchangeRateService.getUsdToVndRate();
             Order order = payPalService.createOrderWithTracking(amount1, courseId, customerId);
             
             // Tìm approval URL

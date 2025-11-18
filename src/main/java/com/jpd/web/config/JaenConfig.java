@@ -68,7 +68,10 @@ public class JaenConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration corsF = new CorsConfiguration();
-                corsF.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000")); // ✅ Đổi sang Pattern
+                corsF.setAllowedOriginPatterns(Arrays.asList(
+                        "http://localhost:3000",
+                        "http://13.159.212.77"
+                ));// ✅ Đổi sang Pattern
                 corsF.setAllowCredentials(true);
                 corsF.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
 

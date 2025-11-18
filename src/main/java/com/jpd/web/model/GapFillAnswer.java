@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -11,6 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = {"gapfillQuestion"})
 public class GapFillAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +24,7 @@ public class GapFillAnswer {
     @JoinColumn(name = "mc_id")
     @JsonBackReference
     @ToString.Exclude
+   
     private GapFillQuestion gapfillQuestion;
     private String answer;
 }

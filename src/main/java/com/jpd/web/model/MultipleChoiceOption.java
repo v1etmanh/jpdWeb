@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -14,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Data
 @Builder
-
+@EqualsAndHashCode(exclude = {"multiple_choice_question"}) 
 public class MultipleChoiceOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +28,6 @@ public class MultipleChoiceOption {
     @JoinColumn(name = "mc_id", nullable = false)
     @JsonBackReference
     @ToString.Exclude  
+   
     private MultipleChoiceQuestion multiple_choice_question;
 }

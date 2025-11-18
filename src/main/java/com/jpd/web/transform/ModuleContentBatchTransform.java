@@ -34,7 +34,7 @@ public class ModuleContentBatchTransform {
         for (ModuleContent mc : contents) {
             try {
                 StandardizedContentDto dto = ModuleContentTransform.transform(mc,l1,l2);
-                if (dto != null && dto.getContent() != null && !dto.getContent().isEmpty()) {
+                if (dto != null ) {
                     results.add(dto);
                     successCount++;
                 } else {

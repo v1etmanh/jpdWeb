@@ -11,11 +11,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
 @DiscriminatorValue("READING")
 @Data
+@EqualsAndHashCode(exclude = {"readingQuestion"},callSuper = true) 
 public class Passage extends ModuleContent {
     private String title;
     @Lob

@@ -2,6 +2,7 @@ package com.jpd.web.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -174,7 +175,9 @@ public class ModuleContentService {
 
 		}
 		@Transactional
-		public ModuleContentUpdateResult updateCourseMaterial1(ModuleContentDto moduleContentDto, long creatorId) {
+		public ModuleContentUpdateResult updateCourseMaterial1(
+		    ModuleContentDto moduleContentDto, long creatorId) {
+		    
 		    Module module = validationResources.validateCompleteOwnership(
 		        moduleContentDto.getModuleId(),
 		        moduleContentDto.getChapterId(),
@@ -183,14 +186,31 @@ public class ModuleContentService {
 		    );
 		    
 		    Course c = module.getChapter().getCourse();
-		    
-		    // 1️⃣ Kiểm tra moduleContent rỗng
 		    List<ModuleContent> dtoContents = moduleContentDto.getModuleContent();
-		    List<StandardizedContentDto> toModerate = ModuleContentBatchTransform.transformBatch(
-		        dtoContents, 
-		        c.getLanguage(), 
-		        c.getTeachingLanguage()
-		    );
+		    
+		    // ✅ TẠO MAP ĐỂ LƯU ID NHẤT QUÁN
+		    Map<ModuleContent, Long> contentIdMap = new HashMap<>();
+		    
+		    // ✅ GÁN ID CHO TẤT CẢ TRƯỚC KHI TRANSFORM
+		    for (ModuleContent mc : dtoContents) {
+		        long contentId = mc.getMcId() != null && mc.getMcId() > 0 
+		            ? mc.getMcId() 
+		            : -Math.abs(System.nanoTime() + contentIdMap.size()); // Đảm bảo unique
+		        contentIdMap.put(mc, contentId);
+		    }
+		    
+		    // 1️⃣ Transform với ID từ Map
+		    List<StandardizedContentDto> toModerate = new ArrayList<>();
+		    for (ModuleContent mc : dtoContents) {
+		        StandardizedContentDto dto = ModuleContentTransform.transform(
+		            mc, 
+		            c.getLanguage(), 
+		            c.getTeachingLanguage()
+		        );
+		        // ✅ GHI ĐÈ CONTENT_ID TỪ MAP
+		        dto.setContent_id(contentIdMap.get(mc));
+		        toModerate.add(dto);
+		    }
 		    
 		    if (toModerate.isEmpty()) {
 		        throw new ModerationException("Failed to transform any content");
@@ -220,45 +240,33 @@ public class ModuleContentService {
 		    log.info("Moderation results: {} submitted, {} approved, {} rejected",
 		        toModerate.size(), approvedIds.size(), rejectionReasons.size());
 		    
-		    // 5️⃣ Filter only approved module contents
+		    // 5️⃣ Filter using consistent IDs from Map
 		    List<ModuleContent> approvedModuleContents = dtoContents.stream()
-		        .filter(mc -> {
-		            long contentId = mc.getMcId() != null && mc.getMcId() > 0 
-		                ? mc.getMcId() 
-		                : -Math.abs(System.nanoTime() + mc.hashCode());
-		            return approvedIds.contains(contentId);
-		        })
+		        .filter(mc -> approvedIds.contains(contentIdMap.get(mc))) // ✅ DÙNG ID TỪ MAP
 		        .collect(Collectors.toList());
 		    
-		    // 6️⃣ Collect rejected contents with reasons
+		    // 6️⃣ Collect rejected contents
 		    List<RejectedContent> rejectedContents = dtoContents.stream()
-		        .filter(mc -> {
-		            long contentId = mc.getMcId() != null && mc.getMcId() > 0 
-		                ? mc.getMcId() 
-		                : -Math.abs(System.nanoTime() + mc.hashCode());
-		            return !approvedIds.contains(contentId);
-		        })
+		        .filter(mc -> !approvedIds.contains(contentIdMap.get(mc))) // ✅ DÙNG ID TỪ MAP
 		        .map(mc -> {
-		            long contentId = mc.getMcId() != null && mc.getMcId() > 0 
-		                ? mc.getMcId() 
-		                : -Math.abs(System.nanoTime() + mc.hashCode());
-		            
 		            RejectedContent rejected = new RejectedContent();
 		            rejected.setMcId(mc.getMcId());
 		            rejected.setContent(ModuleContentTransform.extractRawContent(mc));
 		            rejected.setType(mc.getTypeOfContent());
-		            rejected.setReason(rejectionReasons.getOrDefault(contentId, "Unknown reason"));
+		            rejected.setReason(rejectionReasons.getOrDefault(
+		                contentIdMap.get(mc), // ✅ DÙNG ID TỪ MAP
+		                "Unknown reason"
+		            ));
 		            return rejected;
 		        })
 		        .collect(Collectors.toList());
 		    
 		    if (approvedModuleContents.isEmpty()) {
-		        // Return result with all rejected
 		        log.warn("All {} contents were rejected by moderation", dtoContents.size());
 		        return new ModuleContentUpdateResult(Collections.emptyList(), rejectedContents);
 		    }
 
-		    // 7️⃣ Phân loại: MỚI vs ĐÃ TỒN TẠI
+		    // 7️⃣ - 9️⃣ Phần còn lại giữ nguyên
 		    List<ModuleContent> toInsert = new ArrayList<>();
 		    List<Long> idsToDelete = new ArrayList<>();
 		    
@@ -266,28 +274,26 @@ public class ModuleContentService {
 		        mc.setModule(module);
 		        
 		        if (mc.getMcId() == null || mc.getMcId() < 0) {
-		            // ✅ MỚI: Insert
 		            mc.setMcId(null);
 		            toInsert.add(mc);
 		        } else {
-		            // ✅ ĐÃ TỒN TẠI: Xóa rồi insert lại
 		            idsToDelete.add(mc.getMcId());
-		            mc.setMcId(null);  // Set null để generate ID mới
+		            mc.setMcId(null);
 		            toInsert.add(mc);
 		        }
 		    }
 
-		    // 8️⃣ XÓA các bản ghi cũ trước
 		    if (!idsToDelete.isEmpty()) {
-		        this.moduleContentRepository.deleteAllById(idsToDelete);
-		        this.moduleContentRepository.flush();
+		        List<ModuleContent> toDeleteEntities = 
+		            moduleContentRepository.findAllById(idsToDelete);
+		        moduleContentRepository.deleteAllInBatch(toDeleteEntities);
 		    }
-		    this.entityManager.clear();
 		    
-		    // 9️⃣ INSERT tất cả
-		    List<ModuleContent> savedContents = (List<ModuleContent>) moduleContentRepository.saveAll(toInsert);
+		    List<ModuleContent> savedContents = (List<ModuleContent>) 
+		        moduleContentRepository.saveAll(toInsert);
 		    
-		    log.info("Update complete: {} saved, {} rejected", savedContents.size(), rejectedContents.size());
+		    log.info("Update complete: {} saved, {} rejected", 
+		        savedContents.size(), rejectedContents.size());
 		    
 		    return new ModuleContentUpdateResult(savedContents, rejectedContents);
 		}

@@ -3,6 +3,7 @@ package com.jpd.web.transform;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,7 @@ import com.jpd.web.model.*;
 import com.jpd.web.service.utils.LanguageConverter;
 
 import lombok.extern.slf4j.Slf4j;
-
+import java.util.UUID;
 @Component
 @Slf4j
 public class ModuleContentTransform {
@@ -24,6 +25,16 @@ public class ModuleContentTransform {
      * Transform ModuleContent to StandardizedContentDto
      * ✅ Using centralized LanguageConverter
      */
+    private static long generateStableId(ModuleContent mc) {
+        // Chỉ dùng các field nguyên thủy, không có circular reference
+        int hash = Objects.hash(
+            mc.getClass().getName(),
+            mc.getTypeOfContent(),
+            System.nanoTime() // Đảm bảo unique
+        );
+        
+        return Math.abs(hash);
+    }
     public static StandardizedContentDto transform(
             ModuleContent mc, 
             Language primary, 
@@ -34,12 +45,15 @@ public class ModuleContentTransform {
         }
 
         try {
-            long contentId = generateContentId(mc);
+            // ✅ KHÔNG TẠO ID MỚI NẾU ĐÃ CÓ
+            long contentId = mc.getMcId() != null && mc.getMcId() > 0 
+                ? mc.getMcId() 
+                : generateFallbackId(); // ✅ DÙNG HASHCODE ĐỂ NHẤT QUÁN
+            
             String rawContent = extractRawContent(mc);
             String cleanedContent = cleanContent(rawContent);
             String finalContent = truncateContent(cleanedContent, MAX_CONTENT_LENGTH);
             
-            // ✅ Use utility instead of duplicated code
             List<String> languages = LanguageConverter.toCodes(primary, secondary);
 
             return StandardizedContentDto.builder()
@@ -53,8 +67,8 @@ public class ModuleContentTransform {
                 mc.getMcId(), mc.getTypeOfContent(), e);
             
             return StandardizedContentDto.builder()
-                    .content_id(generateContentId(mc))
-                    .lang(List.of("vi")) // Fallback
+                    .content_id(generateFallbackId()) // ✅ DÙNG HASHCODE
+                    .lang(List.of("vi"))
                     .content("Error extracting content: " + e.getMessage())
                     .build();
         }
@@ -65,7 +79,9 @@ public class ModuleContentTransform {
         if (mc.getMcId() != null && mc.getMcId() > 0) {
             return mc.getMcId();
         }
-        return -Math.abs(System.nanoTime() + mc.hashCode());
+        return -Math.abs(System.nanoTime() );
+    }private static long generateFallbackId() {
+        return Math.abs(UUID.randomUUID().getMostSignificantBits());
     }
 
     public static String extractRawContent(ModuleContent mc) {

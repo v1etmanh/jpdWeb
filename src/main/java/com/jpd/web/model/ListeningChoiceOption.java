@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -15,6 +16,7 @@ import lombok.ToString;
 @Builder
 @Entity
 @Table(name = "listion_choice_options")
+@EqualsAndHashCode(exclude = {"question"})
 public class ListeningChoiceOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

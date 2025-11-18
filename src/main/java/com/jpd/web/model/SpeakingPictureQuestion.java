@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -22,6 +23,7 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude = {"speakingPictureListQuestions"},callSuper = true) 
 public class SpeakingPictureQuestion extends ModuleContent {
 
     private String pictureUrl;
